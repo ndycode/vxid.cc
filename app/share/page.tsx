@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -545,46 +545,58 @@ export default function SharePage() {
                                                     </Button>
                                                 </CollapsibleTrigger>
                                                 <CollapsibleContent className="space-y-4 pt-2">
-                                                    <div className="grid grid-cols-2 gap-4">
-                                                        <div className="space-y-1.5">
-                                                            <label className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Expires In</label>
-                                                            <div className="flex rounded-md shadow-sm">
-                                                                {expiryOptions.map((opt, i) => (
-                                                                    <button
-                                                                        key={opt.value}
-                                                                        onClick={() => setUploadOptions(prev => ({ ...prev, expiryMinutes: opt.value }))}
-                                                                        className={`
-                                                                            flex-1 text-xs py-1.5 first:rounded-l-md last:rounded-r-md border-y border-r first:border-l
-                                                                            ${uploadOptions.expiryMinutes === opt.value
-                                                                                ? "bg-primary text-primary-foreground border-primary z-10"
-                                                                                : "bg-background border-input hover:bg-accent hover:text-accent-foreground"}
-                                                                        `}
-                                                                    >
-                                                                        {opt.label}
-                                                                    </button>
-                                                                ))}
+                                                    <LayoutGroup>
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            <div className="space-y-1.5">
+                                                                <label className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Expires In</label>
+                                                                <div className="flex rounded-md shadow-sm bg-background border border-input p-0.5">
+                                                                    {expiryOptions.map((opt) => {
+                                                                        const isActive = uploadOptions.expiryMinutes === opt.value;
+                                                                        return (
+                                                                            <button
+                                                                                key={opt.value}
+                                                                                onClick={() => setUploadOptions(prev => ({ ...prev, expiryMinutes: opt.value }))}
+                                                                                className={`relative flex-1 text-xs py-1 px-2 rounded-sm transition-colors z-10 ${isActive ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                                                                            >
+                                                                                {isActive && (
+                                                                                    <motion.div
+                                                                                        layoutId="expiry-pill"
+                                                                                        className="absolute inset-0 bg-primary rounded-sm -z-10"
+                                                                                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                                                                    />
+                                                                                )}
+                                                                                {opt.label}
+                                                                            </button>
+                                                                        );
+                                                                    })}
+                                                                </div>
+                                                            </div>
+                                                            <div className="space-y-1.5">
+                                                                <label className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Limit</label>
+                                                                <div className="flex rounded-md shadow-sm bg-background border border-input p-0.5">
+                                                                    {downloadOptions.map((opt) => {
+                                                                        const isActive = uploadOptions.maxDownloads === opt.value;
+                                                                        return (
+                                                                            <button
+                                                                                key={opt.value}
+                                                                                onClick={() => setUploadOptions(prev => ({ ...prev, maxDownloads: opt.value }))}
+                                                                                className={`relative flex-1 text-xs py-1 px-2 rounded-sm transition-colors z-10 ${isActive ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                                                                            >
+                                                                                {isActive && (
+                                                                                    <motion.div
+                                                                                        layoutId="limit-pill"
+                                                                                        className="absolute inset-0 bg-primary rounded-sm -z-10"
+                                                                                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                                                                    />
+                                                                                )}
+                                                                                {opt.label}
+                                                                            </button>
+                                                                        );
+                                                                    })}
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div className="space-y-1.5">
-                                                            <label className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Limit</label>
-                                                            <div className="flex rounded-md shadow-sm">
-                                                                {downloadOptions.map((opt, i) => (
-                                                                    <button
-                                                                        key={opt.value}
-                                                                        onClick={() => setUploadOptions(prev => ({ ...prev, maxDownloads: opt.value }))}
-                                                                        className={`
-                                                                            flex-1 text-xs py-1.5 first:rounded-l-md last:rounded-r-md border-y border-r first:border-l
-                                                                            ${uploadOptions.maxDownloads === opt.value
-                                                                                ? "bg-primary text-primary-foreground border-primary z-10"
-                                                                                : "bg-background border-input hover:bg-accent hover:text-accent-foreground"}
-                                                                        `}
-                                                                    >
-                                                                        {opt.label}
-                                                                    </button>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                    </LayoutGroup>
 
                                                     <div className="space-y-1.5">
                                                         <div className="flex items-center justify-between">
