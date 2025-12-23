@@ -9,7 +9,11 @@ class GoogleDriveStorage {
 
     async initialize(): Promise<void> {
         const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
-        const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
+        // Handle both escaped \n (from .env files) and actual newlines (from Vercel)
+        let privateKey = process.env.GOOGLE_PRIVATE_KEY;
+        if (privateKey) {
+            privateKey = privateKey.replace(/\\n/g, "\n");
+        }
         const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
 
         if (!clientEmail || !privateKey || !folderId) {
