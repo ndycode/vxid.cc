@@ -34,6 +34,8 @@ import {
     FileArchive,
     ClockCounterClockwise,
     Trash,
+    Eye,
+    EyeSlash,
 } from "@phosphor-icons/react";
 
 type UploadState = "idle" | "uploading" | "success" | "error";
@@ -98,6 +100,7 @@ export default function SharePage() {
 
     // Download state
     const [downloadCode, setDownloadCode] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [downloadState, setDownloadState] = useState<DownloadState>("idle");
     const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
     const [downloadError, setDownloadError] = useState("");
@@ -134,15 +137,7 @@ export default function SharePage() {
         }
     }, [files]);
 
-    // Fire confetti on success
-    const fireConfetti = () => {
-        confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 },
-            colors: ["#10b981", "#34d399", "#6ee7b7"],
-        });
-    };
+    // Confetti removed
 
     // Play sound effect
     const playSound = (type: "success" | "error") => {
@@ -281,7 +276,8 @@ export default function SharePage() {
             saveToRecent(response.code, fileName, new Date(response.expiresAt).getTime());
 
             // Celebration!
-            fireConfetti();
+            // Celebration!
+            // fireConfetti(); // Removed
             playSound("success");
         } catch (err) {
             setUploadState("error");
@@ -654,6 +650,23 @@ export default function SharePage() {
                                                         </div>
                                                     </div>
 
+                                                    <div className="flex items-center gap-2">
+                                                        <CloudArrowDown weight="bold" className="w-3 h-3 text-muted-foreground" />
+                                                        <div className="flex gap-1 flex-1">
+                                                            {downloadOptions.map((opt) => (
+                                                                <Button
+                                                                    key={opt.value}
+                                                                    size="sm"
+                                                                    variant={uploadOptions.maxDownloads === opt.value ? "default" : "ghost"}
+                                                                    className="flex-1 h-6 text-xs px-1"
+                                                                    onClick={() => setUploadOptions({ ...uploadOptions, maxDownloads: opt.value })}
+                                                                >
+                                                                    {opt.label}
+                                                                </Button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+
                                                     <div className="flex items-center justify-between">
                                                         <div className="flex items-center gap-2">
                                                             <Lock weight="bold" className="w-3 h-3 text-muted-foreground" />
@@ -672,13 +685,26 @@ export default function SharePage() {
                                                                 animate={{ opacity: 1, height: "auto" }}
                                                                 exit={{ opacity: 0, height: 0 }}
                                                             >
-                                                                <Input
-                                                                    type="password"
-                                                                    placeholder="Enter password"
-                                                                    value={uploadOptions.password}
-                                                                    onChange={(e) => setUploadOptions({ ...uploadOptions, password: e.target.value })}
-                                                                    className="h-7 text-xs"
-                                                                />
+                                                                <div className="relative">
+                                                                    <Input
+                                                                        type={showPassword ? "text" : "password"}
+                                                                        placeholder="Enter password"
+                                                                        value={uploadOptions.password}
+                                                                        onChange={(e) => setUploadOptions({ ...uploadOptions, password: e.target.value })}
+                                                                        className="h-7 text-xs pr-8"
+                                                                    />
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => setShowPassword(!showPassword)}
+                                                                        className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                                                    >
+                                                                        {showPassword ? (
+                                                                            <EyeSlash weight="bold" className="w-3 h-3" />
+                                                                        ) : (
+                                                                            <Eye weight="bold" className="w-3 h-3" />
+                                                                        )}
+                                                                    </button>
+                                                                </div>
                                                             </motion.div>
                                                         )}
                                                     </AnimatePresence>
@@ -927,8 +953,9 @@ export default function SharePage() {
                         initial={{ opacity: 0, x: 30 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ ...springBouncy, delay: 0.3 }}
+                        className="h-full"
                     >
-                        <Card className="border bg-background/80 backdrop-blur-sm">
+                        <Card className="border bg-background/80 backdrop-blur-sm h-full flex flex-col">
                             <CardHeader className="pb-2">
                                 <div className="flex items-center justify-between">
                                     <CardTitle className="flex items-center gap-2 text-base">
