@@ -17,6 +17,9 @@ import { CaseConverter } from "@/components/tools/case-converter";
 import { ImageConverter } from "@/components/tools/image-converter";
 import { FaviconGen } from "@/components/tools/favicon-gen";
 import { BackgroundRemover } from "@/components/tools/bg-remover";
+import { PrivacyStripper } from "@/components/tools/privacy-stripper";
+import { ImageCompressor } from "@/components/tools/image-compressor";
+import { BulkResizer } from "@/components/tools/bulk-resizer";
 
 const transition = {
     type: "spring" as const,
@@ -36,11 +39,16 @@ export default function HomePage() {
                 <QRGen />
                 <PassGen />
                 <ColorPicker />
+                {/* New image tools */}
+                <PrivacyStripper />
+                <ImageCompressor />
+                <BulkResizer />
+                {/* Text tools */}
                 <WordCount />
                 <CaseConverter />
-                {/* Medium usage */}
                 <TextCleaner />
                 <EmojiPicker />
+                {/* More image tools */}
                 <ImageConverter />
                 <FaviconGen />
                 {/* Least used */}

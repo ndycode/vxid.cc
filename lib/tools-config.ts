@@ -1,4 +1,4 @@
-import { Package, QrCode, Key, Palette, Hash, TextAa, TextT, CalendarBlank, Smiley, ArrowsClockwise, ImageSquare, Browser, Eraser } from "@phosphor-icons/react";
+import { Package, QrCode, Key, Palette, Hash, TextAa, TextT, CalendarBlank, Smiley, ArrowsClockwise, ImageSquare, Browser, Eraser, ShieldCheck, FileArrowDown, ArrowsOutSimple } from "@phosphor-icons/react";
 import type { Icon } from "@phosphor-icons/react";
 
 export interface Tool {
@@ -41,6 +41,29 @@ export const TOOLS: Tool[] = [
         icon: Palette,
         category: "generate",
     },
+    // New image tools
+    {
+        id: "privacy",
+        name: "privacy",
+        tagline: "strip exif & anti-hash",
+        icon: ShieldCheck,
+        category: "image",
+    },
+    {
+        id: "compress",
+        name: "compress",
+        tagline: "shrink file size",
+        icon: FileArrowDown,
+        category: "image",
+    },
+    {
+        id: "resize",
+        name: "resize",
+        tagline: "bulk resize with presets",
+        icon: ArrowsOutSimple,
+        category: "image",
+    },
+    // Text tools
     {
         id: "word-count",
         name: "count",
@@ -55,7 +78,6 @@ export const TOOLS: Tool[] = [
         icon: ArrowsClockwise,
         category: "text",
     },
-    // Medium usage
     {
         id: "text-clean",
         name: "clean",
@@ -70,6 +92,7 @@ export const TOOLS: Tool[] = [
         icon: Smiley,
         category: "text",
     },
+    // More image tools
     {
         id: "image",
         name: "convert",
