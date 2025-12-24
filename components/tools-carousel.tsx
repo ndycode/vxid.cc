@@ -80,14 +80,14 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
             </motion.div>
 
             {/* Content with inline arrows */}
-            <div className="flex items-center gap-2 md:gap-4 w-full max-w-sm md:max-w-xl lg:max-w-2xl">
-                {/* Left arrow */}
+            <div className="flex items-center gap-2 md:gap-6 w-full max-w-sm md:max-w-xl lg:max-w-2xl">
+                {/* Left arrow - minimal */}
                 <button
                     onClick={() => paginate(-1)}
                     disabled={currentIndex === 0}
-                    className="hidden md:flex items-center justify-center w-12 h-12 rounded-xl border border-border bg-card/50 backdrop-blur-sm hover:bg-primary/10 hover:border-primary hover:scale-110 disabled:opacity-20 disabled:hover:scale-100 disabled:hover:bg-card/50 disabled:hover:border-border transition-all duration-200 shrink-0"
+                    className="hidden md:flex items-center justify-center p-2 text-muted-foreground hover:text-primary disabled:opacity-20 disabled:hover:text-muted-foreground transition-colors shrink-0"
                 >
-                    <CaretLeft className="w-5 h-5" />
+                    <CaretLeft className="w-6 h-6" />
                 </button>
 
                 {/* Tool content - no animation for instant switching */}
@@ -95,13 +95,13 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
                     {children[currentIndex]}
                 </div>
 
-                {/* Right arrow */}
+                {/* Right arrow - minimal */}
                 <button
                     onClick={() => paginate(1)}
                     disabled={currentIndex === children.length - 1}
-                    className="hidden md:flex items-center justify-center w-12 h-12 rounded-xl border border-border bg-card/50 backdrop-blur-sm hover:bg-primary/10 hover:border-primary hover:scale-110 disabled:opacity-20 disabled:hover:scale-100 disabled:hover:bg-card/50 disabled:hover:border-border transition-all duration-200 shrink-0"
+                    className="hidden md:flex items-center justify-center p-2 text-muted-foreground hover:text-primary disabled:opacity-20 disabled:hover:text-muted-foreground transition-colors shrink-0"
                 >
-                    <CaretRight className="w-5 h-5" />
+                    <CaretRight className="w-6 h-6" />
                 </button>
             </div>
 
@@ -150,103 +150,24 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
                                     transition={{ duration: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
                                     className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-card border rounded-xl shadow-lg overflow-hidden w-[280px] max-h-[350px] overflow-y-auto scrollbar-hide z-50 p-2"
                                 >
-                                    {/* Categories */}
-                                    <div className="space-y-2">
-                                        {/* Sharing */}
-                                        <div>
-                                            <p className="text-[10px] text-muted-foreground uppercase px-1 mb-1">Sharing</p>
-                                            <div className="grid grid-cols-2 gap-1">
-                                                {TOOLS.slice(0, 2).map((tool, idx) => {
-                                                    const index = idx;
-                                                    const Icon = tool.icon;
-                                                    return (
-                                                        <button
-                                                            key={tool.id}
-                                                            onClick={() => selectTool(index)}
-                                                            className={`px-2 py-1.5 text-xs rounded-lg flex items-center gap-2 transition-colors ${index === currentIndex
-                                                                ? "bg-primary text-primary-foreground"
-                                                                : "hover:bg-muted text-muted-foreground"
-                                                                }`}
-                                                        >
-                                                            <Icon className="w-3.5 h-3.5" />
-                                                            <span className="truncate">{tool.name}</span>
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-
-                                        {/* Generate */}
-                                        <div>
-                                            <p className="text-[10px] text-muted-foreground uppercase px-1 mb-1">Generate</p>
-                                            <div className="grid grid-cols-2 gap-1">
-                                                {TOOLS.slice(2, 5).map((tool, idx) => {
-                                                    const index = idx + 2;
-                                                    const Icon = tool.icon;
-                                                    return (
-                                                        <button
-                                                            key={tool.id}
-                                                            onClick={() => selectTool(index)}
-                                                            className={`px-2 py-1.5 text-xs rounded-lg flex items-center gap-2 transition-colors ${index === currentIndex
-                                                                ? "bg-primary text-primary-foreground"
-                                                                : "hover:bg-muted text-muted-foreground"
-                                                                }`}
-                                                        >
-                                                            <Icon className="w-3.5 h-3.5" />
-                                                            <span className="truncate">{tool.name}</span>
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-
-                                        {/* Text Tools */}
-                                        <div>
-                                            <p className="text-[10px] text-muted-foreground uppercase px-1 mb-1">Text</p>
-                                            <div className="grid grid-cols-2 gap-1">
-                                                {TOOLS.slice(5, 10).map((tool, idx) => {
-                                                    const index = idx + 5;
-                                                    const Icon = tool.icon;
-                                                    return (
-                                                        <button
-                                                            key={tool.id}
-                                                            onClick={() => selectTool(index)}
-                                                            className={`px-2 py-1.5 text-xs rounded-lg flex items-center gap-2 transition-colors ${index === currentIndex
-                                                                ? "bg-primary text-primary-foreground"
-                                                                : "hover:bg-muted text-muted-foreground"
-                                                                }`}
-                                                        >
-                                                            <Icon className="w-3.5 h-3.5" />
-                                                            <span className="truncate">{tool.name}</span>
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-
-                                        {/* Image */}
-                                        <div>
-                                            <p className="text-[10px] text-muted-foreground uppercase px-1 mb-1">Image</p>
-                                            <div className="grid grid-cols-2 gap-1">
-                                                {TOOLS.slice(10).map((tool, idx) => {
-                                                    const index = idx + 10;
-                                                    const Icon = tool.icon;
-                                                    return (
-                                                        <button
-                                                            key={tool.id}
-                                                            onClick={() => selectTool(index)}
-                                                            className={`px-2 py-1.5 text-xs rounded-lg flex items-center gap-2 transition-colors ${index === currentIndex
-                                                                ? "bg-primary text-primary-foreground"
-                                                                : "hover:bg-muted text-muted-foreground"
-                                                                }`}
-                                                        >
-                                                            <Icon className="w-3.5 h-3.5" />
-                                                            <span className="truncate">{tool.name}</span>
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
+                                    {/* All tools in order */}
+                                    <div className="grid grid-cols-2 gap-1">
+                                        {TOOLS.map((tool, index) => {
+                                            const Icon = tool.icon;
+                                            return (
+                                                <button
+                                                    key={tool.id}
+                                                    onClick={() => selectTool(index)}
+                                                    className={`px-2 py-1.5 text-xs rounded-lg flex items-center gap-2 transition-colors ${index === currentIndex
+                                                        ? "bg-primary text-primary-foreground"
+                                                        : "hover:bg-muted text-muted-foreground"
+                                                        }`}
+                                                >
+                                                    <Icon className="w-3.5 h-3.5" />
+                                                    <span className="truncate">{tool.name}</span>
+                                                </button>
+                                            );
+                                        })}
                                     </div>
                                 </motion.div>
                             </>

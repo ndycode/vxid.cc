@@ -31,22 +31,21 @@ export default function HomePage() {
     if (showTools) {
         return (
             <ToolsCarousel onBack={() => setShowTools(false)}>
-                {/* Sharing */}
+                {/* Most used */}
                 <DeadDrop />
                 <QRGen />
-                {/* Generate */}
                 <PassGen />
                 <ColorPicker />
-                <HashGen />
-                {/* Text */}
-                <TextCleaner />
                 <WordCount />
-                <DateDiff />
-                <EmojiPicker />
                 <CaseConverter />
-                {/* Image */}
+                {/* Medium usage */}
+                <TextCleaner />
+                <EmojiPicker />
                 <ImageConverter />
                 <FaviconGen />
+                {/* Least used */}
+                <HashGen />
+                <DateDiff />
                 <BackgroundRemover />
             </ToolsCarousel>
         );

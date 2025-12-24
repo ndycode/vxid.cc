@@ -9,8 +9,9 @@ export interface Tool {
     category: "sharing" | "generate" | "text" | "image";
 }
 
+// Ordered by usage frequency: most used → least used (dead-drop stays first)
 export const TOOLS: Tool[] = [
-    // Sharing
+    // Page 1 - Dead Drop (main feature)
     {
         id: "dead-drop",
         name: "drop",
@@ -18,6 +19,7 @@ export const TOOLS: Tool[] = [
         icon: Package,
         category: "sharing",
     },
+    // Most used utilities
     {
         id: "qr-gen",
         name: "qr",
@@ -25,7 +27,6 @@ export const TOOLS: Tool[] = [
         icon: QrCode,
         category: "sharing",
     },
-    // Generate
     {
         id: "passgen",
         name: "pass",
@@ -41,39 +42,10 @@ export const TOOLS: Tool[] = [
         category: "generate",
     },
     {
-        id: "hash",
-        name: "hash",
-        tagline: "md5 · sha256 · sha512",
-        icon: Hash,
-        category: "generate",
-    },
-    // Text
-    {
-        id: "text-clean",
-        name: "clean",
-        tagline: "strip spaces & empty lines",
-        icon: TextAa,
-        category: "text",
-    },
-    {
         id: "word-count",
         name: "count",
         tagline: "words · chars · read time",
         icon: TextT,
-        category: "text",
-    },
-    {
-        id: "date-diff",
-        name: "days",
-        tagline: "time between dates",
-        icon: CalendarBlank,
-        category: "text",
-    },
-    {
-        id: "emoji",
-        name: "emoji",
-        tagline: "tap to copy ✨",
-        icon: Smiley,
         category: "text",
     },
     {
@@ -83,7 +55,21 @@ export const TOOLS: Tool[] = [
         icon: ArrowsClockwise,
         category: "text",
     },
-    // Image
+    // Medium usage
+    {
+        id: "text-clean",
+        name: "clean",
+        tagline: "strip spaces & empty lines",
+        icon: TextAa,
+        category: "text",
+    },
+    {
+        id: "emoji",
+        name: "emoji",
+        tagline: "tap to copy ✨",
+        icon: Smiley,
+        category: "text",
+    },
     {
         id: "image",
         name: "convert",
@@ -97,6 +83,21 @@ export const TOOLS: Tool[] = [
         tagline: "emoji to .ico",
         icon: Browser,
         category: "image",
+    },
+    // Least used
+    {
+        id: "hash",
+        name: "hash",
+        tagline: "md5 · sha256 · sha512",
+        icon: Hash,
+        category: "generate",
+    },
+    {
+        id: "date-diff",
+        name: "days",
+        tagline: "time between dates",
+        icon: CalendarBlank,
+        category: "text",
     },
     {
         id: "bg-remove",
