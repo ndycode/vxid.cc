@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TransitionProvider } from "@/components/transition-provider";
 import { ClientErrorBoundary } from "@/components/client-error-boundary";
+import { GitHubTyping } from "@/components/github-typing";
 import { Toaster } from "sonner";
 
 const jetbrainsMono = JetBrains_Mono({
@@ -16,12 +17,14 @@ export const metadata: Metadata = {
   description: "Transfer files securely between devices with a simple 6-digit code",
 };
 
-// Inline script to set theme before hydration (prevents flash)
+// Inline script to set theme before hydration (defaults to dark)
 const themeScript = `
   (function() {
     try {
       var theme = localStorage.getItem('theme');
-      if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      if (theme === 'light') {
+        document.documentElement.classList.remove('dark');
+      } else {
         document.documentElement.classList.add('dark');
       }
     } catch (e) {}
@@ -68,7 +71,7 @@ export default function RootLayout({
           target="_blank"
           className="fixed bottom-6 left-1/2 -translate-x-1/2 text-xs text-muted-foreground/40 hover:text-primary transition-colors z-50"
         >
-          github.com/ndycode
+          <GitHubTyping />
         </a>
 
         {/* Toast notifications */}
