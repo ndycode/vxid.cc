@@ -68,34 +68,14 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
                     className="text-4xl font-bold tracking-tight"
                     transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1 }}
                 >
-                    <AnimatePresence mode="wait">
-                        <motion.span
-                            key={currentTool.id + "-title"}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.15 }}
-                        >
-                            {currentTool.name}
-                        </motion.span>
-                    </AnimatePresence>
+                    {currentTool.name}
                 </motion.h1>
                 <motion.p
                     layoutId="page-subtitle"
                     className="text-muted-foreground text-sm"
                     transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1 }}
                 >
-                    <AnimatePresence mode="wait">
-                        <motion.span
-                            key={currentTool.id + "-tagline"}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.15 }}
-                        >
-                            {currentTool.tagline}
-                        </motion.span>
-                    </AnimatePresence>
+                    {currentTool.tagline}
                 </motion.p>
             </motion.div>
 
@@ -110,23 +90,9 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
                     <CaretLeft className="w-5 h-5" />
                 </button>
 
-                {/* Tool content */}
+                {/* Tool content - no animation for instant switching */}
                 <div className="w-full max-w-sm md:max-w-md lg:max-w-lg relative mx-auto">
-                    <AnimatePresence mode="popLayout">
-                        <motion.div
-                            key={currentIndex}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{
-                                duration: 0.25,
-                                ease: "easeOut",
-                            }}
-                            className="w-full"
-                        >
-                            {children[currentIndex]}
-                        </motion.div>
-                    </AnimatePresence>
+                    {children[currentIndex]}
                 </div>
 
                 {/* Right arrow */}
