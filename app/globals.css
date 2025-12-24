@@ -46,12 +46,17 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
   --animate-blink-cursor: blink-cursor 1.2s step-end infinite;
+
   @keyframes blink-cursor {
-  0%, 49% {
-    opacity: 1;
+
+    0%,
+    49% {
+      opacity: 1;
     }
-  50%, 100% {
-    opacity: 0;
+
+    50%,
+    100% {
+      opacity: 0;
     }
   }
 }
@@ -205,17 +210,29 @@
     --animation-duration: 0.15s;
   }
 
-  /* Prevent horizontal scroll */
-  body {
-    overflow-x: hidden;
-  }
-
   /* Better tap feedback */
   button:active,
   a:active {
     opacity: 0.8;
     transform: scale(0.98);
   }
+}
+
+/* Prevent scrollbar during transitions */
+html,
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Hide scrollbar globally but keep scroll functionality */
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
 }
 
 /* Ensure smooth page transitions */
@@ -322,6 +339,7 @@ input[type="range"]::-moz-range-thumb {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

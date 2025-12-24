@@ -56,35 +56,43 @@ export function ToolsCarousel({ children, initialIndex = 0 }: ToolsCarouselProps
                 </Button>
             </Link>
 
-            {/* Header */}
+            {/* Header - morphs from home page */}
             <motion.div
-                className="text-center mb-4 md:mb-6 max-w-sm md:max-w-md lg:max-w-lg w-full transform-gpu"
-                layout
+                layoutId="page-header"
+                className="text-center mb-4 md:mb-6 max-w-sm md:max-w-md lg:max-w-lg w-full transform-gpu space-y-2"
             >
-                <AnimatePresence mode="wait">
-                    <motion.h1
-                        key={currentTool.id + "-title"}
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-                        className="text-4xl font-bold tracking-tight"
-                    >
-                        {currentTool.name}
-                    </motion.h1>
-                </AnimatePresence>
-                <AnimatePresence mode="wait">
-                    <motion.p
-                        key={currentTool.id + "-tagline"}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.15 }}
-                        className="text-muted-foreground text-sm"
-                    >
-                        {currentTool.tagline}
-                    </motion.p>
-                </AnimatePresence>
+                <motion.h1
+                    layoutId="page-title"
+                    className="text-4xl font-bold tracking-tight"
+                >
+                    <AnimatePresence mode="wait">
+                        <motion.span
+                            key={currentTool.id + "-title"}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.15 }}
+                        >
+                            {currentTool.name}
+                        </motion.span>
+                    </AnimatePresence>
+                </motion.h1>
+                <motion.p
+                    layoutId="page-subtitle"
+                    className="text-muted-foreground text-sm"
+                >
+                    <AnimatePresence mode="wait">
+                        <motion.span
+                            key={currentTool.id + "-tagline"}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.15 }}
+                        >
+                            {currentTool.tagline}
+                        </motion.span>
+                    </AnimatePresence>
+                </motion.p>
             </motion.div>
 
             {/* Content with inline arrows */}
