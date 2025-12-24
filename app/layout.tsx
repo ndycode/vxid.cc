@@ -3,6 +3,8 @@ import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TransitionProvider } from "@/components/transition-provider";
+import { ClientErrorBoundary } from "@/components/client-error-boundary";
+import { Toaster } from "sonner";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
@@ -14,13 +16,28 @@ export const metadata: Metadata = {
   description: "Transfer files securely between devices with a simple 6-digit code",
 };
 
+// Inline script to set theme before hydration (prevents flash)
+const themeScript = `
+  (function() {
+    try {
+      var theme = localStorage.getItem('theme');
+      if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch (e) {}
+  })();
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${jetbrainsMono.variable}`} style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+    <html lang="en" className={`${jetbrainsMono.variable}`} suppressHydrationWarning style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className={`${jetbrainsMono.className} antialiased relative min-h-screen`}>
         <div className="fixed inset-0 z-0 bg-background"></div>
 
@@ -30,9 +47,11 @@ export default function RootLayout({
         </div>
 
         <div className="relative z-10 min-h-screen">
-          <TransitionProvider>
-            {children}
-          </TransitionProvider>
+          <ClientErrorBoundary>
+            <TransitionProvider>
+              {children}
+            </TransitionProvider>
+          </ClientErrorBoundary>
         </div>
 
         {/* Nav Icon */}
@@ -51,6 +70,18 @@ export default function RootLayout({
         >
           github.com/ndycode
         </a>
+
+        {/* Toast notifications */}
+        <Toaster
+          position="bottom-center"
+          toastOptions={{
+            style: {
+              background: 'hsl(var(--card))',
+              border: '1px solid hsl(var(--border))',
+              color: 'hsl(var(--foreground))',
+            },
+          }}
+        />
       </body>
     </html>
   );

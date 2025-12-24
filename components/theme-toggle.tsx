@@ -10,7 +10,20 @@ export function ThemeToggle() {
 
     useEffect(() => {
         setMounted(true);
-        setIsDark(document.documentElement.classList.contains("dark"));
+        // Check localStorage first, then system preference
+        const stored = localStorage.getItem("theme");
+        if (stored === "dark") {
+            setIsDark(true);
+            document.documentElement.classList.add("dark");
+        } else if (stored === "light") {
+            setIsDark(false);
+            document.documentElement.classList.remove("dark");
+        } else {
+            // No stored preference, use system
+            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            setIsDark(prefersDark);
+            document.documentElement.classList.toggle("dark", prefersDark);
+        }
     }, []);
 
     const toggle = () => {
