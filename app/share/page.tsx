@@ -146,7 +146,7 @@ export default function SharePage() {
                         className="text-muted-foreground text-sm"
                         transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] as const }}
                     >
-                        files in, files out, no questions asked
+                        drop it, share it, forget it
                     </motion.p>
                 </motion.div>
 
@@ -212,13 +212,13 @@ export default function SharePage() {
                                                     </div>
                                                 </div>
                                                 {/* Real QR Code */}
-                                                <div className="shrink-0">
+                                                <div className="shrink-0 text-foreground">
                                                     <QRCodeSVG
                                                         value={`${typeof window !== 'undefined' ? window.location.origin : ''}/share?code=${shareCode}`}
                                                         size={52}
                                                         level="L"
                                                         bgColor="transparent"
-                                                        fgColor="#ffffff"
+                                                        fgColor="currentColor"
                                                     />
                                                 </div>
                                             </motion.div>

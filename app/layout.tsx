@@ -35,6 +35,14 @@ export default function RootLayout({
           </TransitionProvider>
         </div>
 
+        {/* Nav Icon */}
+        <a
+          href="/"
+          className="fixed bottom-6 left-6 z-50 w-8 h-8 rounded-full overflow-hidden hover:scale-110 transition-transform"
+        >
+          <img src="/logo.png" alt="vxid.cc" className="w-full h-full object-cover invert dark:invert-0" />
+        </a>
+
         {/* Global GitHub Link */}
         <a
           href="https://github.com/ndycode"

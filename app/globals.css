@@ -123,9 +123,29 @@
 @layer base {
   * {
     @apply border-border;
+    text-transform: lowercase;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
   }
+}
+
+/* Selection and focus - outside layer for higher specificity */
+::selection {
+  background: #ec4899 !important;
+  color: #fff !important;
+}
+
+::-moz-selection {
+  background: #ec4899 !important;
+  color: #fff !important;
+}
+
+*:focus {
+  outline-color: #ec4899 !important;
+}
+
+*:focus-visible {
+  outline-color: #ec4899 !important;
 }
