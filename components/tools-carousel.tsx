@@ -57,23 +57,23 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
                 <ArrowLeft className="w-5 h-5" />
             </button>
 
-            {/* Header - morphs from home page */}
+            {/* Header - morphs from home page, then instant updates */}
             <motion.div
                 layoutId="page-header"
-                className="text-center mb-4 md:mb-6 max-w-sm md:max-w-md lg:max-w-lg w-full transform-gpu space-y-2"
-                transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1 }}
+                className="text-center mb-4 md:mb-6 max-w-sm md:max-w-md lg:max-w-lg w-full space-y-2"
+                transition={{ type: "spring", stiffness: 400, damping: 40 }}
             >
                 <motion.h1
                     layoutId="page-title"
                     className="text-4xl font-bold tracking-tight"
-                    transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 40 }}
                 >
                     {currentTool.name}
                 </motion.h1>
                 <motion.p
                     layoutId="page-subtitle"
                     className="text-muted-foreground text-sm"
-                    transition={{ type: "spring", stiffness: 200, damping: 30, mass: 1 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 40 }}
                 >
                     {currentTool.tagline}
                 </motion.p>
