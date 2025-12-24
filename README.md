@@ -1,127 +1,145 @@
 # vxid.cc
 
-> **the tools you keep forgetting to bookmark**
+A privacy-first toolkit with 13 essential utilities — all running client-side in your browser. No sign-ups, no tracking, just useful tools. Developed as a personal project to provide quick access to commonly needed web utilities.
 
-A sleek, privacy-first toolkit with 13 essential utilities — all running client-side in your browser. No sign-ups, no tracking, just useful tools.
+## Overview
 
----
+vxid.cc provides users with instant access to commonly needed tools without the friction of sign-ups or advertisements. The application handles file sharing, text manipulation, image processing, and code generation while keeping all operations client-side for maximum privacy.
 
-## ✨ Features
+### Core Capabilities
 
-### 🔗 Sharing
-| Tool | Description |
-|------|-------------|
-| **drop** | Upload files, get a 6-digit code, share instantly. Supports password protection, custom expiry (10m-7d), download limits, and QR codes. |
-| **qr** | Generate QR codes from any text or URL. Customizable colors and sizes. |
+- **Dead Drop file sharing** with 6-digit codes, password protection, and auto-expiry
+- **Client-side image processing** including format conversion and AI background removal
+- **Text utilities** for cleaning, case conversion, word counting, and hashing
+- **Generator tools** for passwords, QR codes, favicons, and color palettes
 
-### 🔐 Generate
-| Tool | Description |
-|------|-------------|
-| **pass** | Secure password generator with adjustable length (8-64) and character options (uppercase, numbers, symbols). |
-| **color** | Color converter with presets. Supports HEX ↔ RGB ↔ HSL with one-click copy. |
-| **hash** | Real-time text hashing. Supports MD5, SHA-1, SHA-256, SHA-512. |
+## Architecture
 
-### 📝 Text
-| Tool | Description |
-|------|-------------|
-| **clean** | Strip whitespace, empty lines, and duplicate spaces. Toggle options for precise control. |
-| **count** | Word, character, and sentence counter with reading time estimate. |
-| **days** | Calculate days between dates with quick presets (+7d, +30d, +1y). |
-| **emoji** | Searchable emoji picker organized by category. Tap to copy. |
-| **case** | Convert text between 11 case formats (UPPER, lower, Title, camelCase, snake_case, etc). |
+| Layer | Technology | Purpose |
+|-------|------------|---------|
+| Frontend | Next.js 15 (App Router) | Server/client React components with TypeScript |
+| Backend | Cloudflare R2 | Object storage for dead drop file sharing |
+| Styling | Tailwind CSS v4 | Utility-first CSS framework |
+| Components | shadcn/ui | Accessible, customizable UI primitives |
+| Animations | Framer Motion | UI transitions and micro-interactions |
+| Icons | Phosphor Icons | Consistent icon system |
 
-### 🖼️ Image
-| Tool | Description |
-|------|-------------|
-| **convert** | Convert images between PNG, JPG, and WEBP. Quality slider for compression. |
-| **favicon** | Generate favicons from emoji or uploaded images. Export all sizes (16-256px). |
-| **erase** | AI-powered background removal. Runs entirely in your browser (~5MB model download on first use). |
+### Key Design Decisions
 
----
+1. **Client-side processing**: All tools except dead drop run entirely in the browser
+2. **Dark mode first**: Designed for dark mode with optional light theme
+3. **Mobile-first responsive**: Carousel navigation on mobile, inline arrows on desktop
+4. **No native browser pickers**: Custom styled inputs for consistent theming
 
-## 🚀 Quick Start
+## Project Structure
 
-```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
+```
+├── app/
+│   ├── page.tsx              # Landing page
+│   ├── share/page.tsx        # Tools carousel
+│   ├── download/page.tsx     # File download page
+│   └── api/                  # Upload/download endpoints
+├── components/
+│   ├── tools/                # 13 tool components
+│   │   ├── dead-drop.tsx     # File sharing with codes
+│   │   ├── qr-gen.tsx        # QR code generator
+│   │   ├── passgen.tsx       # Password generator
+│   │   ├── color-picker.tsx  # Color converter
+│   │   ├── hash-gen.tsx      # Text hashing
+│   │   ├── text-cleaner.tsx  # Whitespace cleaner
+│   │   ├── word-count.tsx    # Word/char counter
+│   │   ├── date-diff.tsx     # Date calculator
+│   │   ├── emoji-picker.tsx  # Emoji search
+│   │   ├── case-converter.tsx # Case transformation
+│   │   ├── image-converter.tsx # Format converter
+│   │   ├── favicon-gen.tsx   # Favicon generator
+│   │   └── bg-remover.tsx    # AI background removal
+│   ├── tools-carousel.tsx    # Navigation and layout
+│   └── ui/                   # shadcn components
+└── lib/
+    └── tools-config.ts       # Tool definitions and categories
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the app.
+## Prerequisites
 
----
+- Node.js 18.18 or higher (Node 20 recommended)
+- npm 9+ (or equivalent package manager)
+- Cloudflare R2 account (only for dead drop feature)
 
-## ⚙️ Environment Setup
+## Setup Instructions
+
+### 1. Clone and Install
+
+```bash
+git clone https://github.com/ndycode/vxid.cc.git
+cd vxid.cc
+npm install
+```
+
+### 2. Environment Configuration
 
 Copy `env.example.txt` to `.env.local`:
 
 ```env
-# Cloudflare R2 (for dead drop file storage)
+# Cloudflare R2 (required only for dead drop)
 R2_ACCOUNT_ID=your_account_id
 R2_ACCESS_KEY_ID=your_access_key
 R2_SECRET_ACCESS_KEY=your_secret_key
 R2_BUCKET_NAME=your_bucket_name
 ```
 
-> **Note:** Only the "drop" tool requires R2 storage. All other tools work without any configuration.
+> **Note:** All tools except dead drop work without any configuration.
 
----
+### 3. Run Development Server
 
-## 🛠️ Tech Stack
-
-| Category | Technology |
-|----------|------------|
-| Framework | Next.js 15 (App Router) |
-| React | React 19 |
-| Styling | Tailwind CSS v4 + shadcn/ui |
-| Animation | Framer Motion |
-| Icons | Phosphor Icons |
-| Storage | Cloudflare R2 |
-| AI (bg-remove) | @imgly/background-removal |
-
----
-
-## 📁 Project Structure
-
-```
-├── app/
-│   ├── page.tsx          # Landing page
-│   ├── share/page.tsx    # Tools carousel
-│   ├── download/page.tsx # File download page
-│   └── api/              # Upload/download endpoints
-├── components/
-│   ├── tools/            # 13 tool components
-│   ├── tools-carousel.tsx
-│   └── ui/               # shadcn components
-├── lib/
-│   └── tools-config.ts   # Tool definitions
-└── public/
-    └── logo.png
+```bash
+npm run dev
 ```
 
----
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-## 🎨 Design
+## Available Scripts
 
-- **Dark mode first** with light mode toggle
-- **Motion animations** on all tool cards
-- **Custom styled** range sliders and scrollbars
-- **Mobile responsive** carousel navigation
-- **No native browser pickers** — all custom themed
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server with Turbopack |
+| `npm run build` | Create production build |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
 
----
+## Deployment
 
-## 📄 License
+### Vercel (Recommended)
+
+1. Push repository to GitHub
+2. Import project in Vercel dashboard
+3. Configure environment variables
+4. Deploy
+
+### Manual Deployment
+
+```bash
+npm run build
+npm run start
+```
+
+### Pre-deployment Checklist
+
+- [ ] Environment variables configured
+- [ ] R2 bucket created and accessible (if using dead drop)
+- [ ] CORS configured on R2 bucket
+
+## Security Considerations
+
+- All file uploads are automatically deleted after download or expiry
+- Passwords for file protection are hashed server-side
+- No user data is stored or tracked
+- All client-side processing stays in the browser
+
+## Authors
+
+- **ndycode** - [github.com/ndycode](https://github.com/ndycode)
+
+## License
 
 MIT — use it however you want.
-
----
-
-<p align="center">
-  <strong>vxid.cc</strong> — minimal tools, maximum utility
-</p>

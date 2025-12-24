@@ -16,7 +16,7 @@ export default function HomePage() {
     return (
         <LayoutGroup>
             <main className="min-h-screen flex flex-col items-center justify-center px-6 py-12 relative">
-                <div className="w-full max-w-xs text-center space-y-8">
+                <div className="w-full max-w-xs md:max-w-sm text-center space-y-8">
 
                     {/* Brand - will morph to header */}
                     <motion.div

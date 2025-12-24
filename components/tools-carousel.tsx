@@ -66,7 +66,7 @@ export function ToolsCarousel({ children, initialIndex = 0 }: ToolsCarouselProps
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center px-6 py-6 relative transform-gpu">
+        <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-8 lg:px-12 py-6 relative transform-gpu">
             {/* Back button */}
             <Link href="/" className="absolute top-4 left-4">
                 <Button variant="ghost" size="icon">
@@ -74,33 +74,9 @@ export function ToolsCarousel({ children, initialIndex = 0 }: ToolsCarouselProps
                 </Button>
             </Link>
 
-            {/* Arrow navigation - desktop only */}
-            <div className="hidden sm:flex absolute inset-y-0 left-2 items-center">
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => paginate(-1)}
-                    disabled={currentIndex === 0}
-                    className="opacity-50 hover:opacity-100 disabled:opacity-20"
-                >
-                    <CaretLeft className="w-6 h-6" />
-                </Button>
-            </div>
-            <div className="hidden sm:flex absolute inset-y-0 right-2 items-center">
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => paginate(1)}
-                    disabled={currentIndex === children.length - 1}
-                    className="opacity-50 hover:opacity-100 disabled:opacity-20"
-                >
-                    <CaretRight className="w-6 h-6" />
-                </Button>
-            </div>
-
             {/* Header */}
             <motion.div
-                className="text-center mb-6 max-w-sm w-full transform-gpu"
+                className="text-center mb-4 md:mb-6 max-w-sm md:max-w-md lg:max-w-lg w-full transform-gpu"
                 layout
             >
                 <AnimatePresence mode="wait">
@@ -129,25 +105,46 @@ export function ToolsCarousel({ children, initialIndex = 0 }: ToolsCarouselProps
                 </AnimatePresence>
             </motion.div>
 
-            {/* Content (no drag - inputs work normally) */}
-            <div className="w-full max-w-sm relative overflow-hidden">
-                <AnimatePresence initial={false} custom={direction} mode="wait">
-                    <motion.div
-                        key={currentIndex}
-                        custom={direction}
-                        variants={variants}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        transition={{
-                            x: { type: "spring", stiffness: 300, damping: 30 },
-                            opacity: { duration: 0.15 },
-                        }}
-                        className="w-full transform-gpu"
-                    >
-                        {children[currentIndex]}
-                    </motion.div>
-                </AnimatePresence>
+            {/* Content with inline arrows */}
+            <div className="flex items-center gap-2 md:gap-4 w-full max-w-sm md:max-w-xl lg:max-w-2xl">
+                {/* Left arrow */}
+                <button
+                    onClick={() => paginate(-1)}
+                    disabled={currentIndex === 0}
+                    className="hidden md:flex items-center justify-center w-12 h-12 rounded-xl border border-border bg-card/50 backdrop-blur-sm hover:bg-primary/10 hover:border-primary hover:scale-110 disabled:opacity-20 disabled:hover:scale-100 disabled:hover:bg-card/50 disabled:hover:border-border transition-all duration-200 shrink-0"
+                >
+                    <CaretLeft className="w-5 h-5" />
+                </button>
+
+                {/* Tool content */}
+                <div className="w-full max-w-sm md:max-w-md lg:max-w-lg relative overflow-hidden mx-auto">
+                    <AnimatePresence initial={false} custom={direction} mode="wait">
+                        <motion.div
+                            key={currentIndex}
+                            custom={direction}
+                            variants={variants}
+                            initial="enter"
+                            animate="center"
+                            exit="exit"
+                            transition={{
+                                x: { type: "spring", stiffness: 300, damping: 30 },
+                                opacity: { duration: 0.15 },
+                            }}
+                            className="w-full transform-gpu"
+                        >
+                            {children[currentIndex]}
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
+
+                {/* Right arrow */}
+                <button
+                    onClick={() => paginate(1)}
+                    disabled={currentIndex === children.length - 1}
+                    className="hidden md:flex items-center justify-center w-12 h-12 rounded-xl border border-border bg-card/50 backdrop-blur-sm hover:bg-primary/10 hover:border-primary hover:scale-110 disabled:opacity-20 disabled:hover:scale-100 disabled:hover:bg-card/50 disabled:hover:border-border transition-all duration-200 shrink-0"
+                >
+                    <CaretRight className="w-5 h-5" />
+                </button>
             </div>
 
             {/* Dot indicators */}
@@ -165,16 +162,8 @@ export function ToolsCarousel({ children, initialIndex = 0 }: ToolsCarouselProps
                 ))}
             </div>
 
-            {/* Inline text navigation with dropdown */}
-            <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4">
-                <button
-                    onClick={() => selectTool(currentIndex === 0 ? TOOLS.length - 1 : currentIndex - 1)}
-                    className="text-muted-foreground/50 hover:text-foreground transition-colors text-lg"
-                    aria-label="Previous tool"
-                >
-                    ←
-                </button>
-
+            {/* Tool dropdown menu */}
+            <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-50">
                 {/* Clickable tool name with dropdown */}
                 <div className="relative">
                     <button
@@ -306,14 +295,6 @@ export function ToolsCarousel({ children, initialIndex = 0 }: ToolsCarouselProps
                         )}
                     </AnimatePresence>
                 </div>
-
-                <button
-                    onClick={() => selectTool(currentIndex === TOOLS.length - 1 ? 0 : currentIndex + 1)}
-                    className="text-muted-foreground/50 hover:text-foreground transition-colors text-lg"
-                    aria-label="Next tool"
-                >
-                    →
-                </button>
             </div>
         </div>
     );
