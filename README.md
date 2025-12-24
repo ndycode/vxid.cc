@@ -1,6 +1,6 @@
 # vxid.cc
 
-A privacy-first toolkit with 13 essential utilities — all running client-side in your browser. No sign-ups, no tracking, just useful tools. Developed as a personal project to provide quick access to commonly needed web utilities.
+A privacy-first toolkit with 16 essential utilities — all running client-side in your browser. No sign-ups, no tracking, just useful tools. Developed as a personal project to provide quick access to commonly needed web utilities.
 
 ## Overview
 
@@ -9,7 +9,8 @@ vxid.cc provides users with instant access to commonly needed tools without the 
 ### Core Capabilities
 
 - **Dead Drop file sharing** with 6-digit codes, password protection, and auto-expiry
-- **Client-side image processing** including format conversion and AI background removal
+- **Client-side image processing** including format conversion, compression, resizing, and AI background removal
+- **Privacy tools** for EXIF stripping, anti-hash pixel noise, and fake metadata injection
 - **Text utilities** for cleaning, case conversion, word counting, and hashing
 - **Generator tools** for passwords, QR codes, favicons, and color palettes
 
@@ -35,24 +36,26 @@ vxid.cc provides users with instant access to commonly needed tools without the 
 
 ```
 ├── app/
-│   ├── page.tsx              # Landing page
-│   ├── share/page.tsx        # Tools carousel
+│   ├── page.tsx              # Landing page + tools carousel
 │   ├── download/page.tsx     # File download page
 │   └── api/                  # Upload/download endpoints
 ├── components/
-│   ├── tools/                # 13 tool components
+│   ├── tools/                # 16 tool components
 │   │   ├── dead-drop.tsx     # File sharing with codes
 │   │   ├── qr-gen.tsx        # QR code generator
 │   │   ├── passgen.tsx       # Password generator
 │   │   ├── color-picker.tsx  # Color converter
-│   │   ├── hash-gen.tsx      # Text hashing
-│   │   ├── text-cleaner.tsx  # Whitespace cleaner
+│   │   ├── privacy-stripper.tsx # EXIF removal + anti-hash
+│   │   ├── image-compressor.tsx # Bulk compression
+│   │   ├── bulk-resizer.tsx  # Bulk resize with presets
 │   │   ├── word-count.tsx    # Word/char counter
-│   │   ├── date-diff.tsx     # Date calculator
-│   │   ├── emoji-picker.tsx  # Emoji search
 │   │   ├── case-converter.tsx # Case transformation
+│   │   ├── text-cleaner.tsx  # Whitespace cleaner
+│   │   ├── emoji-picker.tsx  # Emoji search
 │   │   ├── image-converter.tsx # Format converter
 │   │   ├── favicon-gen.tsx   # Favicon generator
+│   │   ├── hash-gen.tsx      # Text hashing
+│   │   ├── date-diff.tsx     # Date calculator
 │   │   └── bg-remover.tsx    # AI background removal
 │   ├── tools-carousel.tsx    # Navigation and layout
 │   └── ui/                   # shadcn components
@@ -78,68 +81,52 @@ npm install
 
 ### 2. Environment Configuration
 
-Copy `env.example.txt` to `.env.local`:
+Create a `.env.local` file with:
 
 ```env
-# Cloudflare R2 (required only for dead drop)
 R2_ACCOUNT_ID=your_account_id
 R2_ACCESS_KEY_ID=your_access_key
 R2_SECRET_ACCESS_KEY=your_secret_key
 R2_BUCKET_NAME=your_bucket_name
+R2_PUBLIC_URL=your_public_url
 ```
 
-> **Note:** All tools except dead drop work without any configuration.
-
-### 3. Run Development Server
+### 3. Development
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+Visit `http://localhost:3000`
 
-## Available Scripts
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server with Turbopack |
-| `npm run build` | Create production build |
-| `npm run start` | Start production server |
-| `npm run lint` | Run ESLint |
-
-## Deployment
-
-### Vercel (Recommended)
-
-1. Push repository to GitHub
-2. Import project in Vercel dashboard
-3. Configure environment variables
-4. Deploy
-
-### Manual Deployment
+### 4. Production Build
 
 ```bash
 npm run build
-npm run start
+npm start
 ```
 
-### Pre-deployment Checklist
+## Tools Reference
 
-- [ ] Environment variables configured
-- [ ] R2 bucket created and accessible (if using dead drop)
-- [ ] CORS configured on R2 bucket
-
-## Security Considerations
-
-- All file uploads are automatically deleted after download or expiry
-- Passwords for file protection are hashed server-side
-- No user data is stored or tracked
-- All client-side processing stays in the browser
-
-## Authors
-
-- **ndycode** - [github.com/ndycode](https://github.com/ndycode)
+| Tool | Description | Dependencies |
+|------|-------------|--------------|
+| **drop** | File sharing with 6-digit codes | Cloudflare R2 |
+| **qr** | Instant QR code generation | qrcode.react |
+| **pass** | Secure password generator | - |
+| **color** | Color format converter (HEX/RGB/HSL) | - |
+| **privacy** | EXIF stripper + anti-hash + fake metadata | piexifjs, jszip |
+| **compress** | Bulk image compression | jszip |
+| **resize** | Bulk resize with presets (FHD, HD, etc) | jszip |
+| **count** | Word, character, reading time | - |
+| **case** | UPPER / lower / Title case | - |
+| **clean** | Strip whitespace and empty lines | - |
+| **emoji** | Search and copy emojis | - |
+| **convert** | PNG ↔ JPG ↔ WebP converter | - |
+| **favicon** | Emoji to .ico generator | - |
+| **hash** | MD5, SHA-256, SHA-512 hashing | - |
+| **days** | Days between dates calculator | - |
+| **erase** | AI background removal | @imgly/background-removal |
 
 ## License
 
-MIT — use it however you want.
+MIT
