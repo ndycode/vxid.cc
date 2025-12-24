@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { DownloadSimple, UploadSimple } from "@phosphor-icons/react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -199,8 +200,8 @@ export function ImageCompressor() {
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setQuality(preset.value)}
                         className={`flex-1 py-2 rounded-lg border text-xs transition-colors ${quality === preset.value
-                                ? 'border-primary bg-primary/10 text-primary'
-                                : 'border-border text-muted-foreground hover:border-primary/50'
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-border text-muted-foreground hover:border-primary/50'
                             }`}
                     >
                         {preset.label} ({preset.value}%)
@@ -227,12 +228,12 @@ export function ImageCompressor() {
 
                 <div className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">max width (px)</span>
-                    <input
+                    <Input
                         type="number"
                         placeholder="no limit"
                         value={maxWidth || ''}
                         onChange={(e) => setMaxWidth(e.target.value ? Number(e.target.value) : null)}
-                        className="w-24 bg-muted border border-border rounded px-2 py-1 text-sm text-right"
+                        className="w-24 text-right [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                 </div>
             </div>

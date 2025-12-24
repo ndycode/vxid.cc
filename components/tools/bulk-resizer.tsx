@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { DownloadSimple, UploadSimple, Link as LinkIcon, LinkBreak } from "@phosphor-icons/react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -207,8 +208,8 @@ export function BulkResizer() {
                         whileTap={{ scale: 0.95 }}
                         onClick={() => selectPreset(preset)}
                         className={`py-2 rounded-lg border text-xs transition-colors ${selectedPreset === preset.label
-                                ? 'border-primary bg-primary/10 text-primary'
-                                : 'border-border text-muted-foreground hover:border-primary/50'
+                            ? 'border-primary bg-primary/10 text-primary'
+                            : 'border-border text-muted-foreground hover:border-primary/50'
                             }`}
                     >
                         {preset.label}
@@ -220,7 +221,7 @@ export function BulkResizer() {
             <div className="flex items-center gap-2">
                 <div className="flex-1">
                     <label className="text-[10px] text-muted-foreground">width (px)</label>
-                    <input
+                    <Input
                         type="number"
                         placeholder="auto"
                         value={width || ''}
@@ -228,7 +229,7 @@ export function BulkResizer() {
                             setWidth(e.target.value ? Number(e.target.value) : null);
                             setSelectedPreset(null);
                         }}
-                        className="w-full bg-muted border border-border rounded px-2 py-1.5 text-sm"
+                        className="w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                 </div>
 
@@ -236,8 +237,8 @@ export function BulkResizer() {
                     whileTap={{ scale: 0.9 }}
                     onClick={() => setLockRatio(!lockRatio)}
                     className={`mt-4 p-2 rounded-lg border transition-colors ${lockRatio
-                            ? 'border-primary bg-primary/10 text-primary'
-                            : 'border-border text-muted-foreground'
+                        ? 'border-primary bg-primary/10 text-primary'
+                        : 'border-border text-muted-foreground'
                         }`}
                 >
                     {lockRatio ? <LinkIcon className="w-4 h-4" /> : <LinkBreak className="w-4 h-4" />}
@@ -245,7 +246,7 @@ export function BulkResizer() {
 
                 <div className="flex-1">
                     <label className="text-[10px] text-muted-foreground">height (px)</label>
-                    <input
+                    <Input
                         type="number"
                         placeholder="auto"
                         value={height || ''}
@@ -253,7 +254,7 @@ export function BulkResizer() {
                             setHeight(e.target.value ? Number(e.target.value) : null);
                             setSelectedPreset(null);
                         }}
-                        className="w-full bg-muted border border-border rounded px-2 py-1.5 text-sm"
+                        className="w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                 </div>
             </div>
