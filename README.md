@@ -34,6 +34,8 @@ vxid.cc provides instant access to commonly needed tools without friction. The a
 3. **Inline feedback** — No toast popups; all feedback appears within tool components
 4. **Compact UI** — Tools fit in single cards with collapsible advanced options
 5. **Centralized design system** — All colors and tokens in `lib/colors.ts`
+6. **Mobile-first layout** — All pages centered with `px-4 py-8` and `max-w-sm` for consistency
+7. **Unified global layout** — Every page uses `min-h-screen flex flex-col items-center justify-center`
 
 ## Project Structure
 
