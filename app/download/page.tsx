@@ -109,14 +109,14 @@ export default function DownloadPage() {
     };
 
     return (
-        <main className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+        <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 px-4 py-8">
             {/* Decorative background */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
                 <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
             </div>
 
-            <div className="relative z-10 container mx-auto px-4 py-8 max-w-2xl">
+            <div className="relative z-10 w-full max-w-md">
                 {/* Header */}
                 <div className="mb-8">
                     <Link href="/">
