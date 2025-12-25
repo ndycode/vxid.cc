@@ -126,9 +126,9 @@ export default function ShareViewerPage() {
     const label = data?.type ? TYPE_LABELS[data.type] : (shareType ? TYPE_LABELS[shareType] : "Share");
 
     return (
-        <main className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+        <main className="min-h-screen flex flex-col items-center justify-center px-4 py-8">
             <motion.div
-                className="w-full max-w-lg space-y-6"
+                className="w-full max-w-sm space-y-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}

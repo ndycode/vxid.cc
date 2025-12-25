@@ -200,9 +200,9 @@ export default function HomePage() {
                 initial={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="min-h-screen flex flex-col items-center justify-center px-6 py-12 relative overflow-visible"
+                className="min-h-screen flex flex-col items-center justify-center px-4 py-8"
             >
-                <div className="w-full max-w-xs md:max-w-sm text-center space-y-8 overflow-visible">
+                <div className="w-full max-w-sm text-center space-y-8 overflow-visible">
 
                     {/* Brand - will morph to header */}
                     <motion.div
