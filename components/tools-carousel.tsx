@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CaretLeft, CaretRight, CaretDown, Check, MagnifyingGlass } from "@phosphor-icons/react";
+import { ArrowLeft, CaretLeft, CaretRight, CaretDown, Check, MagnifyingGlass, Heart } from "@phosphor-icons/react";
 import { TOOLS } from "@/lib/tools-config";
+import { useToolPreferences } from "@/lib/tool-preferences";
 
 interface ToolsCarouselProps {
     children: React.ReactNode[];
@@ -12,11 +13,52 @@ interface ToolsCarouselProps {
     onBack?: () => void;
 }
 
+
 export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarouselProps) {
     const [currentIndex, setCurrentIndex] = useState(initialIndex);
     const [direction, setDirection] = useState(0);
     const [showMenu, setShowMenu] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const { favorites, recent, isFavorite, toggleFavorite, addRecent } = useToolPreferences();
+
+    // Track current tool as recent
+    useEffect(() => {
+        const tool = TOOLS[currentIndex];
+        if (tool) {
+            addRecent(tool.id);
+        }
+    }, [currentIndex, addRecent]);
+
+    // Keyboard shortcuts
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Esc to go back or close menu
+            if (e.key === "Escape") {
+                if (showMenu) {
+                    setShowMenu(false);
+                } else if (onBack) {
+                    onBack();
+                }
+            }
+            // Cmd/Ctrl + K to open search
+            if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+                e.preventDefault();
+                setShowMenu(true);
+            }
+            // Arrow keys to navigate (only when menu is closed)
+            if (!showMenu) {
+                if (e.key === "ArrowLeft" && currentIndex > 0) {
+                    paginate(-1);
+                }
+                if (e.key === "ArrowRight" && currentIndex < children.length - 1) {
+                    paginate(1);
+                }
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [showMenu, currentIndex, children.length, onBack]);
 
     const paginate = (newDirection: number) => {
         const newIndex = currentIndex + newDirection;
@@ -62,9 +104,20 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
             {/* Header - morphs from home page, then instant updates */}
             <motion.div
                 layoutId="page-header"
-                className="text-center mb-3 sm:mb-4 md:mb-6 max-w-sm md:max-w-md lg:max-w-lg w-full space-y-1 sm:space-y-2 mt-10 sm:mt-0 px-2"
+                className="text-center mb-3 sm:mb-4 md:mb-6 max-w-sm md:max-w-md lg:max-w-lg w-full space-y-1 sm:space-y-2 mt-10 sm:mt-0 px-2 relative"
                 transition={{ type: "spring", stiffness: 400, damping: 40 }}
             >
+                {/* Favorite button */}
+                <button
+                    onClick={() => toggleFavorite(currentTool.id)}
+                    className="absolute right-2 top-0 p-2 rounded-lg hover:bg-muted transition-colors"
+                    title={isFavorite(currentTool.id) ? "Remove from favorites" : "Add to favorites"}
+                >
+                    <Heart
+                        weight={isFavorite(currentTool.id) ? "fill" : "regular"}
+                        className={`w-5 h-5 transition-colors ${isFavorite(currentTool.id) ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
+                    />
+                </button>
                 <motion.h1
                     layoutId="page-title"
                     className="text-2xl xs:text-3xl sm:text-4xl font-bold tracking-tight break-words"
@@ -125,6 +178,7 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
                         transition={{ duration: 1.5, ease: "easeInOut", delay: 0.2 }}
                     >
                         {currentTool.name}
+                        <span className="text-[10px] text-muted-foreground/50 ml-1">({TOOLS.length})</span>
                         <CaretDown className={`w-3 h-3 transition-transform ${showMenu ? "rotate-180" : ""}`} />
                     </motion.button>
 
@@ -149,6 +203,67 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
                                     {/* Scrollable tools list */}
                                     <div className="max-h-[300px] overflow-y-auto scrollbar-hide p-2">
                                         <div className="space-y-3">
+                                            {/* Favorites Section */}
+                                            {favorites.length > 0 && searchQuery === '' && (
+                                                <div>
+                                                    <p className="text-[10px] text-muted-foreground/50 uppercase px-1 mb-1 flex items-center gap-1">
+                                                        <Heart weight="fill" className="w-2.5 h-2.5 text-primary" /> favorites
+                                                    </p>
+                                                    <div className="grid grid-cols-2 gap-1">
+                                                        {TOOLS.filter(t => favorites.includes(t.id)).map((tool) => {
+                                                            const index = TOOLS.findIndex(t => t.id === tool.id);
+                                                            const Icon = tool.icon;
+                                                            return (
+                                                                <button
+                                                                    key={`fav-${tool.id}`}
+                                                                    onClick={() => selectTool(index)}
+                                                                    className={`px-2 py-1.5 text-xs rounded-lg flex items-center gap-2 transition-colors ${index === currentIndex
+                                                                        ? "bg-primary text-primary-foreground"
+                                                                        : "hover:bg-muted text-muted-foreground"
+                                                                        }`}
+                                                                >
+                                                                    <Icon className="w-3.5 h-3.5" />
+                                                                    <span className="truncate">{tool.name}</span>
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Recent Section */}
+                                            {recent.length > 0 && searchQuery === '' && (
+                                                <div>
+                                                    <p className="text-[10px] text-muted-foreground/50 uppercase px-1 mb-1">recent</p>
+                                                    <div className="grid grid-cols-2 gap-1">
+                                                        {recent.slice(0, 6).map((toolId) => {
+                                                            const tool = TOOLS.find(t => t.id === toolId);
+                                                            if (!tool) return null;
+                                                            const index = TOOLS.findIndex(t => t.id === toolId);
+                                                            const Icon = tool.icon;
+                                                            return (
+                                                                <button
+                                                                    key={`recent-${tool.id}`}
+                                                                    onClick={() => selectTool(index)}
+                                                                    className={`px-2 py-1.5 text-xs rounded-lg flex items-center gap-2 transition-colors ${index === currentIndex
+                                                                        ? "bg-primary text-primary-foreground"
+                                                                        : "hover:bg-muted text-muted-foreground"
+                                                                        }`}
+                                                                >
+                                                                    <Icon className="w-3.5 h-3.5" />
+                                                                    <span className="truncate">{tool.name}</span>
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Divider if we have favorites or recent */}
+                                            {(favorites.length > 0 || recent.length > 0) && searchQuery === '' && (
+                                                <div className="border-t" />
+                                            )}
+
                                             {/* Checker */}
                                             {TOOLS.filter(t => t.category === 'checker' && (searchQuery === '' || t.name.toLowerCase().includes(searchQuery.toLowerCase()) || t.id.toLowerCase().includes(searchQuery.toLowerCase()))).length > 0 && (
                                                 <div>
