@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
-import { ShieldCheck, ShieldWarning, CaretDown } from "@phosphor-icons/react";
+import { ShieldCheck, ShieldWarning, CaretDown, Eye, EyeSlash } from "@phosphor-icons/react";
 
 interface PasswordAnalysis {
     score: number;
@@ -99,10 +99,11 @@ export function PasswordChecker() {
                     className="pr-16 font-mono text-sm"
                 />
                 <button
+                    type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
-                    {showPassword ? "hide" : "show"}
+                    {showPassword ? <EyeSlash className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
             </div>
 

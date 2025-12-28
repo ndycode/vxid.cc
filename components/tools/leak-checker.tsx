@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ShieldCheck, ShieldWarning, CaretDown, ArrowClockwise, Warning } from "@phosphor-icons/react";
+import { ShieldCheck, ShieldWarning, CaretDown, ArrowClockwise, Warning, Eye, EyeSlash } from "@phosphor-icons/react";
 
 type CheckType = "email" | "password";
 
@@ -15,6 +15,7 @@ export function LeakChecker() {
     const [result, setResult] = useState<{ checked: boolean; breached: boolean; count?: number } | null>(null);
     const [error, setError] = useState("");
     const [showOptions, setShowOptions] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const check = async () => {
         if (!input) return;
@@ -95,8 +96,8 @@ export function LeakChecker() {
                 <button
                     onClick={() => { setCheckType("email"); setResult(null); setInput(""); }}
                     className={`flex-1 py-2 text-sm rounded-lg transition-colors ${checkType === "email"
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted/50 text-muted-foreground hover:text-foreground"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted/50 text-muted-foreground hover:text-foreground"
                         }`}
                 >
                     Email
@@ -104,8 +105,8 @@ export function LeakChecker() {
                 <button
                     onClick={() => { setCheckType("password"); setResult(null); setInput(""); }}
                     className={`flex-1 py-2 text-sm rounded-lg transition-colors ${checkType === "password"
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted/50 text-muted-foreground hover:text-foreground"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted/50 text-muted-foreground hover:text-foreground"
                         }`}
                 >
                     Password
@@ -114,14 +115,25 @@ export function LeakChecker() {
 
             {/* Input */}
             <div className="flex gap-2">
-                <Input
-                    type={checkType === "password" ? "password" : "email"}
-                    placeholder={checkType === "email" ? "email@example.com" : "Enter password"}
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && check()}
-                    className="flex-1 text-sm"
-                />
+                <div className="relative flex-1">
+                    <Input
+                        type={checkType === "password" ? (showPassword ? "text" : "password") : "email"}
+                        placeholder={checkType === "email" ? "email@example.com" : "Enter password"}
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && check()}
+                        className="text-sm pr-10"
+                    />
+                    {checkType === "password" && (
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                            {showPassword ? <EyeSlash className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                    )}
+                </div>
                 <Button onClick={check} disabled={loading || !input} size="sm">
                     {loading ? <ArrowClockwise className="w-4 h-4 animate-spin" /> : "Check"}
                 </Button>

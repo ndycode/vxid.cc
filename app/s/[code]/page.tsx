@@ -16,7 +16,9 @@ import {
     Code,
     Table,
     Fire,
-    DownloadSimple
+    DownloadSimple,
+    Eye,
+    EyeSlash
 } from "@phosphor-icons/react";
 import { ShareType } from "@/lib/share-types";
 
@@ -64,6 +66,7 @@ export default function ShareViewerPage() {
     const [needsPassword, setNeedsPassword] = useState(false);
     const [copied, setCopied] = useState(false);
     const [shareType, setShareType] = useState<ShareType | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
 
     const fetchShare = async (pwd?: string) => {
         setLoading(true);
@@ -165,13 +168,22 @@ export default function ShareViewerPage() {
                                 <Lock weight="duotone" className="w-12 h-12 text-primary mx-auto" />
                                 <p className="font-medium">This share is password protected</p>
                             </div>
-                            <Input
-                                type="password"
-                                placeholder="Enter password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="text-center"
-                            />
+                            <div className="relative">
+                                <Input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Enter password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="text-center pr-10"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                >
+                                    {showPassword ? <EyeSlash className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                </button>
+                            </div>
                             <Button type="submit" className="w-full" disabled={!password}>
                                 Unlock
                             </Button>

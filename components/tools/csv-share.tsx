@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Copy, Check, Table, CaretDown, Lock } from "@phosphor-icons/react";
+import { Copy, Check, Table, CaretDown, Lock, Eye, EyeSlash } from "@phosphor-icons/react";
 import { Input } from "@/components/ui/input";
 import { EXPIRY_OPTIONS } from "@/lib/share-types";
 
@@ -16,6 +16,7 @@ export function CsvShare() {
     const [result, setResult] = useState<{ code: string; url: string } | null>(null);
     const [copied, setCopied] = useState(false);
     const [error, setError] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
     // Parse CSV for preview
     const rows = content.split('\n').filter(Boolean).slice(0, 5);
@@ -163,13 +164,22 @@ export function CsvShare() {
                                     <p className="text-xs text-muted-foreground flex items-center gap-1">
                                         <Lock className="w-3 h-3" /> password
                                     </p>
-                                    <Input
-                                        type="password"
-                                        placeholder="Optional"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className="h-8 text-sm"
-                                    />
+                                    <div className="relative">
+                                        <Input
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="Optional"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            className="h-8 text-sm pr-10"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                        >
+                                            {showPassword ? <EyeSlash className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                        </button>
+                                    </div>
                                 </div>
                             </motion.div>
                         )}
