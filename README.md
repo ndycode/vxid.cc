@@ -33,9 +33,10 @@ vxid.cc provides instant access to commonly needed tools without friction. The a
 2. **Dark mode first** — Designed for dark mode with optional light theme
 3. **Inline feedback** — No toast popups; all feedback appears within tool components
 4. **Compact UI** — Tools fit in single cards with collapsible advanced options
-5. **Centralized design system** — All colors and tokens in `lib/colors.ts`
-6. **Mobile-first layout** — All pages centered with `px-4 py-8` and `max-w-sm` for consistency
-7. **Unified global layout** — Every page uses `min-h-screen flex flex-col items-center justify-center`
+5. **Semantic color system** — Theme-aware colors (`--warning`, `--success`) in `globals.css`
+6. **Mobile-first layout** — Responsive padding (`p-3 sm:p-4`) and `max-w-sm` containers
+7. **Hydration-safe** — All browser APIs called in `useEffect` to prevent SSR mismatches
+8. **Unified global layout** — Every page uses `min-h-screen flex flex-col items-center justify-center`
 
 ## Project Structure
 
