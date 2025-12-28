@@ -61,20 +61,20 @@ export function MacGen() {
 
     return (
         <motion.div
-            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3"
+            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
         >
             {/* Format selector */}
-            <div className="flex gap-1 overflow-x-auto pb-1">
+            <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide">
                 {FORMATS.map((f) => (
                     <button
                         key={f.id}
                         onClick={() => setFormat(f.id)}
-                        className={`px-2.5 py-1 text-xs rounded-lg whitespace-nowrap transition-colors ${format === f.id
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-muted text-muted-foreground hover:bg-muted/80"
+                        className={`px-2.5 py-1.5 text-xs rounded-lg whitespace-nowrap transition-colors min-h-[32px] ${format === f.id
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground hover:bg-muted/80"
                             }`}
                     >
                         {f.label}
@@ -83,24 +83,24 @@ export function MacGen() {
             </div>
 
             {/* Generated MACs */}
-            <div className="space-y-1.5 max-h-32 overflow-y-auto">
+            <div className="space-y-1.5 max-h-36 overflow-y-auto scrollbar-hide">
                 {macs.map((mac, i) => (
                     <motion.div
                         key={`${mac}-${i}`}
-                        className="flex items-center gap-2 p-2 bg-muted/30 rounded-lg group"
+                        className="flex items-center gap-2 p-2.5 bg-muted/30 rounded-lg group min-h-[44px]"
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: i * 0.03 }}
                     >
-                        <span className="flex-1 font-mono text-sm">{mac}</span>
+                        <span className="flex-1 font-mono text-sm break-all min-w-0">{mac}</span>
                         <button
                             onClick={() => copyItem(mac)}
-                            className="p-1 opacity-0 group-hover:opacity-100 hover:bg-muted rounded transition-all"
+                            className="p-2 sm:opacity-0 sm:group-hover:opacity-100 hover:bg-muted rounded transition-all shrink-0"
                         >
                             {copied === mac ? (
-                                <Check className="w-3 h-3 text-primary" />
+                                <Check className="w-4 h-4 text-primary" />
                             ) : (
-                                <Copy className="w-3 h-3 text-muted-foreground" />
+                                <Copy className="w-4 h-4 text-muted-foreground" />
                             )}
                         </button>
                     </motion.div>
@@ -110,7 +110,7 @@ export function MacGen() {
             {/* Generate button */}
             <motion.button
                 onClick={generate}
-                className="w-full py-2.5 bg-primary text-primary-foreground rounded-lg flex items-center justify-center gap-2 text-sm font-medium"
+                className="w-full py-3 bg-primary text-primary-foreground rounded-lg flex items-center justify-center gap-2 text-sm font-medium min-h-[44px]"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
             >
@@ -119,17 +119,17 @@ export function MacGen() {
             </motion.button>
 
             {/* Options */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                 <button
                     onClick={() => setLowercase(!lowercase)}
-                    className={`px-2.5 py-1.5 text-xs rounded-lg transition-colors ${lowercase
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-muted-foreground hover:bg-muted/80"
+                    className={`px-3 py-2 text-xs rounded-lg transition-colors min-h-[36px] ${lowercase
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80"
                         }`}
                 >
                     lowercase
                 </button>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                     <span className="text-xs text-muted-foreground">count</span>
                     <input
                         type="range"
@@ -137,9 +137,9 @@ export function MacGen() {
                         max={10}
                         value={count}
                         onChange={(e) => setCount(Number(e.target.value))}
-                        className="w-20 accent-primary"
+                        className="flex-1 sm:w-24 accent-primary h-6"
                     />
-                    <span className="text-xs w-6 text-center">{count}</span>
+                    <span className="text-xs w-6 text-center font-medium">{count}</span>
                 </div>
             </div>
 

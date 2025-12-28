@@ -117,7 +117,7 @@ export function HashGen() {
 
     return (
         <motion.div
-            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3"
+            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
         >

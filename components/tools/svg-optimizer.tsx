@@ -145,7 +145,7 @@ export function SvgOptimizer() {
     ];
 
     return (
-        <motion.div className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+        <motion.div className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <input ref={fileInputRef} type="file" accept=".svg" onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} className="hidden" />
 
             {/* Dropzone / Preview */}

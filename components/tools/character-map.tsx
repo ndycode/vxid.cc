@@ -57,7 +57,7 @@ export function CharacterMap() {
 
     return (
         <motion.div
-            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3"
+            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
@@ -72,12 +72,12 @@ export function CharacterMap() {
             />
 
             {/* Category tabs */}
-            <div className="flex gap-1 overflow-x-auto pb-1">
+            <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide">
                 {categories.map((cat) => (
                     <button
                         key={cat.id}
                         onClick={() => { setCategory(cat.id); setSearch(""); }}
-                        className={`px-2.5 py-1 text-xs rounded-lg whitespace-nowrap transition-colors ${category === cat.id && !search
+                        className={`px-2.5 py-1.5 text-xs rounded-lg whitespace-nowrap transition-colors min-h-[32px] ${category === cat.id && !search
                             ? "bg-primary text-primary-foreground"
                             : "bg-muted text-muted-foreground hover:bg-muted/80"
                             }`}
@@ -88,12 +88,12 @@ export function CharacterMap() {
             </div>
 
             {/* Character grid */}
-            <div className="grid grid-cols-8 gap-1 max-h-48 overflow-y-auto">
+            <div className="grid grid-cols-6 sm:grid-cols-8 gap-1.5 max-h-52 overflow-y-auto scrollbar-hide">
                 {filteredChars.map((char, i) => (
                     <motion.button
                         key={`${char}-${i}`}
                         onClick={() => copyChar(char)}
-                        className={`aspect-square flex items-center justify-center text-lg rounded-lg transition-all ${copied === char
+                        className={`aspect-square flex items-center justify-center text-base sm:text-lg rounded-lg transition-all min-h-[40px] min-w-[40px] ${copied === char
                             ? "bg-primary text-primary-foreground scale-110"
                             : "bg-muted hover:bg-muted/80 hover:scale-105"
                             }`}

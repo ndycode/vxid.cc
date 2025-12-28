@@ -73,20 +73,20 @@ export function IbanGen() {
 
     return (
         <motion.div
-            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3"
+            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
         >
             {/* Country selector */}
-            <div className="flex gap-1 overflow-x-auto pb-1">
+            <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide">
                 {COUNTRY_CODES.map((c) => (
                     <button
                         key={c.code}
                         onClick={() => setCountry(c)}
-                        className={`px-2.5 py-1 text-xs rounded-lg whitespace-nowrap transition-colors ${country.code === c.code
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-muted text-muted-foreground hover:bg-muted/80"
+                        className={`px-2.5 py-1.5 text-xs rounded-lg whitespace-nowrap transition-colors min-h-[32px] ${country.code === c.code
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground hover:bg-muted/80"
                             }`}
                     >
                         {c.label}
@@ -95,24 +95,24 @@ export function IbanGen() {
             </div>
 
             {/* Generated IBANs */}
-            <div className="space-y-1.5 max-h-28 overflow-y-auto">
+            <div className="space-y-1.5 max-h-32 overflow-y-auto scrollbar-hide">
                 {ibans.map((iban, i) => (
                     <motion.div
                         key={`${iban}-${i}`}
-                        className="flex items-center gap-2 p-2 bg-muted/30 rounded-lg group"
+                        className="flex items-center gap-2 p-2.5 bg-muted/30 rounded-lg group min-h-[44px]"
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: i * 0.03 }}
                     >
-                        <span className="flex-1 font-mono text-xs tracking-wide">{formatIBAN(iban)}</span>
+                        <span className="flex-1 font-mono text-[11px] sm:text-xs tracking-wide break-all leading-relaxed min-w-0">{formatIBAN(iban)}</span>
                         <button
                             onClick={() => copyItem(iban)}
-                            className="p-1 opacity-0 group-hover:opacity-100 hover:bg-muted rounded transition-all"
+                            className="p-2 sm:opacity-0 sm:group-hover:opacity-100 hover:bg-muted rounded transition-all shrink-0"
                         >
                             {copied === iban ? (
-                                <Check className="w-3 h-3 text-primary" />
+                                <Check className="w-4 h-4 text-primary" />
                             ) : (
-                                <Copy className="w-3 h-3 text-muted-foreground" />
+                                <Copy className="w-4 h-4 text-muted-foreground" />
                             )}
                         </button>
                     </motion.div>
@@ -122,7 +122,7 @@ export function IbanGen() {
             {/* Generate button */}
             <motion.button
                 onClick={generate}
-                className="w-full py-2.5 bg-primary text-primary-foreground rounded-lg flex items-center justify-center gap-2 text-sm font-medium"
+                className="w-full py-3 bg-primary text-primary-foreground rounded-lg flex items-center justify-center gap-2 text-sm font-medium min-h-[44px]"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
             >

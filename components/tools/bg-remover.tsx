@@ -83,6 +83,8 @@ export function BackgroundRemover() {
         if (inputRef.current) inputRef.current.value = "";
     };
 
+    const hasImage = !!image;
+
     return (
         <motion.div
             className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4"
@@ -98,130 +100,132 @@ export function BackgroundRemover() {
                 className="hidden"
             />
 
-            {/* Upload area or preview */}
-            <AnimatePresence mode="wait">
-                {!image ? (
-                    <motion.div
-                        key="upload"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={() => inputRef.current?.click()}
-                        className="border-2 border-dashed rounded-xl p-4 min-h-[100px] text-center cursor-pointer hover:border-primary/50 hover:bg-muted/30 transition-colors flex flex-col items-center justify-center"
+            {/* Before/After comparison - Always visible */}
+            <div className="grid grid-cols-2 gap-2">
+                {/* Before */}
+                <div className="relative">
+                    <p className="text-xs text-muted-foreground mb-1">before</p>
+                    <div
+                        onClick={() => !hasImage && inputRef.current?.click()}
+                        className={`w-full aspect-square rounded-lg overflow-hidden ${hasImage
+                                ? "bg-muted/30"
+                                : "border-2 border-dashed border-muted-foreground/25 hover:border-primary/50 cursor-pointer flex items-center justify-center"
+                            }`}
                     >
-                        <UploadSimple className="w-5 h-5 text-muted-foreground mb-1" />
-                        <p className="text-xs text-muted-foreground">tap to upload image</p>
-                        <p className="text-xs text-muted-foreground/60 mt-1">png, jpg, webp</p>
-                    </motion.div>
-                ) : (
-                    <motion.div
-                        key="preview"
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="space-y-3"
-                    >
-                        {/* Before/After comparison */}
-                        <div className="grid grid-cols-2 gap-2">
-                            <div className="relative">
-                                <p className="text-xs text-muted-foreground mb-1">before</p>
-                                <motion.img
-                                    src={image}
-                                    alt="Original"
-                                    className="w-full aspect-square object-contain bg-muted/30 rounded-lg"
-                                    initial={{ scale: 0.9 }}
-                                    animate={{ scale: 1 }}
-                                />
+                        {hasImage ? (
+                            <motion.img
+                                src={image}
+                                alt="Original"
+                                className="w-full h-full object-contain"
+                                initial={{ scale: 0.9 }}
+                                animate={{ scale: 1 }}
+                            />
+                        ) : (
+                            <div className="text-center p-2">
+                                <UploadSimple className="w-6 h-6 mx-auto text-muted-foreground mb-1" />
+                                <p className="text-xs text-muted-foreground">upload</p>
                             </div>
-                            <div className="relative">
-                                <p className="text-xs text-muted-foreground mb-1">after</p>
-                                <div
-                                    className="w-full aspect-square rounded-lg flex items-center justify-center overflow-hidden"
-                                    style={{
-                                        background: result
-                                            ? `repeating-conic-gradient(${CANVAS_COLORS.transparencyChecker} 0% 25%, transparent 0% 50%) 50% / 16px 16px`
-                                            : undefined
-                                    }}
-                                >
-                                    {loading ? (
-                                        <motion.div
-                                            className="text-center"
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                        >
-                                            <Spinner className="w-6 h-6 mx-auto animate-spin text-primary" />
-                                            <p className="text-xs text-muted-foreground mt-2">{progress}%</p>
-                                        </motion.div>
-                                    ) : result ? (
-                                        <motion.img
-                                            src={result}
-                                            alt="Result"
-                                            className="w-full h-full object-contain"
-                                            initial={{ scale: 0.9, opacity: 0 }}
-                                            animate={{ scale: 1, opacity: 1 }}
-                                            transition={{ duration: 0.3 }}
-                                        />
-                                    ) : (
-                                        <div className="bg-muted/50 w-full h-full rounded-lg flex items-center justify-center">
-                                            <p className="text-xs text-muted-foreground">processing...</p>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
+                        )}
+                    </div>
+                </div>
 
-                        {/* Progress bar with status */}
-                        {loading && (
+                {/* After */}
+                <div className="relative">
+                    <p className="text-xs text-muted-foreground mb-1">after</p>
+                    <div
+                        className={`w-full aspect-square rounded-lg flex items-center justify-center overflow-hidden ${hasImage ? "" : "bg-muted/30"
+                            }`}
+                        style={{
+                            background: result
+                                ? `repeating-conic-gradient(${CANVAS_COLORS.transparencyChecker} 0% 25%, transparent 0% 50%) 50% / 16px 16px`
+                                : hasImage ? undefined : undefined
+                        }}
+                    >
+                        {loading ? (
                             <motion.div
-                                className="space-y-1"
+                                className="text-center"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                             >
-                                <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                                    <motion.div
-                                        className="h-full bg-primary"
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${progress}%` }}
-                                        transition={{ duration: 0.3 }}
-                                    />
-                                </div>
-                                <p className="text-xs text-muted-foreground/70 text-center">{status}</p>
+                                <Spinner className="w-6 h-6 mx-auto animate-spin text-primary" />
+                                <p className="text-xs text-muted-foreground mt-2">{progress}%</p>
                             </motion.div>
+                        ) : result ? (
+                            <motion.img
+                                src={result}
+                                alt="Result"
+                                className="w-full h-full object-contain"
+                                initial={{ scale: 0.9, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{ duration: 0.3 }}
+                            />
+                        ) : (
+                            <div className={`w-full h-full flex items-center justify-center ${hasImage ? "bg-muted/50" : ""}`}>
+                                <p className="text-xs text-muted-foreground/60">
+                                    {hasImage ? "processing..." : "result"}
+                                </p>
+                            </div>
                         )}
+                    </div>
+                </div>
+            </div>
 
-                        {/* Error */}
-                        {error && (
-                            <motion.p
-                                className="text-sm text-destructive text-center"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                            >
-                                {error}
-                            </motion.p>
-                        )}
-
-                        {/* Actions */}
-                        <div className="flex gap-2">
-                            <Button
-                                variant="outline"
-                                onClick={reset}
-                                className="flex-1 gap-2"
-                            >
-                                <Trash className="w-4 h-4" />
-                                Reset
-                            </Button>
-                            <Button
-                                onClick={download}
-                                disabled={!result}
-                                className="flex-1 gap-2"
-                            >
-                                <DownloadSimple className="w-4 h-4" />
-                                Download
-                            </Button>
+            {/* Progress bar with status */}
+            <AnimatePresence>
+                {loading && (
+                    <motion.div
+                        className="space-y-1"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                    >
+                        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                            <motion.div
+                                className="h-full bg-primary"
+                                initial={{ width: 0 }}
+                                animate={{ width: `${progress}%` }}
+                                transition={{ duration: 0.3 }}
+                            />
                         </div>
+                        <p className="text-xs text-muted-foreground/70 text-center">{status}</p>
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Error */}
+            <AnimatePresence>
+                {error && (
+                    <motion.p
+                        className="text-sm text-destructive text-center"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        {error}
+                    </motion.p>
+                )}
+            </AnimatePresence>
+
+            {/* Actions - Always visible */}
+            <div className={`flex gap-2 ${!hasImage ? "opacity-50 pointer-events-none" : ""}`}>
+                <Button
+                    variant="outline"
+                    onClick={reset}
+                    disabled={!hasImage}
+                    className="flex-1 gap-2 min-h-[44px]"
+                >
+                    <Trash className="w-4 h-4" />
+                    Reset
+                </Button>
+                <Button
+                    onClick={download}
+                    disabled={!result}
+                    className="flex-1 gap-2 min-h-[44px]"
+                >
+                    <DownloadSimple className="w-4 h-4" />
+                    Download
+                </Button>
+            </div>
 
             {/* Info */}
             <p className="text-xs text-muted-foreground/60 text-center">

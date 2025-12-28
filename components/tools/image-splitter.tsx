@@ -109,7 +109,7 @@ export function ImageSplitter() {
     const transition = { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] as const };
 
     return (
-        <motion.div className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+        <motion.div className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <canvas ref={canvasRef} className="hidden" />
             <input ref={fileInputRef} type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} className="hidden" />
 

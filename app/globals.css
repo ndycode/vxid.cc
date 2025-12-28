@@ -5,6 +5,9 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* Custom xs breakpoint for extra-small screens */
+  --breakpoint-xs: 375px;
+
   --font-sans: var(--font-jetbrains-mono);
   --font-mono: var(--font-jetbrains-mono);
 
@@ -36,6 +39,12 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
 
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -61,6 +70,48 @@
   }
 }
 
+/* iOS Safe Area Insets Support */
+:root {
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --safe-area-inset-right: env(safe-area-inset-right, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-inset-left: env(safe-area-inset-left, 0px);
+}
+
+/* Safe area padding utilities */
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-left {
+  padding-left: env(safe-area-inset-left, 0px);
+}
+
+.safe-right {
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+.safe-x {
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+.safe-y {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-all {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+}
+
 /* Light Mode - Maia Style with Pink Theme */
 :root {
   --background: oklch(0.995 0 0);
@@ -79,6 +130,11 @@
   --accent-foreground: oklch(0.2 0.02 285);
   --destructive: oklch(0.55 0.22 25);
   --destructive-foreground: oklch(0.98 0 0);
+  /* Semantic status colors */
+  --warning: oklch(0.75 0.18 85);
+  --warning-foreground: oklch(0.25 0.05 85);
+  --success: oklch(0.65 0.2 145);
+  --success-foreground: oklch(0.98 0 0);
   --border: oklch(0.91 0.005 285);
   --input: oklch(0.91 0.005 285);
   --ring: oklch(0.65 0.24 350);
@@ -99,39 +155,45 @@
 }
 
 /* Dark Mode - Maia Style with Pink Theme */
+/* Enhanced contrast for excellent readability */
 .dark {
   --background: oklch(0.12 0.015 285);
-  --foreground: oklch(0.95 0 0);
-  --card: oklch(0.15 0.015 285);
-  --card-foreground: oklch(0.95 0 0);
-  --popover: oklch(0.15 0.015 285);
-  --popover-foreground: oklch(0.95 0 0);
-  --primary: oklch(0.72 0.22 350);
-  --primary-foreground: oklch(0.12 0.015 285);
-  --secondary: oklch(0.22 0.015 285);
-  --secondary-foreground: oklch(0.95 0 0);
-  --muted: oklch(0.22 0.015 285);
-  --muted-foreground: oklch(0.65 0.01 285);
-  --accent: oklch(0.25 0.04 350);
-  --accent-foreground: oklch(0.95 0 0);
-  --destructive: oklch(0.45 0.2 25);
-  --destructive-foreground: oklch(0.95 0 0);
-  --border: oklch(0.25 0.015 285);
-  --input: oklch(0.25 0.015 285);
-  --ring: oklch(0.72 0.22 350);
-  --chart-1: oklch(0.72 0.22 350);
-  --chart-2: oklch(0.65 0.15 200);
-  --chart-3: oklch(0.6 0.12 150);
-  --chart-4: oklch(0.75 0.18 80);
-  --chart-5: oklch(0.65 0.2 280);
+  --foreground: oklch(0.96 0 0);
+  --card: oklch(0.16 0.015 285);
+  --card-foreground: oklch(0.96 0 0);
+  --popover: oklch(0.16 0.015 285);
+  --popover-foreground: oklch(0.96 0 0);
+  --primary: oklch(0.74 0.22 350);
+  --primary-foreground: oklch(0.10 0.015 285);
+  --secondary: oklch(0.24 0.015 285);
+  --secondary-foreground: oklch(0.92 0 0);
+  --muted: oklch(0.24 0.015 285);
+  --muted-foreground: oklch(0.72 0.01 285);
+  --accent: oklch(0.28 0.04 350);
+  --accent-foreground: oklch(0.96 0 0);
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(0.96 0 0);
+  /* Semantic status colors */
+  --warning: oklch(0.78 0.16 80);
+  --warning-foreground: oklch(0.20 0.05 80);
+  --success: oklch(0.70 0.18 145);
+  --success-foreground: oklch(0.12 0.02 145);
+  --border: oklch(0.30 0.018 285);
+  --input: oklch(0.28 0.015 285);
+  --ring: oklch(0.74 0.22 350);
+  --chart-1: oklch(0.74 0.22 350);
+  --chart-2: oklch(0.68 0.15 200);
+  --chart-3: oklch(0.65 0.12 150);
+  --chart-4: oklch(0.78 0.18 80);
+  --chart-5: oklch(0.68 0.2 280);
   --sidebar: oklch(0.14 0.015 285);
-  --sidebar-foreground: oklch(0.95 0 0);
-  --sidebar-primary: oklch(0.72 0.22 350);
-  --sidebar-primary-foreground: oklch(0.12 0.015 285);
-  --sidebar-accent: oklch(0.25 0.04 350);
-  --sidebar-accent-foreground: oklch(0.95 0 0);
-  --sidebar-border: oklch(0.25 0.015 285);
-  --sidebar-ring: oklch(0.72 0.22 350);
+  --sidebar-foreground: oklch(0.96 0 0);
+  --sidebar-primary: oklch(0.74 0.22 350);
+  --sidebar-primary-foreground: oklch(0.10 0.015 285);
+  --sidebar-accent: oklch(0.28 0.04 350);
+  --sidebar-accent-foreground: oklch(0.96 0 0);
+  --sidebar-border: oklch(0.30 0.018 285);
+  --sidebar-ring: oklch(0.74 0.22 350);
 }
 
 @layer base {
@@ -381,5 +443,197 @@ input[type="range"]::-moz-range-thumb {
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* ============================================
+   RESPONSIVE TEXT SCALING UTILITIES
+   Ensures text scales properly and never clips
+   ============================================ */
+
+/* Fluid typography base - scales between viewport widths */
+@layer utilities {
+
+  /* Prevent text from clipping - safe word breaking */
+  .text-wrap-safe {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+  }
+
+  /* Force text to truncate with ellipsis */
+  .text-truncate-safe {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  /* Multi-line text truncation */
+  .text-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .text-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Fluid heading sizes - scale smoothly between breakpoints */
+  .text-fluid-xs {
+    font-size: clamp(0.625rem, 0.55rem + 0.25vw, 0.75rem);
+  }
+
+  .text-fluid-sm {
+    font-size: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  }
+
+  .text-fluid-base {
+    font-size: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+  }
+
+  .text-fluid-lg {
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+  }
+
+  .text-fluid-xl {
+    font-size: clamp(1.125rem, 1rem + 0.6vw, 1.25rem);
+  }
+
+  .text-fluid-2xl {
+    font-size: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+  }
+
+  .text-fluid-3xl {
+    font-size: clamp(1.5rem, 1.25rem + 1.25vw, 1.875rem);
+  }
+
+  .text-fluid-4xl {
+    font-size: clamp(1.875rem, 1.5rem + 1.5vw, 2.25rem);
+  }
+
+  /* Minimum font size to ensure readability */
+  .text-min-readable {
+    font-size: max(0.75rem, 12px);
+  }
+}
+
+/* Responsive text adjustments for very small screens */
+@media (max-width: 360px) {
+
+  /* Scale down font sizes on very small devices */
+  html {
+    font-size: 14px;
+  }
+
+  /* Ensure buttons don't clip text */
+  button,
+  .btn,
+  [role="button"] {
+    min-height: 2.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  /* Break long words in small containers */
+  p,
+  span,
+  label,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+}
+
+/* Small mobile (320-480px) */
+@media (min-width: 320px) and (max-width: 480px) {
+
+  /* Slightly smaller base for small phones */
+  html {
+    font-size: 15px;
+  }
+}
+
+/* Standard mobile (481-640px) */
+@media (min-width: 481px) and (max-width: 640px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+/* Prevent horizontal overflow from long text */
+@layer base {
+
+  /* Ensure no text overflow causes horizontal scroll */
+  body {
+    overflow-wrap: break-word;
+  }
+
+  /* Safe defaults for all text elements */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  span,
+  a,
+  label {
+    max-width: 100%;
+  }
+
+  /* Monospace text handling (code, MAC addresses, etc.) */
+  code,
+  pre,
+  .font-mono,
+  [class*="font-mono"] {
+    overflow-wrap: break-word;
+    word-break: break-all;
+  }
+
+  /* Input text should not overflow */
+  input,
+  textarea {
+    min-width: 0;
+  }
+}
+
+/* Button text scaling - ensure text doesn't get cut off */
+@media (max-width: 640px) {
+
+  button,
+  .btn,
+  [role="button"] {
+    /* Allow button text to wrap if needed on mobile */
+    white-space: normal;
+    line-height: 1.3;
+    min-height: 2.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  /* Except for icon-only buttons */
+  button:has(svg:only-child),
+  [role="button"]:has(svg:only-child) {
+    white-space: nowrap;
+    padding: 0;
+    min-height: auto;
   }
 }

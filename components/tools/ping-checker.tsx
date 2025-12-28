@@ -110,7 +110,7 @@ export function PingChecker() {
                             {result.status === "online" ? (
                                 <WifiHigh className="w-6 h-6 text-primary" />
                             ) : result.status === "slow" ? (
-                                <WifiHigh className="w-6 h-6 text-yellow-500" />
+                                <WifiHigh className="w-6 h-6 text-warning" />
                             ) : (
                                 <WifiSlash className="w-6 h-6 text-destructive" />
                             )}
@@ -130,7 +130,7 @@ export function PingChecker() {
                             </div>
                             <div className="bg-muted/30 rounded-lg p-2">
                                 <p className="text-xs text-muted-foreground">status</p>
-                                <p className={`font-medium ${result.status === "online" ? "text-primary" : "text-yellow-500"
+                                <p className={`font-medium ${result.status === "online" ? "text-primary" : "text-warning"
                                     }`}>
                                     {result.status}
                                 </p>

@@ -79,7 +79,7 @@ export function Pastebin() {
                         </div>
                     </div>
                     <div className="bg-muted/50 p-3 rounded-lg text-center">
-                        <p className="text-lg font-mono font-bold">{result.code}</p>
+                        <p className="text-base sm:text-lg font-mono font-bold break-all">{result.code}</p>
                     </div>
                     <div className="flex gap-2">
                         <Button onClick={copy} variant="outline" className="flex-1 gap-1.5">

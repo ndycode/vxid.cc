@@ -60,19 +60,19 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
             {/* Header - morphs from home page, then instant updates */}
             <motion.div
                 layoutId="page-header"
-                className="text-center mb-3 sm:mb-4 md:mb-6 max-w-sm md:max-w-md lg:max-w-lg w-full space-y-1 sm:space-y-2 mt-10 sm:mt-0"
+                className="text-center mb-3 sm:mb-4 md:mb-6 max-w-sm md:max-w-md lg:max-w-lg w-full space-y-1 sm:space-y-2 mt-10 sm:mt-0 px-2"
                 transition={{ type: "spring", stiffness: 400, damping: 40 }}
             >
                 <motion.h1
                     layoutId="page-title"
-                    className="text-3xl sm:text-4xl font-bold tracking-tight"
+                    className="text-2xl xs:text-3xl sm:text-4xl font-bold tracking-tight break-words"
                     transition={{ type: "spring", stiffness: 400, damping: 40 }}
                 >
                     {currentTool.name}
                 </motion.h1>
                 <motion.p
                     layoutId="page-subtitle"
-                    className="text-muted-foreground text-xs sm:text-sm"
+                    className="text-muted-foreground text-xs sm:text-sm break-words px-1"
                     transition={{ type: "spring", stiffness: 400, damping: 40 }}
                 >
                     {currentTool.tagline}
@@ -80,7 +80,7 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
             </motion.div>
 
             {/* Content with inline arrows */}
-            <div className="flex items-center gap-1 sm:gap-2 md:gap-6 w-full max-w-sm md:max-w-xl lg:max-w-2xl">
+            <div className="flex items-center gap-1 sm:gap-2 md:gap-4 w-full max-w-[95vw] sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl">
                 {/* Left arrow - visible on all screens with larger tap target on mobile */}
                 <button
                     onClick={() => paginate(-1)}
@@ -91,7 +91,7 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
                 </button>
 
                 {/* Tool content */}
-                <div className="w-full max-w-sm md:max-w-md lg:max-w-lg relative mx-auto">
+                <div className="w-full flex-1 min-w-0 relative mx-auto">
                     {children[currentIndex]}
                 </div>
 
@@ -116,10 +116,8 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
                 <div className="relative">
                     <motion.button
                         onClick={() => setShowMenu(!showMenu)}
-                        className="text-sm hover:text-foreground transition-all flex items-center gap-1 px-3 py-1.5 rounded-lg"
-                        style={{ color: "#a1a1aa" }}
+                        className="text-sm text-muted-foreground hover:text-foreground transition-all flex items-center gap-1 px-3 py-1.5 rounded-lg"
                         animate={{
-                            color: ["#a1a1aa", "#ec4899", "#a1a1aa", "#ec4899", "#a1a1aa"],
                             opacity: [0.6, 1, 0.6, 1, 1]
                         }}
                         transition={{ duration: 1.5, ease: "easeInOut", delay: 0.2 }}

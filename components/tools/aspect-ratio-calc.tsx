@@ -70,7 +70,7 @@ export function AspectRatioCalc() {
     const transition = { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] as const };
 
     return (
-        <motion.div className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+        <motion.div className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             {/* Ratio presets */}
             <div className="space-y-1">
                 <p className="text-xs text-muted-foreground">ratio</p>

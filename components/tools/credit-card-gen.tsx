@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Copy, Check, ArrowClockwise } from "@phosphor-icons/react";
 
@@ -135,11 +135,11 @@ export function CreditCardGen() {
     };
 
     // Generate on mount
-    useState(() => { generate(); });
+    useEffect(() => { generate(); }, []);
 
     return (
         <motion.div
-            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3"
+            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
@@ -178,30 +178,30 @@ export function CreditCardGen() {
                         className="w-full text-left group"
                     >
                         <p className="text-xs text-muted-foreground mb-1">card number</p>
-                        <p className="font-mono text-lg tracking-wider group-hover:text-primary transition-colors">
+                        <p className="font-mono text-sm sm:text-lg tracking-wider group-hover:text-primary transition-colors break-all leading-relaxed">
                             {formatCardNumber(card.number)}
                         </p>
                     </button>
 
                     {/* Expiry, CVV, Name */}
-                    <div className="grid grid-cols-3 gap-3 mt-4">
+                    <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-4">
                         <button
                             onClick={() => copyField(card.expiry, "expiry")}
-                            className="text-left group"
+                            className="text-left group min-w-0"
                         >
                             <p className="text-xs text-muted-foreground">expiry</p>
                             <p className="font-mono text-sm group-hover:text-primary transition-colors">{card.expiry}</p>
                         </button>
                         <button
                             onClick={() => copyField(card.cvv, "cvv")}
-                            className="text-left group"
+                            className="text-left group min-w-0"
                         >
                             <p className="text-xs text-muted-foreground">cvv</p>
                             <p className="font-mono text-sm group-hover:text-primary transition-colors">{card.cvv}</p>
                         </button>
                         <button
                             onClick={() => copyField(card.name, "name")}
-                            className="text-left group"
+                            className="text-left group min-w-0"
                         >
                             <p className="text-xs text-muted-foreground">name</p>
                             <p className="font-mono text-xs group-hover:text-primary transition-colors truncate">{card.name}</p>

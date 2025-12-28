@@ -60,7 +60,7 @@ export function UuidGenerator() {
 
     return (
         <motion.div
-            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3"
+            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
@@ -112,8 +112,8 @@ export function UuidGenerator() {
                 <button
                     onClick={() => setUppercase(!uppercase)}
                     className={`px-2.5 py-1.5 text-xs rounded-lg transition-colors ${uppercase
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-muted-foreground hover:bg-muted/80"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80"
                         }`}
                 >
                     UPPERCASE
@@ -121,8 +121,8 @@ export function UuidGenerator() {
                 <button
                     onClick={() => setNoDashes(!noDashes)}
                     className={`px-2.5 py-1.5 text-xs rounded-lg transition-colors ${noDashes
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-muted-foreground hover:bg-muted/80"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80"
                         }`}
                 >
                     no dashes

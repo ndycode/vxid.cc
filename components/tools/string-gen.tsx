@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Copy, Check, ArrowClockwise } from "@phosphor-icons/react";
 
@@ -49,7 +49,7 @@ export function StringGen() {
     };
 
     // Generate on mount
-    useState(() => { generate(); });
+    useEffect(() => { generate(); }, []);
 
     const charSetOptions: { id: CharSet; label: string }[] = [
         { id: "alphanumeric", label: "a-z 0-9" },
@@ -61,7 +61,7 @@ export function StringGen() {
 
     return (
         <motion.div
-            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3"
+            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
@@ -73,8 +73,8 @@ export function StringGen() {
                         key={opt.id}
                         onClick={() => setCharSet(opt.id)}
                         className={`px-2.5 py-1 text-xs rounded-lg whitespace-nowrap transition-colors ${charSet === opt.id
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-muted text-muted-foreground hover:bg-muted/80"
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground hover:bg-muted/80"
                             }`}
                     >
                         {opt.label}

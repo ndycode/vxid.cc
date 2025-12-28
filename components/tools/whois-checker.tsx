@@ -122,8 +122,8 @@ export function WhoisChecker() {
             {result && (
                 <>
                     <div className="bg-muted/50 p-3 rounded-lg text-center space-y-1">
-                        <p className="text-lg font-mono font-bold">{result.domain}</p>
-                        <p className="text-xs text-muted-foreground truncate">{result.registrar}</p>
+                        <p className="text-base sm:text-lg font-mono font-bold break-all">{result.domain}</p>
+                        <p className="text-xs text-muted-foreground break-words px-2">{result.registrar}</p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2 text-sm">
@@ -162,7 +162,7 @@ export function WhoisChecker() {
                                     <div>
                                         <p className="text-xs text-muted-foreground">nameservers</p>
                                         {result.nameservers.slice(0, 4).map((ns, i) => (
-                                            <p key={i} className="font-mono text-xs">{ns}</p>
+                                            <p key={i} className="font-mono text-xs break-all">{ns}</p>
                                         ))}
                                     </div>
                                 )}

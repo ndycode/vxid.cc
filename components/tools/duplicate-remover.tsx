@@ -85,7 +85,7 @@ export function DuplicateRemover() {
 
     return (
         <motion.div
-            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3"
+            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
@@ -111,8 +111,8 @@ export function DuplicateRemover() {
                 <button
                     onClick={() => setMode("lines")}
                     className={`flex-1 py-1.5 text-xs rounded-lg transition-colors ${mode === "lines"
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-muted-foreground hover:bg-muted/80"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80"
                         }`}
                 >
                     lines
@@ -120,8 +120,8 @@ export function DuplicateRemover() {
                 <button
                     onClick={() => setMode("words")}
                     className={`flex-1 py-1.5 text-xs rounded-lg transition-colors ${mode === "words"
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-muted-foreground hover:bg-muted/80"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80"
                         }`}
                 >
                     words
@@ -133,8 +133,8 @@ export function DuplicateRemover() {
                 <button
                     onClick={() => setCaseSensitive(!caseSensitive)}
                     className={`px-2.5 py-1.5 text-xs rounded-lg transition-colors ${caseSensitive
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-muted-foreground hover:bg-muted/80"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80"
                         }`}
                 >
                     case sensitive
@@ -143,8 +143,8 @@ export function DuplicateRemover() {
                     <button
                         onClick={() => setTrimLines(!trimLines)}
                         className={`px-2.5 py-1.5 text-xs rounded-lg transition-colors ${trimLines
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-muted text-muted-foreground hover:bg-muted/80"
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground hover:bg-muted/80"
                             }`}
                     >
                         trim lines

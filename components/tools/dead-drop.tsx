@@ -460,7 +460,7 @@ export function DeadDrop() {
                                     </InputOTP>
                                 </div>
                                 {error && <p className="text-sm text-destructive flex items-center justify-center gap-1"><Warning weight="bold" className="w-4 h-4" /> {error}</p>}
-                                <Button onClick={checkCode} disabled={code.length !== 6 || downloadStatus === "loading"} className={`w-full transition-all duration-300 ${buttonGlow ? "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-[0_0_20px_rgba(236,72,153,0.5)]" : ""}`} size="lg">
+                                <Button onClick={checkCode} disabled={code.length !== 6 || downloadStatus === "loading"} className={`w-full transition-all duration-300 ${buttonGlow ? "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-[0_0_20px_hsl(var(--primary)/0.5)]" : ""}`} size="lg">
                                     {downloadStatus === "loading" ? "Checking..." : "Get File"}
                                 </Button>
                             </div>

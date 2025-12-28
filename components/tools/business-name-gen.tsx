@@ -67,7 +67,7 @@ export function BusinessNameGen() {
 
     return (
         <motion.div
-            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3"
+            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
@@ -79,8 +79,8 @@ export function BusinessNameGen() {
                         key={s.id}
                         onClick={() => setStyle(s.id)}
                         className={`px-2.5 py-1 text-xs rounded-lg whitespace-nowrap transition-colors ${style === s.id
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-muted text-muted-foreground hover:bg-muted/80"
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground hover:bg-muted/80"
                             }`}
                     >
                         {s.label}

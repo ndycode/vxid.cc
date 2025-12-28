@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Copy, Check, ArrowClockwise, LockSimple } from "@phosphor-icons/react";
 
@@ -72,8 +72,8 @@ function generatePalette(baseHue: number, harmony: Harmony): string[] {
 
 export function ColorPaletteGen() {
     const [harmony, setHarmony] = useState<Harmony>("analogous");
-    const [baseHue, setBaseHue] = useState(() => Math.floor(Math.random() * 360));
-    const [palette, setPalette] = useState<string[]>(() => generatePalette(baseHue, "analogous"));
+    const [baseHue, setBaseHue] = useState(180);
+    const [palette, setPalette] = useState<string[]>([]);
     const [locked, setLocked] = useState<Set<number>>(new Set());
     const [copied, setCopied] = useState<string | null>(null);
     const [cssExported, setCssExported] = useState(false);
@@ -113,6 +113,8 @@ export function ColorPaletteGen() {
         setTimeout(() => setCopied(null), 1500);
     };
 
+    // Generate palette on mount
+    useEffect(() => { generate(); }, []);
     const exportCss = async () => {
         const css = palette.map((c, i) => `  --color-${i + 1}: ${c};`).join("\n");
         await navigator.clipboard.writeText(`:root {\n${css}\n}`);
@@ -129,18 +131,18 @@ export function ColorPaletteGen() {
 
     return (
         <motion.div
-            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3"
+            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
         >
             {/* Harmony selector */}
-            <div className="flex gap-1 overflow-x-auto pb-1">
+            <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide">
                 {HARMONIES.map((h) => (
                     <button
                         key={h.id}
                         onClick={() => handleHarmonyChange(h.id)}
-                        className={`px-2.5 py-1 text-xs rounded-lg whitespace-nowrap transition-colors ${harmony === h.id
+                        className={`px-2.5 py-1.5 text-xs rounded-lg whitespace-nowrap transition-colors min-h-[32px] ${harmony === h.id
                             ? "bg-primary text-primary-foreground"
                             : "bg-muted text-muted-foreground hover:bg-muted/80"
                             }`}
@@ -151,18 +153,18 @@ export function ColorPaletteGen() {
             </div>
 
             {/* Color palette display */}
-            <div className="flex gap-1 h-24 rounded-lg overflow-hidden">
+            <div className="flex gap-1 h-20 sm:h-24 rounded-lg overflow-hidden">
                 {palette.map((color, i) => (
                     <motion.div
                         key={`${color}-${i}`}
-                        className="flex-1 relative group cursor-pointer"
+                        className="flex-1 relative group cursor-pointer min-w-0"
                         style={{ backgroundColor: color }}
                         onClick={() => copyColor(color)}
                         whileHover={{ flex: 1.5 }}
                         transition={{ duration: 0.2 }}
                     >
                         <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30">
-                            <span className="text-xs font-mono text-white">{color}</span>
+                            <span className="text-[10px] sm:text-xs font-mono text-white break-all px-1 text-center">{color}</span>
                         </div>
                         <button
                             onClick={(e) => { e.stopPropagation(); toggleLock(i); }}
@@ -178,7 +180,7 @@ export function ColorPaletteGen() {
             {/* Generate button */}
             <motion.button
                 onClick={generate}
-                className="w-full py-2.5 bg-primary text-primary-foreground rounded-lg flex items-center justify-center gap-2 text-sm font-medium"
+                className="w-full py-3 bg-primary text-primary-foreground rounded-lg flex items-center justify-center gap-2 text-sm font-medium min-h-[44px]"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
             >

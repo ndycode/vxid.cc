@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { UploadSimple, Download, Check, CaretDown, Trash } from "@phosphor-icons/react";
+import { UploadSimple, Download, Check, Trash } from "@phosphor-icons/react";
 
 export function ImageBlur() {
     const [image, setImage] = useState<string | null>(null);
@@ -12,7 +12,6 @@ export function ImageBlur() {
     const [pixelate, setPixelate] = useState(false);
     const [pixelSize, setPixelSize] = useState(10);
     const [downloaded, setDownloaded] = useState(false);
-    const [showOptions, setShowOptions] = useState(false);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -82,6 +81,8 @@ export function ImageBlur() {
         setDownloaded(false);
     };
 
+    const hasImage = !!image;
+
     return (
         <motion.div
             className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4"
@@ -98,20 +99,18 @@ export function ImageBlur() {
                 className="hidden"
             />
 
-            {!image ? (
-                <div
-                    onClick={() => inputRef.current?.click()}
-                    onDrop={handleDrop}
-                    onDragOver={(e) => e.preventDefault()}
-                    className="border-2 border-dashed border-muted-foreground/25 rounded-xl p-8 text-center cursor-pointer hover:border-primary/50 transition-colors"
-                >
-                    <UploadSimple className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">Drop image or click to upload</p>
-                </div>
-            ) : (
-                <>
-                    {/* Preview */}
-                    <div className="relative rounded-lg overflow-hidden bg-muted/50">
+            {/* Upload area / Preview */}
+            <div
+                onClick={() => !hasImage && inputRef.current?.click()}
+                onDrop={handleDrop}
+                onDragOver={(e) => e.preventDefault()}
+                className={`relative rounded-xl overflow-hidden transition-colors ${hasImage
+                        ? "bg-muted/50"
+                        : "border-2 border-dashed border-muted-foreground/25 hover:border-primary/50 cursor-pointer"
+                    }`}
+            >
+                {hasImage ? (
+                    <>
                         <img
                             src={image}
                             alt="Preview"
@@ -119,77 +118,86 @@ export function ImageBlur() {
                             style={{ filter: pixelate ? "none" : `blur(${blurAmount / 3}px)` }}
                         />
                         <button
-                            onClick={clear}
-                            className="absolute top-2 right-2 p-1.5 bg-background/80 rounded-lg hover:bg-background"
+                            onClick={(e) => { e.stopPropagation(); clear(); }}
+                            className="absolute top-2 right-2 p-1.5 bg-background/80 rounded-lg hover:bg-background transition-colors"
                         >
                             <Trash className="w-4 h-4" />
                         </button>
+                    </>
+                ) : (
+                    <div className="p-6 text-center">
+                        <UploadSimple className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">drop image or click to upload</p>
+                        <p className="text-xs text-muted-foreground/60 mt-1">png, jpg, webp</p>
                     </div>
+                )}
+            </div>
 
-                    {/* Mode Toggle */}
-                    <div className="flex gap-2">
-                        <button
-                            onClick={() => setPixelate(false)}
-                            className={`flex-1 py-2 text-sm rounded-lg transition-colors ${!pixelate ? "bg-primary text-primary-foreground" : "bg-muted/50 text-muted-foreground"
-                                }`}
-                        >
-                            Blur
-                        </button>
-                        <button
-                            onClick={() => setPixelate(true)}
-                            className={`flex-1 py-2 text-sm rounded-lg transition-colors ${pixelate ? "bg-primary text-primary-foreground" : "bg-muted/50 text-muted-foreground"
-                                }`}
-                        >
-                            Pixelate
-                        </button>
+            {/* Controls - Always visible */}
+            <div className={`space-y-4 ${!hasImage ? "opacity-50 pointer-events-none" : ""}`}>
+                {/* Mode Toggle */}
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => setPixelate(false)}
+                        disabled={!hasImage}
+                        className={`flex-1 py-2.5 text-sm rounded-lg transition-colors min-h-[44px] ${!pixelate ? "bg-primary text-primary-foreground" : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                            }`}
+                    >
+                        Blur
+                    </button>
+                    <button
+                        onClick={() => setPixelate(true)}
+                        disabled={!hasImage}
+                        className={`flex-1 py-2.5 text-sm rounded-lg transition-colors min-h-[44px] ${pixelate ? "bg-primary text-primary-foreground" : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                            }`}
+                    >
+                        Pixelate
+                    </button>
+                </div>
+
+                {/* Slider */}
+                <div className="space-y-2">
+                    <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">{pixelate ? "pixel size" : "blur amount"}</span>
+                        <span className="font-medium">{pixelate ? pixelSize : blurAmount}px</span>
                     </div>
+                    <input
+                        type="range"
+                        min={pixelate ? 2 : 1}
+                        max={pixelate ? 50 : 50}
+                        value={pixelate ? pixelSize : blurAmount}
+                        onChange={(e) => pixelate ? setPixelSize(Number(e.target.value)) : setBlurAmount(Number(e.target.value))}
+                        disabled={!hasImage}
+                        className="w-full accent-primary h-6"
+                    />
+                </div>
+            </div>
 
-                    {/* Slider */}
-                    <div className="space-y-2">
-                        <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground">{pixelate ? "Pixel size" : "Blur amount"}</span>
-                            <span className="font-medium">{pixelate ? pixelSize : blurAmount}px</span>
-                        </div>
-                        <input
-                            type="range"
-                            min={pixelate ? 2 : 1}
-                            max={pixelate ? 50 : 50}
-                            value={pixelate ? pixelSize : blurAmount}
-                            onChange={(e) => pixelate ? setPixelSize(Number(e.target.value)) : setBlurAmount(Number(e.target.value))}
-                            className="w-full accent-primary"
-                        />
-                    </div>
+            {/* Action buttons - Always visible */}
+            <div className={`flex gap-2 ${!hasImage ? "opacity-50 pointer-events-none" : ""}`}>
+                <Button
+                    variant="outline"
+                    onClick={clear}
+                    disabled={!hasImage}
+                    className="flex-1 gap-1.5 min-h-[44px]"
+                >
+                    <Trash className="w-4 h-4" />
+                    clear
+                </Button>
+                <Button
+                    onClick={download}
+                    disabled={!hasImage}
+                    className="flex-1 gap-1.5 min-h-[44px]"
+                >
+                    {downloaded ? <Check className="w-4 h-4" /> : <Download className="w-4 h-4" />}
+                    {downloaded ? "done!" : "download"}
+                </Button>
+            </div>
 
-                    {/* Options */}
-                    <div>
-                        <button
-                            onClick={() => setShowOptions(!showOptions)}
-                            className="w-full flex items-center justify-between text-sm text-muted-foreground py-2 hover:text-foreground"
-                        >
-                            Options
-                            <motion.div animate={{ rotate: showOptions ? 180 : 0 }}>
-                                <CaretDown className="w-4 h-4" />
-                            </motion.div>
-                        </button>
-                        {showOptions && (
-                            <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "auto", opacity: 1 }}
-                                className="text-xs text-muted-foreground overflow-hidden"
-                            >
-                                <p>Output: PNG format</p>
-                                <p>Blur uses CSS filter, pixelate uses canvas</p>
-                            </motion.div>
-                        )}
-                    </div>
-
-                    {/* Download */}
-                    <Button onClick={download} className="w-full gap-1.5">
-                        {downloaded ? <Check className="w-4 h-4" /> : <Download className="w-4 h-4" />}
-                        {downloaded ? "Downloaded!" : "Download"}
-                    </Button>
-                </>
-            )}
+            {/* Info */}
+            <p className="text-xs text-muted-foreground/60 text-center">
+                output: PNG • blur uses CSS filter, pixelate uses canvas
+            </p>
         </motion.div>
     );
 }

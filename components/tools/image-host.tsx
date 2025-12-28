@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Copy, Check, Image as ImageIcon, CaretDown, UploadSimple } from "@phosphor-icons/react";
+import { Copy, Check, Image as ImageIcon, CaretDown, UploadSimple, DownloadSimple } from "@phosphor-icons/react";
 import { EXPIRY_OPTIONS } from "@/lib/share-types";
 
 export function ImageHost() {
@@ -132,6 +132,21 @@ export function ImageHost() {
                             <div className="text-center space-y-2">
                                 <img src={image} alt="Preview" className="max-h-20 mx-auto rounded" />
                                 <p className="text-xs text-muted-foreground truncate max-w-[180px]">{imageName}</p>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        const link = document.createElement("a");
+                                        link.href = image;
+                                        link.download = imageName || "image.png";
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        document.body.removeChild(link);
+                                    }}
+                                    className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-muted hover:bg-muted/80 rounded-lg transition-colors"
+                                >
+                                    <DownloadSimple className="w-3 h-3" />
+                                    Download
+                                </button>
                             </div>
                         ) : (
                             <div className="text-center space-y-1">
@@ -169,8 +184,8 @@ export function ImageHost() {
                                                 key={opt.value}
                                                 onClick={() => setExpiry(i)}
                                                 className={`px-2 py-1 text-xs rounded-lg ${expiry === i
-                                                        ? "bg-primary text-primary-foreground"
-                                                        : "bg-muted text-muted-foreground"
+                                                    ? "bg-primary text-primary-foreground"
+                                                    : "bg-muted text-muted-foreground"
                                                     }`}
                                             >
                                                 {opt.label}

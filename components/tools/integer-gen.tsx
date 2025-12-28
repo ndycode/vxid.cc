@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Copy, Check, ArrowClockwise } from "@phosphor-icons/react";
 
@@ -51,11 +51,11 @@ export function IntegerGen() {
     };
 
     // Generate on mount
-    useState(() => { generate(); });
+    useEffect(() => { generate(); }, []);
 
     return (
         <motion.div
-            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3"
+            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
@@ -89,8 +89,8 @@ export function IntegerGen() {
                         key={`${num}-${i}`}
                         onClick={() => copyItem(num)}
                         className={`px-3 py-1.5 font-mono text-sm rounded-lg transition-all ${copied === String(num)
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-muted hover:bg-muted/80"
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted hover:bg-muted/80"
                             }`}
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -118,8 +118,8 @@ export function IntegerGen() {
                 <button
                     onClick={() => setUnique(!unique)}
                     className={`px-2.5 py-1.5 text-xs rounded-lg transition-colors ${unique
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-muted-foreground hover:bg-muted/80"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80"
                         }`}
                 >
                     unique only

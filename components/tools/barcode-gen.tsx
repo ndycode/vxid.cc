@@ -67,7 +67,7 @@ export function BarcodeGen() {
 
     return (
         <motion.div
-            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3"
+            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
@@ -91,8 +91,8 @@ export function BarcodeGen() {
                         key={f.id}
                         onClick={() => setFormat(f.id)}
                         className={`px-2.5 py-1 text-xs rounded-lg whitespace-nowrap transition-colors ${format === f.id
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-muted text-muted-foreground hover:bg-muted/80"
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground hover:bg-muted/80"
                             }`}
                     >
                         {f.label}
@@ -101,8 +101,8 @@ export function BarcodeGen() {
             </div>
 
             {/* Barcode preview */}
-            <div className="flex justify-center p-4 bg-white rounded-lg">
-                <svg ref={svgRef} className="text-black" />
+            <div className="flex justify-center p-3 sm:p-4 bg-white rounded-lg overflow-hidden">
+                <svg ref={svgRef} className="text-black max-w-full h-auto" style={{ maxHeight: '120px' }} />
             </div>
 
             {/* Error */}
@@ -111,27 +111,27 @@ export function BarcodeGen() {
             )}
 
             {/* Options */}
-            <div className="flex items-center justify-between">
-                <button
-                    onClick={() => setShowText(!showText)}
-                    className={`px-2.5 py-1.5 text-xs rounded-lg transition-colors ${showText
+            <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => setShowText(!showText)}
+                        className={`px-2.5 py-1.5 text-xs rounded-lg transition-colors min-h-[36px] ${showText
                             ? "bg-primary text-primary-foreground"
                             : "bg-muted text-muted-foreground hover:bg-muted/80"
-                        }`}
-                >
-                    show text
-                </button>
-                <div className="flex gap-2">
+                            }`}
+                    >
+                        show text
+                    </button>
                     <button
                         onClick={copyAsSvg}
-                        className="px-2.5 py-1.5 text-xs bg-muted text-muted-foreground hover:bg-muted/80 rounded-lg transition-colors flex items-center gap-1"
+                        className="flex-1 px-2.5 py-1.5 text-xs bg-muted text-muted-foreground hover:bg-muted/80 rounded-lg transition-colors flex items-center justify-center gap-1 min-h-[36px]"
                     >
                         {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                         {copied ? "copied!" : "copy svg"}
                     </button>
                     <button
                         onClick={download}
-                        className="px-2.5 py-1.5 text-xs bg-primary text-primary-foreground rounded-lg transition-colors flex items-center gap-1"
+                        className="flex-1 px-2.5 py-1.5 text-xs bg-primary text-primary-foreground rounded-lg transition-colors flex items-center justify-center gap-1 min-h-[36px]"
                     >
                         <DownloadSimple className="w-3 h-3" />
                         download

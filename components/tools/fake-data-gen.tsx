@@ -74,20 +74,20 @@ export function FakeDataGen() {
 
     return (
         <motion.div
-            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3"
+            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
         >
             {/* Type selector */}
-            <div className="flex gap-1 overflow-x-auto pb-1">
+            <div className="flex gap-1 overflow-x-auto pb-1 scrollbar-hide">
                 {DATA_TYPES.map((t) => (
                     <button
                         key={t.id}
                         onClick={() => { setDataType(t.id); }}
-                        className={`px-2.5 py-1 text-xs rounded-lg whitespace-nowrap transition-colors ${dataType === t.id
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-muted text-muted-foreground hover:bg-muted/80"
+                        className={`px-2.5 py-1.5 text-xs rounded-lg whitespace-nowrap transition-colors min-h-[32px] ${dataType === t.id
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground hover:bg-muted/80"
                             }`}
                     >
                         {t.label}
@@ -96,24 +96,24 @@ export function FakeDataGen() {
             </div>
 
             {/* Generated data */}
-            <div className="space-y-1.5 max-h-40 overflow-y-auto">
+            <div className="space-y-1.5 max-h-40 overflow-y-auto scrollbar-hide">
                 {data.map((item, i) => (
                     <motion.div
                         key={`${item}-${i}`}
-                        className="flex items-center gap-2 p-2 bg-muted/30 rounded-lg group"
+                        className="flex items-center gap-2 p-2.5 bg-muted/30 rounded-lg group min-h-[44px]"
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: i * 0.03 }}
                     >
-                        <span className="flex-1 text-sm truncate">{item}</span>
+                        <span className="flex-1 text-sm break-words min-w-0">{item}</span>
                         <button
                             onClick={() => copyItem(item)}
-                            className="p-1 opacity-0 group-hover:opacity-100 hover:bg-muted rounded transition-all"
+                            className="p-2 sm:opacity-0 sm:group-hover:opacity-100 hover:bg-muted rounded transition-all shrink-0"
                         >
                             {copied === item ? (
-                                <Check className="w-3 h-3 text-primary" />
+                                <Check className="w-4 h-4 text-primary" />
                             ) : (
-                                <Copy className="w-3 h-3 text-muted-foreground" />
+                                <Copy className="w-4 h-4 text-muted-foreground" />
                             )}
                         </button>
                     </motion.div>
@@ -123,7 +123,7 @@ export function FakeDataGen() {
             {/* Generate button */}
             <motion.button
                 onClick={generate}
-                className="w-full py-2.5 bg-primary text-primary-foreground rounded-lg flex items-center justify-center gap-2 text-sm font-medium"
+                className="w-full py-3 bg-primary text-primary-foreground rounded-lg flex items-center justify-center gap-2 text-sm font-medium min-h-[44px]"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
             >

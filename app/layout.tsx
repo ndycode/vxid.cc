@@ -18,6 +18,13 @@ export const metadata: Metadata = {
   description: "Transfer files securely between devices with a simple 6-digit code",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: "cover",
+};
+
 // Inline script to set theme before hydration (defaults to dark)
 const themeScript = `
   (function() {
@@ -32,13 +39,6 @@ const themeScript = `
   })();
 `;
 
-// Disable right-click globally
-const disableRightClickScript = `
-  document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-  });
-`;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -48,14 +48,13 @@ export default function RootLayout({
     <html lang="en" className={`${jetbrainsMono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        <script dangerouslySetInnerHTML={{ __html: disableRightClickScript }} />
       </head>
       <body className={`${jetbrainsMono.className} antialiased relative min-h-screen`}>
         <LenisProvider>
           <div className="fixed inset-0 z-0 bg-background"></div>
 
           {/* Global Theme Toggle */}
-          <div className="fixed top-4 right-4 z-50">
+          <div className="fixed top-4 right-4 z-50 pt-[env(safe-area-inset-top)] pr-[env(safe-area-inset-right)]">
             <ThemeToggle />
           </div>
 
@@ -70,7 +69,7 @@ export default function RootLayout({
           {/* Nav Icon */}
           <a
             href="/"
-            className="fixed bottom-6 left-6 z-50 w-8 h-8 rounded-full overflow-hidden hover:scale-110 transition-transform"
+            className="fixed bottom-6 left-6 z-50 w-8 h-8 rounded-full overflow-hidden hover:scale-110 transition-transform pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)]"
           >
             <img src="/logo.png" alt="vxid.cc" className="w-full h-full object-cover invert dark:invert-0" />
           </a>
@@ -79,7 +78,7 @@ export default function RootLayout({
           <a
             href="https://github.com/ndycode"
             target="_blank"
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 text-xs text-muted-foreground/40 hover:text-primary transition-colors z-50"
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 text-xs text-muted-foreground/40 hover:text-primary transition-colors z-50 pb-[env(safe-area-inset-bottom)]"
           >
             <GitHubTyping />
           </a>
@@ -93,10 +92,15 @@ export default function RootLayout({
                 border: '1px solid hsl(var(--border))',
                 color: 'hsl(var(--foreground))',
               },
+              classNames: {
+                toast: 'dark:shadow-lg dark:shadow-black/30',
+                title: 'text-foreground font-medium',
+                description: 'text-muted-foreground',
+              },
             }}
           />
         </LenisProvider>
       </body>
-    </html>
+    </html >
   );
 }

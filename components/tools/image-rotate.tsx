@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { UploadSimple, Download, Check, CaretDown, Trash, ArrowClockwise, ArrowsHorizontal, ArrowsVertical } from "@phosphor-icons/react";
+import { UploadSimple, Download, Check, Trash, ArrowClockwise, ArrowsHorizontal, ArrowsVertical } from "@phosphor-icons/react";
 
 export function ImageRotate() {
     const [image, setImage] = useState<string | null>(null);
@@ -12,7 +12,6 @@ export function ImageRotate() {
     const [flipH, setFlipH] = useState(false);
     const [flipV, setFlipV] = useState(false);
     const [downloaded, setDownloaded] = useState(false);
-    const [showOptions, setShowOptions] = useState(false);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -85,6 +84,7 @@ export function ImageRotate() {
     };
 
     const rotate90 = () => setRotation((r) => (r + 90) % 360);
+    const hasImage = !!image;
 
     return (
         <motion.div
@@ -102,20 +102,18 @@ export function ImageRotate() {
                 className="hidden"
             />
 
-            {!image ? (
-                <div
-                    onClick={() => inputRef.current?.click()}
-                    onDrop={handleDrop}
-                    onDragOver={(e) => e.preventDefault()}
-                    className="border-2 border-dashed border-muted-foreground/25 rounded-xl p-8 text-center cursor-pointer hover:border-primary/50 transition-colors"
-                >
-                    <UploadSimple className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">Drop image or click to upload</p>
-                </div>
-            ) : (
-                <>
-                    {/* Preview */}
-                    <div className="relative rounded-lg overflow-hidden bg-muted/50">
+            {/* Upload area / Preview */}
+            <div
+                onClick={() => !hasImage && inputRef.current?.click()}
+                onDrop={handleDrop}
+                onDragOver={(e) => e.preventDefault()}
+                className={`relative rounded-xl overflow-hidden transition-colors ${hasImage
+                        ? "bg-muted/50"
+                        : "border-2 border-dashed border-muted-foreground/25 hover:border-primary/50 cursor-pointer"
+                    }`}
+            >
+                {hasImage ? (
+                    <>
                         <img
                             src={image}
                             alt="Preview"
@@ -125,86 +123,96 @@ export function ImageRotate() {
                             }}
                         />
                         <button
-                            onClick={clear}
-                            className="absolute top-2 right-2 p-1.5 bg-background/80 rounded-lg hover:bg-background"
+                            onClick={(e) => { e.stopPropagation(); clear(); }}
+                            className="absolute top-2 right-2 p-1.5 bg-background/80 rounded-lg hover:bg-background transition-colors"
                         >
                             <Trash className="w-4 h-4" />
                         </button>
+                    </>
+                ) : (
+                    <div className="p-6 text-center">
+                        <UploadSimple className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">drop image or click to upload</p>
+                        <p className="text-xs text-muted-foreground/60 mt-1">png, jpg, webp</p>
                     </div>
+                )}
+            </div>
 
-                    {/* Controls */}
-                    <div className="grid grid-cols-3 gap-2">
-                        <button
-                            onClick={rotate90}
-                            className="flex flex-col items-center gap-1 py-2 bg-muted/50 rounded-lg hover:bg-muted transition-colors"
-                        >
-                            <ArrowClockwise className="w-5 h-5" />
-                            <span className="text-xs">Rotate 90°</span>
-                        </button>
-                        <button
-                            onClick={() => setFlipH(!flipH)}
-                            className={`flex flex-col items-center gap-1 py-2 rounded-lg transition-colors ${flipH ? "bg-primary text-primary-foreground" : "bg-muted/50 hover:bg-muted"
-                                }`}
-                        >
-                            <ArrowsHorizontal className="w-5 h-5" />
-                            <span className="text-xs">Flip H</span>
-                        </button>
-                        <button
-                            onClick={() => setFlipV(!flipV)}
-                            className={`flex flex-col items-center gap-1 py-2 rounded-lg transition-colors ${flipV ? "bg-primary text-primary-foreground" : "bg-muted/50 hover:bg-muted"
-                                }`}
-                        >
-                            <ArrowsVertical className="w-5 h-5" />
-                            <span className="text-xs">Flip V</span>
-                        </button>
+            {/* Controls - Always visible */}
+            <div className={`space-y-4 ${!hasImage ? "opacity-50 pointer-events-none" : ""}`}>
+                {/* Quick actions */}
+                <div className="grid grid-cols-3 gap-2">
+                    <button
+                        onClick={rotate90}
+                        disabled={!hasImage}
+                        className="flex flex-col items-center gap-1 py-2.5 bg-muted/50 rounded-lg hover:bg-muted transition-colors min-h-[56px]"
+                    >
+                        <ArrowClockwise className="w-5 h-5" />
+                        <span className="text-xs">Rotate 90°</span>
+                    </button>
+                    <button
+                        onClick={() => setFlipH(!flipH)}
+                        disabled={!hasImage}
+                        className={`flex flex-col items-center gap-1 py-2.5 rounded-lg transition-colors min-h-[56px] ${flipH ? "bg-primary text-primary-foreground" : "bg-muted/50 hover:bg-muted"
+                            }`}
+                    >
+                        <ArrowsHorizontal className="w-5 h-5" />
+                        <span className="text-xs">Flip H</span>
+                    </button>
+                    <button
+                        onClick={() => setFlipV(!flipV)}
+                        disabled={!hasImage}
+                        className={`flex flex-col items-center gap-1 py-2.5 rounded-lg transition-colors min-h-[56px] ${flipV ? "bg-primary text-primary-foreground" : "bg-muted/50 hover:bg-muted"
+                            }`}
+                    >
+                        <ArrowsVertical className="w-5 h-5" />
+                        <span className="text-xs">Flip V</span>
+                    </button>
+                </div>
+
+                {/* Rotation slider */}
+                <div className="space-y-2">
+                    <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">rotation</span>
+                        <span className="font-medium">{rotation}°</span>
                     </div>
+                    <input
+                        type="range"
+                        min={0}
+                        max={360}
+                        value={rotation}
+                        onChange={(e) => setRotation(Number(e.target.value))}
+                        disabled={!hasImage}
+                        className="w-full accent-primary h-6"
+                    />
+                </div>
+            </div>
 
-                    {/* Rotation slider */}
-                    <div className="space-y-2">
-                        <div className="flex justify-between text-xs">
-                            <span className="text-muted-foreground">Rotation</span>
-                            <span className="font-medium">{rotation}°</span>
-                        </div>
-                        <input
-                            type="range"
-                            min={0}
-                            max={360}
-                            value={rotation}
-                            onChange={(e) => setRotation(Number(e.target.value))}
-                            className="w-full accent-primary"
-                        />
-                    </div>
+            {/* Action buttons - Always visible */}
+            <div className={`flex gap-2 ${!hasImage ? "opacity-50 pointer-events-none" : ""}`}>
+                <Button
+                    variant="outline"
+                    onClick={clear}
+                    disabled={!hasImage}
+                    className="flex-1 gap-1.5 min-h-[44px]"
+                >
+                    <Trash className="w-4 h-4" />
+                    clear
+                </Button>
+                <Button
+                    onClick={download}
+                    disabled={!hasImage}
+                    className="flex-1 gap-1.5 min-h-[44px]"
+                >
+                    {downloaded ? <Check className="w-4 h-4" /> : <Download className="w-4 h-4" />}
+                    {downloaded ? "done!" : "download"}
+                </Button>
+            </div>
 
-                    {/* Options */}
-                    <div>
-                        <button
-                            onClick={() => setShowOptions(!showOptions)}
-                            className="w-full flex items-center justify-between text-sm text-muted-foreground py-2 hover:text-foreground"
-                        >
-                            Options
-                            <motion.div animate={{ rotate: showOptions ? 180 : 0 }}>
-                                <CaretDown className="w-4 h-4" />
-                            </motion.div>
-                        </button>
-                        {showOptions && (
-                            <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "auto", opacity: 1 }}
-                                className="text-xs text-muted-foreground overflow-hidden"
-                            >
-                                <p>Output: PNG format</p>
-                                <p>Canvas size adjusts to fit rotated image</p>
-                            </motion.div>
-                        )}
-                    </div>
-
-                    {/* Download */}
-                    <Button onClick={download} className="w-full gap-1.5">
-                        {downloaded ? <Check className="w-4 h-4" /> : <Download className="w-4 h-4" />}
-                        {downloaded ? "Downloaded!" : "Download"}
-                    </Button>
-                </>
-            )}
+            {/* Info */}
+            <p className="text-xs text-muted-foreground/60 text-center">
+                output: PNG • canvas size adjusts to fit rotation
+            </p>
         </motion.div>
     );
 }

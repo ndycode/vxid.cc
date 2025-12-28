@@ -40,7 +40,7 @@ export function EmojiPicker() {
     };
 
     return (
-        <div className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3">
+        <div className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4">
             {/* Search */}
             <div className="relative">
                 <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />

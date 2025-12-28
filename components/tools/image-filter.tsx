@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { UploadSimple, Download, Check, CaretDown, Trash } from "@phosphor-icons/react";
+import { UploadSimple, Download, Check, Trash, ArrowClockwise } from "@phosphor-icons/react";
 
 const FILTERS = [
     { id: "none", name: "None", filter: "" },
@@ -25,7 +25,6 @@ export function ImageFilter() {
     const [fileName, setFileName] = useState("");
     const [selectedFilter, setSelectedFilter] = useState("none");
     const [downloaded, setDownloaded] = useState(false);
-    const [showOptions, setShowOptions] = useState(false);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -89,6 +88,7 @@ export function ImageFilter() {
     };
 
     const currentFilter = FILTERS.find(f => f.id === selectedFilter)?.filter || "";
+    const hasImage = !!image;
 
     return (
         <motion.div
@@ -106,20 +106,18 @@ export function ImageFilter() {
                 className="hidden"
             />
 
-            {!image ? (
-                <div
-                    onClick={() => inputRef.current?.click()}
-                    onDrop={handleDrop}
-                    onDragOver={(e) => e.preventDefault()}
-                    className="border-2 border-dashed border-muted-foreground/25 rounded-xl p-8 text-center cursor-pointer hover:border-primary/50 transition-colors"
-                >
-                    <UploadSimple className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">Drop image or click to upload</p>
-                </div>
-            ) : (
-                <>
-                    {/* Preview */}
-                    <div className="relative rounded-lg overflow-hidden bg-muted/50">
+            {/* Upload area / Preview */}
+            <div
+                onClick={() => !hasImage && inputRef.current?.click()}
+                onDrop={handleDrop}
+                onDragOver={(e) => e.preventDefault()}
+                className={`relative rounded-xl overflow-hidden transition-colors ${hasImage
+                        ? "bg-muted/50"
+                        : "border-2 border-dashed border-muted-foreground/25 hover:border-primary/50 cursor-pointer"
+                    }`}
+            >
+                {hasImage ? (
+                    <>
                         <img
                             src={image}
                             alt="Preview"
@@ -127,60 +125,66 @@ export function ImageFilter() {
                             style={{ filter: currentFilter }}
                         />
                         <button
-                            onClick={clear}
-                            className="absolute top-2 right-2 p-1.5 bg-background/80 rounded-lg hover:bg-background"
+                            onClick={(e) => { e.stopPropagation(); clear(); }}
+                            className="absolute top-2 right-2 p-1.5 bg-background/80 rounded-lg hover:bg-background transition-colors"
                         >
                             <Trash className="w-4 h-4" />
                         </button>
+                    </>
+                ) : (
+                    <div className="p-6 text-center">
+                        <UploadSimple className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">drop image or click to upload</p>
+                        <p className="text-xs text-muted-foreground/60 mt-1">png, jpg, webp</p>
                     </div>
+                )}
+            </div>
 
-                    {/* Filter Grid */}
-                    <div className="grid grid-cols-4 gap-1.5">
-                        {FILTERS.map((filter) => (
-                            <button
-                                key={filter.id}
-                                onClick={() => setSelectedFilter(filter.id)}
-                                className={`p-1.5 text-xs rounded-lg transition-colors ${selectedFilter === filter.id
-                                        ? "bg-primary text-primary-foreground"
-                                        : "bg-muted/50 text-muted-foreground hover:bg-muted"
-                                    }`}
-                            >
-                                {filter.name}
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Options */}
-                    <div>
+            {/* Filter Grid - Always visible */}
+            <div className={`space-y-2 ${!hasImage ? "opacity-50 pointer-events-none" : ""}`}>
+                <p className="text-xs text-muted-foreground">filters</p>
+                <div className="grid grid-cols-4 gap-1.5">
+                    {FILTERS.map((filter) => (
                         <button
-                            onClick={() => setShowOptions(!showOptions)}
-                            className="w-full flex items-center justify-between text-sm text-muted-foreground py-2 hover:text-foreground"
+                            key={filter.id}
+                            onClick={() => hasImage && setSelectedFilter(filter.id)}
+                            disabled={!hasImage}
+                            className={`p-1.5 text-xs rounded-lg transition-colors min-h-[36px] ${selectedFilter === filter.id
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                                }`}
                         >
-                            Options
-                            <motion.div animate={{ rotate: showOptions ? 180 : 0 }}>
-                                <CaretDown className="w-4 h-4" />
-                            </motion.div>
+                            {filter.name}
                         </button>
-                        {showOptions && (
-                            <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "auto", opacity: 1 }}
-                                className="text-xs text-muted-foreground overflow-hidden"
-                            >
-                                <p>Output: PNG format</p>
-                                <p>Filters use CSS filter property</p>
-                                <p>Current: {currentFilter || "none"}</p>
-                            </motion.div>
-                        )}
-                    </div>
+                    ))}
+                </div>
+            </div>
 
-                    {/* Download */}
-                    <Button onClick={download} className="w-full gap-1.5">
-                        {downloaded ? <Check className="w-4 h-4" /> : <Download className="w-4 h-4" />}
-                        {downloaded ? "Downloaded!" : "Download"}
-                    </Button>
-                </>
-            )}
+            {/* Action buttons - Always visible */}
+            <div className={`flex gap-2 ${!hasImage ? "opacity-50 pointer-events-none" : ""}`}>
+                <Button
+                    variant="outline"
+                    onClick={clear}
+                    disabled={!hasImage}
+                    className="flex-1 gap-1.5 min-h-[44px]"
+                >
+                    <ArrowClockwise className="w-4 h-4" />
+                    reset
+                </Button>
+                <Button
+                    onClick={download}
+                    disabled={!hasImage}
+                    className="flex-1 gap-1.5 min-h-[44px]"
+                >
+                    {downloaded ? <Check className="w-4 h-4" /> : <Download className="w-4 h-4" />}
+                    {downloaded ? "done!" : "download"}
+                </Button>
+            </div>
+
+            {/* Info */}
+            <p className="text-xs text-muted-foreground/60 text-center">
+                output: PNG • filters applied via CSS
+            </p>
         </motion.div>
     );
 }

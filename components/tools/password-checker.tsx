@@ -48,7 +48,7 @@ function analyzePassword(password: string): PasswordAnalysis {
     if (/^[0-9]+$/.test(password)) score = Math.min(score, 1);
 
     const labels = ["very weak", "weak", "fair", "strong", "very strong"];
-    const colors = ["text-destructive", "text-orange-500", "text-yellow-500", "text-primary", "text-green-500"];
+    const colors = ["text-destructive", "text-warning", "text-warning", "text-primary", "text-success"];
 
     // Crack time estimate (10B guesses/sec)
     const combinations = Math.pow(charset || 1, length);
@@ -120,7 +120,7 @@ export function PasswordChecker() {
                                 initial={{ width: 0 }}
                                 animate={{ width: `${(analysis.score + 1) * 20}%` }}
                                 className={`h-full rounded-full ${analysis.score >= 3 ? "bg-primary" :
-                                        analysis.score >= 2 ? "bg-yellow-500" : "bg-destructive"
+                                    analysis.score >= 2 ? "bg-warning" : "bg-destructive"
                                     }`}
                             />
                         </div>

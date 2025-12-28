@@ -104,21 +104,21 @@ export function IpChecker() {
                 <div className="space-y-4">
                     {/* Main Result */}
                     <div className="bg-muted/50 p-3 rounded-lg text-center space-y-1">
-                        <p className="text-xl font-mono font-bold">{data.ip}</p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-base sm:text-xl font-mono font-bold break-all leading-relaxed">{data.ip}</p>
+                        <p className="text-xs text-muted-foreground break-words">
                             {data.city}, {data.regionName}, {data.countryCode}
                         </p>
                     </div>
 
                     {/* Quick Info */}
                     <div className="grid grid-cols-2 gap-2 text-sm">
-                        <div className="bg-muted/30 rounded-lg p-2">
+                        <div className="bg-muted/30 rounded-lg p-2 min-w-0">
                             <p className="text-xs text-muted-foreground">isp</p>
-                            <p className="font-medium truncate">{data.isp}</p>
+                            <p className="font-medium text-sm truncate">{data.isp}</p>
                         </div>
-                        <div className="bg-muted/30 rounded-lg p-2">
+                        <div className="bg-muted/30 rounded-lg p-2 min-w-0">
                             <p className="text-xs text-muted-foreground">timezone</p>
-                            <p className="font-medium">{data.timezone}</p>
+                            <p className="font-medium text-sm truncate">{data.timezone}</p>
                         </div>
                     </div>
 
@@ -160,13 +160,13 @@ export function IpChecker() {
                                         <p className="text-xs text-muted-foreground">coords</p>
                                         <p className="font-medium">{data.lat.toFixed(4)}, {data.lon.toFixed(4)}</p>
                                     </div>
-                                    <div>
+                                    <div className="min-w-0">
                                         <p className="text-xs text-muted-foreground">as</p>
-                                        <p className="font-medium truncate">{data.as.split(" ")[0]}</p>
+                                        <p className="font-medium text-xs truncate">{data.as.split(" ")[0]}</p>
                                     </div>
-                                    <div>
+                                    <div className="min-w-0">
                                         <p className="text-xs text-muted-foreground">org</p>
-                                        <p className="font-medium truncate">{data.org || "—"}</p>
+                                        <p className="font-medium text-xs truncate">{data.org || "—"}</p>
                                     </div>
                                     <div>
                                         <p className="text-xs text-muted-foreground">type</p>

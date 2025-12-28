@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Copy, Check, ArrowClockwise, Shuffle } from "@phosphor-icons/react";
 
@@ -29,11 +29,11 @@ export function SequenceGen() {
     };
 
     // Generate on mount
-    useState(() => { generate(); });
+    useEffect(() => { generate(); }, []);
 
     return (
         <motion.div
-            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-3"
+            className="bg-card border rounded-2xl p-3 sm:p-4 space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}

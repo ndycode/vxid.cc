@@ -212,14 +212,14 @@ export default function HomePage() {
                     >
                         <motion.h1
                             layoutId="page-title"
-                            className="text-4xl font-bold tracking-tight"
+                            className="text-3xl xs:text-4xl font-bold tracking-tight"
                             transition={transition}
                         >
                             vxid.cc
                         </motion.h1>
                         <motion.p
                             layoutId="page-subtitle"
-                            className="text-muted-foreground text-sm"
+                            className="text-muted-foreground text-sm break-words"
                             transition={transition}
                         >
                             all tools u need :&gt;

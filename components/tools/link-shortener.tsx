@@ -76,7 +76,7 @@ export function LinkShortener() {
                         </div>
                     </div>
                     <div className="bg-muted/50 p-3 rounded-lg text-center">
-                        <p className="text-lg font-mono font-bold">{result.url}</p>
+                        <p className="text-sm sm:text-lg font-mono font-bold break-all">{result.url}</p>
                     </div>
                     <div className="flex gap-2">
                         <Button onClick={copy} variant="outline" className="flex-1 gap-1.5">

@@ -140,7 +140,7 @@ export function ImageConverter() {
                                 className="w-full h-32 object-contain rounded-lg bg-muted/30"
                             />
                         )}
-                        <p className="text-xs text-muted-foreground text-center mt-2">
+                        <p className="text-xs text-muted-foreground text-center mt-2 break-all px-2">
                             {file.name} • {formatSize(file.size)}
                         </p>
                     </div>
