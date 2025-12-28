@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CaretLeft, CaretRight, CaretDown, Check } from "@phosphor-icons/react";
+import { ArrowLeft, CaretLeft, CaretRight, CaretDown, Check, MagnifyingGlass } from "@phosphor-icons/react";
 import { TOOLS } from "@/lib/tools-config";
 
 interface ToolsCarouselProps {
@@ -16,6 +16,7 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
     const [currentIndex, setCurrentIndex] = useState(initialIndex);
     const [direction, setDirection] = useState(0);
     const [showMenu, setShowMenu] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const paginate = (newDirection: number) => {
         const newIndex = currentIndex + newDirection;
@@ -29,6 +30,7 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
         setDirection(index > currentIndex ? 1 : -1);
         setCurrentIndex(index);
         setShowMenu(false);
+        setSearchQuery("");
     };
 
     const currentTool = TOOLS[currentIndex];
@@ -144,127 +146,150 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
                                     transition={{ duration: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
                                     className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-card border rounded-xl shadow-lg overflow-hidden w-[280px] max-h-[350px] overflow-y-auto scrollbar-hide z-50 p-2"
                                 >
+                                    {/* Search input */}
+                                    <div className="relative mb-2">
+                                        <MagnifyingGlass className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+                                        <input
+                                            type="text"
+                                            placeholder="Search tools..."
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            className="w-full pl-8 pr-3 py-1.5 text-xs bg-muted/50 border rounded-lg focus:outline-none focus:ring-1 focus:ring-primary"
+                                            autoFocus
+                                        />
+                                    </div>
+
                                     {/* Tools by category */}
                                     <div className="space-y-3">
                                         {/* Checker */}
-                                        <div>
-                                            <p className="text-[10px] text-muted-foreground/50 uppercase px-1 mb-1">checker</p>
-                                            <div className="grid grid-cols-2 gap-1">
-                                                {TOOLS.filter(t => t.category === 'checker').map((tool) => {
-                                                    const index = TOOLS.findIndex(t => t.id === tool.id);
-                                                    const Icon = tool.icon;
-                                                    return (
-                                                        <button
-                                                            key={tool.id}
-                                                            onClick={() => selectTool(index)}
-                                                            className={`px-2 py-1.5 text-xs rounded-lg flex items-center gap-2 transition-colors ${index === currentIndex
-                                                                ? "bg-primary text-primary-foreground"
-                                                                : "hover:bg-muted text-muted-foreground"
-                                                                }`}
-                                                        >
-                                                            <Icon className="w-3.5 h-3.5" />
-                                                            <span className="truncate">{tool.name}</span>
-                                                        </button>
-                                                    );
-                                                })}
+                                        {TOOLS.filter(t => t.category === 'checker' && (searchQuery === '' || t.name.toLowerCase().includes(searchQuery.toLowerCase()) || t.id.toLowerCase().includes(searchQuery.toLowerCase()))).length > 0 && (
+                                            <div>
+                                                <p className="text-[10px] text-muted-foreground/50 uppercase px-1 mb-1">checker</p>
+                                                <div className="grid grid-cols-2 gap-1">
+                                                    {TOOLS.filter(t => t.category === 'checker' && (searchQuery === '' || t.name.toLowerCase().includes(searchQuery.toLowerCase()) || t.id.toLowerCase().includes(searchQuery.toLowerCase()))).map((tool) => {
+                                                        const index = TOOLS.findIndex(t => t.id === tool.id);
+                                                        const Icon = tool.icon;
+                                                        return (
+                                                            <button
+                                                                key={tool.id}
+                                                                onClick={() => selectTool(index)}
+                                                                className={`px-2 py-1.5 text-xs rounded-lg flex items-center gap-2 transition-colors ${index === currentIndex
+                                                                    ? "bg-primary text-primary-foreground"
+                                                                    : "hover:bg-muted text-muted-foreground"
+                                                                    }`}
+                                                            >
+                                                                <Icon className="w-3.5 h-3.5" />
+                                                                <span className="truncate">{tool.name}</span>
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
                                             </div>
-                                        </div>
+                                        )}
 
                                         {/* Sharing */}
-                                        <div>
-                                            <p className="text-[10px] text-muted-foreground/50 uppercase px-1 mb-1">sharing</p>
-                                            <div className="grid grid-cols-2 gap-1">
-                                                {TOOLS.filter(t => t.category === 'sharing').map((tool) => {
-                                                    const index = TOOLS.findIndex(t => t.id === tool.id);
-                                                    const Icon = tool.icon;
-                                                    return (
-                                                        <button
-                                                            key={tool.id}
-                                                            onClick={() => selectTool(index)}
-                                                            className={`px-2 py-1.5 text-xs rounded-lg flex items-center gap-2 transition-colors ${index === currentIndex
-                                                                ? "bg-primary text-primary-foreground"
-                                                                : "hover:bg-muted text-muted-foreground"
-                                                                }`}
-                                                        >
-                                                            <Icon className="w-3.5 h-3.5" />
-                                                            <span className="truncate">{tool.name}</span>
-                                                        </button>
-                                                    );
-                                                })}
+                                        {TOOLS.filter(t => t.category === 'sharing' && (searchQuery === '' || t.name.toLowerCase().includes(searchQuery.toLowerCase()) || t.id.toLowerCase().includes(searchQuery.toLowerCase()))).length > 0 && (
+                                            <div>
+                                                <p className="text-[10px] text-muted-foreground/50 uppercase px-1 mb-1">sharing</p>
+                                                <div className="grid grid-cols-2 gap-1">
+                                                    {TOOLS.filter(t => t.category === 'sharing' && (searchQuery === '' || t.name.toLowerCase().includes(searchQuery.toLowerCase()) || t.id.toLowerCase().includes(searchQuery.toLowerCase()))).map((tool) => {
+                                                        const index = TOOLS.findIndex(t => t.id === tool.id);
+                                                        const Icon = tool.icon;
+                                                        return (
+                                                            <button
+                                                                key={tool.id}
+                                                                onClick={() => selectTool(index)}
+                                                                className={`px-2 py-1.5 text-xs rounded-lg flex items-center gap-2 transition-colors ${index === currentIndex
+                                                                    ? "bg-primary text-primary-foreground"
+                                                                    : "hover:bg-muted text-muted-foreground"
+                                                                    }`}
+                                                            >
+                                                                <Icon className="w-3.5 h-3.5" />
+                                                                <span className="truncate">{tool.name}</span>
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
                                             </div>
-                                        </div>
+                                        )}
 
                                         {/* Generate */}
-                                        <div>
-                                            <p className="text-[10px] text-muted-foreground/50 uppercase px-1 mb-1">generate</p>
-                                            <div className="grid grid-cols-2 gap-1">
-                                                {TOOLS.filter(t => t.category === 'generate').map((tool) => {
-                                                    const index = TOOLS.findIndex(t => t.id === tool.id);
-                                                    const Icon = tool.icon;
-                                                    return (
-                                                        <button
-                                                            key={tool.id}
-                                                            onClick={() => selectTool(index)}
-                                                            className={`px-2 py-1.5 text-xs rounded-lg flex items-center gap-2 transition-colors ${index === currentIndex
-                                                                ? "bg-primary text-primary-foreground"
-                                                                : "hover:bg-muted text-muted-foreground"
-                                                                }`}
-                                                        >
-                                                            <Icon className="w-3.5 h-3.5" />
-                                                            <span className="truncate">{tool.name}</span>
-                                                        </button>
-                                                    );
-                                                })}
+                                        {TOOLS.filter(t => t.category === 'generate' && (searchQuery === '' || t.name.toLowerCase().includes(searchQuery.toLowerCase()) || t.id.toLowerCase().includes(searchQuery.toLowerCase()))).length > 0 && (
+                                            <div>
+                                                <p className="text-[10px] text-muted-foreground/50 uppercase px-1 mb-1">generate</p>
+                                                <div className="grid grid-cols-2 gap-1">
+                                                    {TOOLS.filter(t => t.category === 'generate' && (searchQuery === '' || t.name.toLowerCase().includes(searchQuery.toLowerCase()) || t.id.toLowerCase().includes(searchQuery.toLowerCase()))).map((tool) => {
+                                                        const index = TOOLS.findIndex(t => t.id === tool.id);
+                                                        const Icon = tool.icon;
+                                                        return (
+                                                            <button
+                                                                key={tool.id}
+                                                                onClick={() => selectTool(index)}
+                                                                className={`px-2 py-1.5 text-xs rounded-lg flex items-center gap-2 transition-colors ${index === currentIndex
+                                                                    ? "bg-primary text-primary-foreground"
+                                                                    : "hover:bg-muted text-muted-foreground"
+                                                                    }`}
+                                                            >
+                                                                <Icon className="w-3.5 h-3.5" />
+                                                                <span className="truncate">{tool.name}</span>
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
                                             </div>
-                                        </div>
+                                        )}
 
                                         {/* Text */}
-                                        <div>
-                                            <p className="text-[10px] text-muted-foreground/50 uppercase px-1 mb-1">text</p>
-                                            <div className="grid grid-cols-2 gap-1">
-                                                {TOOLS.filter(t => t.category === 'text').map((tool) => {
-                                                    const index = TOOLS.findIndex(t => t.id === tool.id);
-                                                    const Icon = tool.icon;
-                                                    return (
-                                                        <button
-                                                            key={tool.id}
-                                                            onClick={() => selectTool(index)}
-                                                            className={`px-2 py-1.5 text-xs rounded-lg flex items-center gap-2 transition-colors ${index === currentIndex
-                                                                ? "bg-primary text-primary-foreground"
-                                                                : "hover:bg-muted text-muted-foreground"
-                                                                }`}
-                                                        >
-                                                            <Icon className="w-3.5 h-3.5" />
-                                                            <span className="truncate">{tool.name}</span>
-                                                        </button>
-                                                    );
-                                                })}
+                                        {TOOLS.filter(t => t.category === 'text' && (searchQuery === '' || t.name.toLowerCase().includes(searchQuery.toLowerCase()) || t.id.toLowerCase().includes(searchQuery.toLowerCase()))).length > 0 && (
+                                            <div>
+                                                <p className="text-[10px] text-muted-foreground/50 uppercase px-1 mb-1">text</p>
+                                                <div className="grid grid-cols-2 gap-1">
+                                                    {TOOLS.filter(t => t.category === 'text' && (searchQuery === '' || t.name.toLowerCase().includes(searchQuery.toLowerCase()) || t.id.toLowerCase().includes(searchQuery.toLowerCase()))).map((tool) => {
+                                                        const index = TOOLS.findIndex(t => t.id === tool.id);
+                                                        const Icon = tool.icon;
+                                                        return (
+                                                            <button
+                                                                key={tool.id}
+                                                                onClick={() => selectTool(index)}
+                                                                className={`px-2 py-1.5 text-xs rounded-lg flex items-center gap-2 transition-colors ${index === currentIndex
+                                                                    ? "bg-primary text-primary-foreground"
+                                                                    : "hover:bg-muted text-muted-foreground"
+                                                                    }`}
+                                                            >
+                                                                <Icon className="w-3.5 h-3.5" />
+                                                                <span className="truncate">{tool.name}</span>
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
                                             </div>
-                                        </div>
+                                        )}
 
                                         {/* Image */}
-                                        <div>
-                                            <p className="text-[10px] text-muted-foreground/50 uppercase px-1 mb-1">image</p>
-                                            <div className="grid grid-cols-2 gap-1">
-                                                {TOOLS.filter(t => t.category === 'image').map((tool) => {
-                                                    const index = TOOLS.findIndex(t => t.id === tool.id);
-                                                    const Icon = tool.icon;
-                                                    return (
-                                                        <button
-                                                            key={tool.id}
-                                                            onClick={() => selectTool(index)}
-                                                            className={`px-2 py-1.5 text-xs rounded-lg flex items-center gap-2 transition-colors ${index === currentIndex
-                                                                ? "bg-primary text-primary-foreground"
-                                                                : "hover:bg-muted text-muted-foreground"
-                                                                }`}
-                                                        >
-                                                            <Icon className="w-3.5 h-3.5" />
-                                                            <span className="truncate">{tool.name}</span>
-                                                        </button>
-                                                    );
-                                                })}
+                                        {TOOLS.filter(t => t.category === 'image' && (searchQuery === '' || t.name.toLowerCase().includes(searchQuery.toLowerCase()) || t.id.toLowerCase().includes(searchQuery.toLowerCase()))).length > 0 && (
+                                            <div>
+                                                <p className="text-[10px] text-muted-foreground/50 uppercase px-1 mb-1">image</p>
+                                                <div className="grid grid-cols-2 gap-1">
+                                                    {TOOLS.filter(t => t.category === 'image' && (searchQuery === '' || t.name.toLowerCase().includes(searchQuery.toLowerCase()) || t.id.toLowerCase().includes(searchQuery.toLowerCase()))).map((tool) => {
+                                                        const index = TOOLS.findIndex(t => t.id === tool.id);
+                                                        const Icon = tool.icon;
+                                                        return (
+                                                            <button
+                                                                key={tool.id}
+                                                                onClick={() => selectTool(index)}
+                                                                className={`px-2 py-1.5 text-xs rounded-lg flex items-center gap-2 transition-colors ${index === currentIndex
+                                                                    ? "bg-primary text-primary-foreground"
+                                                                    : "hover:bg-muted text-muted-foreground"
+                                                                    }`}
+                                                            >
+                                                                <Icon className="w-3.5 h-3.5" />
+                                                                <span className="truncate">{tool.name}</span>
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
                                             </div>
-                                        </div>
+                                        )}
                                     </div>
                                 </motion.div>
                             </>
