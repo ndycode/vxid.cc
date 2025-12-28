@@ -146,19 +146,6 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
                                     transition={{ duration: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
                                     className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-card border rounded-xl shadow-lg overflow-hidden w-[280px] max-h-[350px] overflow-y-auto scrollbar-hide z-50 p-2"
                                 >
-                                    {/* Search input */}
-                                    <div className="relative mb-2">
-                                        <MagnifyingGlass className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-                                        <input
-                                            type="text"
-                                            placeholder="Search tools..."
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="w-full pl-8 pr-3 py-1.5 text-xs bg-muted/50 border rounded-lg focus:outline-none focus:ring-1 focus:ring-primary"
-                                            autoFocus
-                                        />
-                                    </div>
-
                                     {/* Tools by category */}
                                     <div className="space-y-3">
                                         {/* Checker */}
@@ -290,6 +277,19 @@ export function ToolsCarousel({ children, initialIndex = 0, onBack }: ToolsCarou
                                                 </div>
                                             </div>
                                         )}
+                                    </div>
+
+                                    {/* Search input at bottom */}
+                                    <div className="relative mt-2 pt-2 border-t">
+                                        <MagnifyingGlass className="absolute left-2.5 top-1/2 -translate-y-1/2 mt-1 w-3.5 h-3.5 text-muted-foreground" />
+                                        <input
+                                            type="text"
+                                            placeholder="Search tools..."
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            className="w-full pl-8 pr-3 py-1.5 text-xs bg-muted/50 border rounded-lg focus:outline-none focus:ring-1 focus:ring-primary"
+                                            autoFocus
+                                        />
                                     </div>
                                 </motion.div>
                             </>
