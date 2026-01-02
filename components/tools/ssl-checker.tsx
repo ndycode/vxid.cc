@@ -39,14 +39,14 @@ export function SslChecker() {
             const timeout = setTimeout(() => controller.abort(), 10000);
 
             try {
-                const res = await fetch(`https://${cleanDomain}`, {
+                await fetch(`https://${cleanDomain}`, {
                     method: "HEAD",
                     mode: "no-cors",
                     signal: controller.signal,
                 });
                 clearTimeout(timeout);
 
-                // If we get here, HTTPS works
+                // If we get here, HTTPS is reachable
                 setResult({
                     valid: true,
                     issuer: "certificate valid",
@@ -60,15 +60,15 @@ export function SslChecker() {
                 if (fetchErr.name === "AbortError") {
                     throw new Error("connection timeout");
                 }
-                // CORS errors still mean the site is reachable over HTTPS
+                // Network errors indicate the host is unreachable over HTTPS
                 setResult({
-                    valid: true,
-                    issuer: "certificate valid",
+                    valid: false,
+                    issuer: "unreachable",
                     subject: cleanDomain,
                     validFrom: "—",
                     validTo: "—",
                     daysRemaining: -1,
-                    protocol: "TLS",
+                    protocol: "unknown",
                 });
             }
         } catch (err: any) {
@@ -131,7 +131,11 @@ export function SslChecker() {
                         </div>
                         <div className="bg-muted/30 rounded-lg p-2">
                             <p className="text-xs text-muted-foreground">status</p>
-                            <p className="font-medium text-primary">secure</p>
+                            <p
+                                className={`font-medium ${result.valid ? "text-primary" : "text-destructive"}`}
+                            >
+                                {result.valid ? "secure" : "unknown"}
+                            </p>
                         </div>
                     </div>
 

@@ -3,19 +3,38 @@ import crypto from "crypto";
 import { r2Storage } from "@/lib/r2";
 import { logger } from "@/lib/logger";
 import { ValidationError, StorageError, formatErrorResponse } from "@/lib/errors";
-import { MAX_UPLOAD_SIZE, CODE_LENGTH, DEFAULT_EXPIRY_MINUTES, DEFAULT_MAX_DOWNLOADS } from "@/lib/constants";
+import {
+    MAX_UPLOAD_SIZE,
+    MAX_FILE_SIZE,
+    CODE_LENGTH,
+    DEFAULT_EXPIRY_MINUTES,
+    DEFAULT_MAX_DOWNLOADS,
+    MAX_EXPIRY_MINUTES,
+    ALLOWED_MIME_TYPES,
+    ALLOWED_MAX_DOWNLOADS,
+} from "@/lib/constants";
+import { hashPassword } from "@/lib/passwords";
 import type { FileMetadata } from "@/types";
 
-// Generate a 6-digit code
+const NO_STORE_HEADERS = { "Cache-Control": "no-store, private" };
+
+// Generate a numeric code
 function generateCode(): string {
-    const min = Math.pow(10, CODE_LENGTH - 1);
-    const max = Math.pow(10, CODE_LENGTH) - 1;
-    return Math.floor(min + Math.random() * (max - min + 1)).toString();
+    let code = "";
+    for (let i = 0; i < CODE_LENGTH; i++) {
+        code += crypto.randomInt(0, 10).toString();
+    }
+    return code;
 }
 
-// Hash password using SHA-256
-function hashPassword(password: string): string {
-    return crypto.createHash("sha256").update(password).digest("hex");
+function isAllowedMimeType(mimeType: string): boolean {
+    if (!mimeType) return false;
+    return ALLOWED_MIME_TYPES.some((allowed) => {
+        if (allowed.endsWith("/*")) {
+            return mimeType.startsWith(allowed.slice(0, -1));
+        }
+        return mimeType === allowed;
+    });
 }
 
 // Sanitize filename to prevent path traversal
@@ -33,21 +52,46 @@ export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();
         const files = formData.getAll("files") as File[];
-        const expiryMinutes = parseInt(formData.get("expiryMinutes") as string) || DEFAULT_EXPIRY_MINUTES;
-        const maxDownloads = parseInt(formData.get("maxDownloads") as string) || DEFAULT_MAX_DOWNLOADS;
-        const password = formData.get("password") as string | null;
+        const expiryRaw = Number.parseInt(formData.get("expiryMinutes") as string, 10);
+        const maxDownloadsRaw = Number.parseInt(formData.get("maxDownloads") as string, 10);
+        const password = (formData.get("password") as string | null)?.trim() || null;
+        const expiryMinutes = Number.isFinite(expiryRaw)
+            ? Math.min(Math.max(expiryRaw, 1), MAX_EXPIRY_MINUTES)
+            : DEFAULT_EXPIRY_MINUTES;
+        const maxDownloads = ALLOWED_MAX_DOWNLOADS.includes(maxDownloadsRaw as (typeof ALLOWED_MAX_DOWNLOADS)[number])
+            ? maxDownloadsRaw
+            : DEFAULT_MAX_DOWNLOADS;
 
         // Validation
         if (files.length === 0) {
             throw new ValidationError("No files provided", "files");
         }
+        if (files.length !== 1) {
+            throw new ValidationError("Only one file per upload is supported", "files");
+        }
 
-        const totalSize = files.reduce((acc, f) => acc + f.size, 0);
+        const file = files[0];
+        if (!file.name) {
+            throw new ValidationError("Invalid file name", "files");
+        }
+        if (file.size > MAX_FILE_SIZE) {
+            throw new ValidationError(
+                `File size exceeds ${Math.round(MAX_FILE_SIZE / 1024 / 1024)} MB limit`,
+                "files"
+            );
+        }
+
+        const totalSize = file.size;
         if (totalSize > MAX_UPLOAD_SIZE) {
             throw new ValidationError(
                 `Total file size exceeds ${Math.round(MAX_UPLOAD_SIZE / 1024 / 1024)} MB limit`,
                 "files"
             );
+        }
+
+        const mimeType = file.type || "application/octet-stream";
+        if (!isAllowedMimeType(mimeType)) {
+            throw new ValidationError("File type is not allowed", "files");
         }
 
         // Check storage availability
@@ -56,23 +100,20 @@ export async function POST(request: NextRequest) {
         }
 
         // Generate unique code
-        const code = generateCode();
+        let code = generateCode();
+        let attempts = 0;
+        while (await r2Storage.getMetadata(code) && attempts < 10) {
+            code = generateCode();
+            attempts++;
+        }
+        if (attempts >= 10) {
+            throw new StorageError("Failed to generate unique code");
+        }
 
         // Determine file name and prepare buffer
-        let fileName: string;
-        let buffer: Buffer;
-        let mimeType: string;
-
-        if (files.length === 1) {
-            const file = files[0];
-            fileName = sanitizeFilename(file.name);
-            mimeType = file.type || "application/octet-stream";
-            buffer = Buffer.from(await file.arrayBuffer());
-        } else {
-            const file = files[0];
-            fileName = `${files.length}_files_bundle.zip`;
-            mimeType = "application/zip";
-            buffer = Buffer.from(await file.arrayBuffer());
+        let fileName = sanitizeFilename(file.name);
+        if (!fileName) {
+            fileName = "upload.bin";
         }
 
         // Calculate expiry
@@ -91,7 +132,7 @@ export async function POST(request: NextRequest) {
             const key = `${code}-${randomSuffix}-${fileName}`;
 
             // 1. Upload Content
-            await r2Storage.uploadFile(buffer, key, mimeType);
+            await r2Storage.uploadFile(file.stream(), key, mimeType, { size: totalSize });
 
             logger.debug("File uploaded to R2", { requestId, key });
 
@@ -102,8 +143,8 @@ export async function POST(request: NextRequest) {
                 originalName: fileName,
                 size: totalSize,
                 mimeType,
-                expiresAt,
-                maxDownloads: maxDownloads === -1 ? Infinity : maxDownloads,
+                expiresAt: expiresAt.toISOString(),
+                maxDownloads,
                 downloadCount: 0,
                 password: password ? hashPassword(password) : null,
                 downloaded: false,
@@ -117,7 +158,7 @@ export async function POST(request: NextRequest) {
                 code,
                 expiresAt: expiresAt.toISOString(),
                 storageType: "r2",
-            });
+            }, { headers: NO_STORE_HEADERS });
         } catch (error) {
             logger.exception("R2 upload failed", error, { requestId });
             throw new StorageError(
@@ -127,6 +168,9 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         logger.exception("Upload error", error, { requestId });
         const { error: errorMessage, statusCode } = formatErrorResponse(error);
-        return NextResponse.json({ error: errorMessage }, { status: statusCode });
+        return NextResponse.json(
+            { error: errorMessage },
+            { status: statusCode, headers: NO_STORE_HEADERS }
+        );
     }
 }

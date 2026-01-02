@@ -16,7 +16,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "vxid.cc",
-  description: "Transfer files securely between devices with a simple 6-digit code",
+  description: "Transfer files securely between devices with a simple 8-digit code",
 };
 
 export const viewport = {

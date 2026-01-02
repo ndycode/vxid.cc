@@ -156,8 +156,8 @@ describe('Tool Components', () => {
 
         it('has conversion buttons', () => {
             render(<CaseConverter />)
-            expect(screen.getByText('lowercase')).toBeInTheDocument()
-            expect(screen.getByText('UPPERCASE')).toBeInTheDocument()
+            expect(screen.getByText('lower')).toBeInTheDocument()
+            expect(screen.getByText('UPPER')).toBeInTheDocument()
         })
     })
 

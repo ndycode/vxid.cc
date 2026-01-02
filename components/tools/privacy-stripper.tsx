@@ -23,6 +23,46 @@ const DEVICE_DATA: DeviceData[] = [
     { make: 'OnePlus', model: 'CPH2449', software: 'CPH2449_13.1.0.582', lens: 'OnePlus 11 5G' }
 ];
 
+const PIEXIF_SRC = "https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.min.js";
+const PIEXIF_INTEGRITY = "sha384-gLhg+4HrK9u/j3lhoXMbfugBBxOP2bNlOeGEWvf5QIEDD1qXDMMCU6ruAB2rUN/a";
+
+function loadPiexifScript(timeoutMs = 10000): Promise<void> {
+    return new Promise((resolve, reject) => {
+        if (typeof window === "undefined") {
+            reject(new Error("window unavailable"));
+            return;
+        }
+
+        const existing = document.querySelector(`script[src="${PIEXIF_SRC}"]`);
+        if (existing) {
+            resolve();
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.src = PIEXIF_SRC;
+        script.integrity = PIEXIF_INTEGRITY;
+        script.crossOrigin = "anonymous";
+
+        const timer = window.setTimeout(() => {
+            script.remove();
+            reject(new Error("piexif load timeout"));
+        }, timeoutMs);
+
+        script.onload = () => {
+            window.clearTimeout(timer);
+            resolve();
+        };
+        script.onerror = () => {
+            window.clearTimeout(timer);
+            script.remove();
+            reject(new Error("piexif load failed"));
+        };
+
+        document.head.appendChild(script);
+    });
+}
+
 export function PrivacyStripper() {
     const [files, setFiles] = useState<File[]>([]);
     const [processing, setProcessing] = useState(false);
@@ -160,11 +200,14 @@ export function PrivacyStripper() {
         setStatus(null);
 
         // Dynamically load piexifjs if needed
-        if (randomExif && typeof window !== 'undefined' && !(window as any).piexif) {
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.min.js';
-            document.head.appendChild(script);
-            await new Promise(resolve => script.onload = resolve);
+        if (randomExif && typeof window !== "undefined" && !(window as any).piexif) {
+            try {
+                await loadPiexifScript();
+            } catch (err) {
+                setProcessing(false);
+                setStatus("Failed to load EXIF tools");
+                return;
+            }
         }
 
         // Load JSZip

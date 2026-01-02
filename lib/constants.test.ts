@@ -24,8 +24,8 @@ describe("Constants", () => {
     });
 
     describe("Dead Drop Settings", () => {
-        it("CODE_LENGTH should be 6", () => {
-            expect(CODE_LENGTH).toBe(6);
+        it("CODE_LENGTH should be 8", () => {
+            expect(CODE_LENGTH).toBe(8);
         });
 
         it("DEFAULT_EXPIRY_MINUTES should be 60", () => {
@@ -62,7 +62,7 @@ describe("Constants", () => {
         });
 
         it("DOWNLOAD should return correct path", () => {
-            expect(API_ROUTES.DOWNLOAD("123456")).toBe("/api/download/123456");
+            expect(API_ROUTES.DOWNLOAD("12345678")).toBe("/api/download/12345678");
         });
 
         it("SHARE should be correct", () => {

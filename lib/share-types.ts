@@ -9,12 +9,12 @@ export interface ShareMetadata {
     mimeType?: string; // For images
     size?: number; // For images
     language?: string; // For code
-    expiresAt: Date;
+    expiresAt: string;
     password: string | null;
     burnAfterReading: boolean;
     viewCount: number;
     burned: boolean;
-    createdAt: Date;
+    createdAt: string;
 }
 
 export interface CreateShareRequest {

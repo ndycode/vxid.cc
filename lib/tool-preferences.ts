@@ -19,6 +19,19 @@ export function useToolPreferences(): ToolPreferences {
     const [recent, setRecent] = useState<string[]>([]);
     const [mounted, setMounted] = useState(false);
 
+    const parseStringArray = (value: string | null): string[] | null => {
+        if (!value) return null;
+        try {
+            const parsed = JSON.parse(value);
+            if (!Array.isArray(parsed) || !parsed.every((item) => typeof item === "string")) {
+                return null;
+            }
+            return parsed;
+        } catch {
+            return null;
+        }
+    };
+
     // Load from localStorage on mount
     useEffect(() => {
         setMounted(true);
@@ -26,11 +39,13 @@ export function useToolPreferences(): ToolPreferences {
             const storedFavorites = localStorage.getItem(FAVORITES_KEY);
             const storedRecent = localStorage.getItem(RECENT_KEY);
 
-            if (storedFavorites) {
-                setFavorites(JSON.parse(storedFavorites));
+            const favorites = parseStringArray(storedFavorites);
+            if (favorites) {
+                setFavorites(favorites);
             }
-            if (storedRecent) {
-                setRecent(JSON.parse(storedRecent));
+            const recent = parseStringArray(storedRecent);
+            if (recent) {
+                setRecent(recent);
             }
         } catch (e) {
             console.error("Failed to load tool preferences:", e);

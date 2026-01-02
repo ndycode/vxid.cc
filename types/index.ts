@@ -20,8 +20,8 @@ export interface FileMetadata {
     size: number;
     /** MIME type */
     mimeType: string;
-    /** Expiration timestamp */
-    expiresAt: Date;
+    /** Expiration timestamp (ISO string) */
+    expiresAt: string;
     /** Maximum allowed downloads (-1 for unlimited) */
     maxDownloads: number;
     /** Current download count */

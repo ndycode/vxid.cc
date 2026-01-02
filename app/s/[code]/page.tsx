@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,9 +54,16 @@ const TYPE_LABELS: Record<ShareType, string> = {
     csv: "CSV",
 };
 
+function formatJson(content: string): string {
+    try {
+        return JSON.stringify(JSON.parse(content), null, 2);
+    } catch {
+        return "Invalid JSON";
+    }
+}
+
 export default function ShareViewerPage() {
     const params = useParams();
-    const searchParams = useSearchParams();
     const code = params.code as string;
 
     const [data, setData] = useState<ShareData | null>(null);
@@ -73,11 +80,11 @@ export default function ShareViewerPage() {
         setError("");
 
         try {
-            const url = pwd
-                ? `/api/share/${code}?password=${encodeURIComponent(pwd)}`
-                : `/api/share/${code}`;
-
-            const res = await fetch(url);
+            const res = await fetch(`/api/share/${code}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ password: pwd || undefined }),
+            });
             const json = await res.json();
 
             if (res.status === 401 && json.requiresPassword) {
@@ -108,8 +115,7 @@ export default function ShareViewerPage() {
     };
 
     useEffect(() => {
-        const urlPassword = searchParams.get("p");
-        fetchShare(urlPassword || undefined);
+        fetchShare();
     }, [code]);
 
     const handlePasswordSubmit = (e: React.FormEvent) => {
@@ -229,7 +235,7 @@ export default function ShareViewerPage() {
                             {data.type === 'json' && (
                                 <div className="bg-muted/30 rounded-lg p-4 max-h-96 overflow-auto">
                                     <pre className="text-sm font-mono">
-                                        {JSON.stringify(JSON.parse(data.content), null, 2)}
+                                        {formatJson(data.content)}
                                     </pre>
                                 </div>
                             )}

@@ -7,7 +7,7 @@ A privacy-first toolkit with 64+ browser utilities. All tools run client-side �
 ### Core Capabilities
 
 - **Checker Tools** — IP lookup, DNS records, WHOIS, SSL check, ping, user agent, screen info, leak detection
-- **File Sharing** — Dead drop with 6-digit codes, optional passwords, and auto-expiry
+- **File Sharing** — Dead drop with 8-digit codes, optional passwords, and auto-expiry
 - **Sharing Tools** — Link shortener, pastebin, image host, secret notes, code/JSON/CSV sharing
 - **Image Processing** — Compress, resize, convert, crop, blur, rotate, filter, remove backgrounds
 - **Text Utilities** — Word count, case conversion, regex tester, Lorem ipsum, base64 encoding
@@ -78,6 +78,8 @@ R2_ACCESS_KEY_ID=your_access_key
 R2_SECRET_ACCESS_KEY=your_secret_key
 R2_BUCKET_NAME=your_bucket_name
 R2_PUBLIC_URL=your_public_url
+UPSTASH_REDIS_REST_URL=your_upstash_rest_url
+UPSTASH_REDIS_REST_TOKEN=your_upstash_rest_token
 ```
 
 ## Available Scripts

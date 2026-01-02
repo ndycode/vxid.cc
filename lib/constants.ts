@@ -31,8 +31,11 @@ export const ALLOWED_MIME_TYPES = [
 // Dead Drop Settings
 // =============================================================================
 
-/** Length of share codes */
-export const CODE_LENGTH = 6;
+/** Length of download codes (numeric) */
+export const CODE_LENGTH = 8;
+
+/** Length of share codes (alphanumeric) */
+export const SHARE_CODE_LENGTH = 8;
 
 /** Default expiry time in minutes */
 export const DEFAULT_EXPIRY_MINUTES = 60;
@@ -43,8 +46,29 @@ export const MAX_EXPIRY_MINUTES = 60 * 24 * 7;
 /** Default max downloads */
 export const DEFAULT_MAX_DOWNLOADS = 1;
 
+/** Allowed max downloads values (-1 means unlimited) */
+export const ALLOWED_MAX_DOWNLOADS = [1, 5, 10, -1] as const;
+
+/** Rate limit window in milliseconds */
+export const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+
 /** Rate limit: max uploads per minute per IP */
 export const UPLOAD_RATE_LIMIT = 10;
+
+/** Rate limit: max downloads per minute per IP */
+export const DOWNLOAD_RATE_LIMIT = 60;
+
+/** Rate limit: max share reads/creates per minute per IP */
+export const SHARE_RATE_LIMIT = 60;
+
+/** Max text share content size in bytes */
+export const MAX_SHARE_TEXT_SIZE = 1024 * 1024;
+
+/** Max image share content size in bytes */
+export const MAX_SHARE_IMAGE_BYTES = 5 * 1024 * 1024;
+
+/** Maximum share expiry time in minutes (30 days) */
+export const MAX_SHARE_EXPIRY_MINUTES = 60 * 24 * 30;
 
 // =============================================================================
 // UI Constants

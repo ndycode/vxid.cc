@@ -11,6 +11,7 @@ import { QRModal } from "@/components/qr-modal";
 import { getFileIcon } from "@/lib/file-icons";
 import confetti from "canvas-confetti";
 import { CONFETTI_COLORS } from "@/lib/colors";
+import { CODE_LENGTH } from "@/lib/constants";
 import {
     UploadSimple,
     CheckCircle,
@@ -173,7 +174,7 @@ export function DeadDrop() {
     };
 
     const checkCode = async () => {
-        if (code.length !== 6) return;
+        if (code.length !== CODE_LENGTH) return;
         setDownloadStatus("loading");
         setError("");
         setFileInfo(null);
@@ -201,8 +202,13 @@ export function DeadDrop() {
         setDownloadStatus("downloading");
 
         try {
-            const passwordParam = fileInfo.requiresPassword ? `&password=${encodeURIComponent(downloadPassword)}` : "";
-            const res = await fetch(`/api/download/${code}?download=true${passwordParam}`);
+            const res = await fetch(`/api/download/${code}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    password: fileInfo.requiresPassword ? downloadPassword : undefined,
+                }),
+            });
 
             if (!res.ok) {
                 const data = await res.json();
@@ -285,7 +291,7 @@ export function DeadDrop() {
                                     </div>
                                     <button onClick={() => setShowQRModal(true)} className="text-foreground hover:scale-105 transition-transform">
                                         <QRCodeSVG
-                                            value={`${typeof window !== 'undefined' ? window.location.origin : ''}/share?code=${shareCode}`}
+                                            value={`${typeof window !== 'undefined' ? window.location.origin : ''}/download?code=${shareCode}`}
                                             size={52}
                                             level="L"
                                             bgColor="transparent"
@@ -300,7 +306,7 @@ export function DeadDrop() {
                                     <Button variant="outline" onClick={() => copyToClipboard(shareCode, "Code")} className="flex-1 gap-1.5 h-9" size="sm">
                                         <Copy className="w-3.5 h-3.5" /> Code
                                     </Button>
-                                    <Button variant="outline" onClick={() => copyToClipboard(`${window.location.origin}/share?code=${shareCode}`, "Link")} className="flex-1 gap-1.5 h-9" size="sm">
+                                    <Button variant="outline" onClick={() => copyToClipboard(`${window.location.origin}/download?code=${shareCode}`, "Link")} className="flex-1 gap-1.5 h-9" size="sm">
                                         <LinkIcon className="w-3.5 h-3.5" /> Link
                                     </Button>
                                     <Button onClick={reset} className="flex-1 h-9" size="sm">New</Button>
@@ -448,19 +454,19 @@ export function DeadDrop() {
                             <div className="py-6 text-center space-y-5">
                                 <div>
                                     <p className="font-semibold text-lg">Get file</p>
-                                    <p className="text-sm text-muted-foreground">Enter 6-digit code</p>
+                                    <p className="text-sm text-muted-foreground">Enter {CODE_LENGTH}-digit code</p>
                                 </div>
                                 <div className="flex justify-center">
-                                    <InputOTP maxLength={6} value={code} onChange={(v) => { setCode(v); setError(""); if (v.length === 6) { setButtonGlow(true); setTimeout(() => setButtonGlow(false), 1000); setTimeout(checkCode, 50); } }}>
+                                    <InputOTP maxLength={CODE_LENGTH} value={code} onChange={(v) => { setCode(v); setError(""); if (v.length === CODE_LENGTH) { setButtonGlow(true); setTimeout(() => setButtonGlow(false), 1000); setTimeout(checkCode, 50); } }}>
                                         <InputOTPGroup className="gap-1.5">
-                                            {[0, 1, 2, 3, 4, 5].map(i => (
+                                            {Array.from({ length: CODE_LENGTH }, (_, i) => (
                                                 <InputOTPSlot key={i} index={i} className="w-9 h-11 rounded-lg border-2 text-base" />
                                             ))}
                                         </InputOTPGroup>
                                     </InputOTP>
                                 </div>
                                 {error && <p className="text-sm text-destructive flex items-center justify-center gap-1"><Warning weight="bold" className="w-4 h-4" /> {error}</p>}
-                                <Button onClick={checkCode} disabled={code.length !== 6 || downloadStatus === "loading"} className={`w-full transition-all duration-300 ${buttonGlow ? "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-[0_0_20px_hsl(var(--primary)/0.5)]" : ""}`} size="lg">
+                                <Button onClick={checkCode} disabled={code.length !== CODE_LENGTH || downloadStatus === "loading"} className={`w-full transition-all duration-300 ${buttonGlow ? "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-[0_0_20px_hsl(var(--primary)/0.5)]" : ""}`} size="lg">
                                     {downloadStatus === "loading" ? "Checking..." : "Get File"}
                                 </Button>
                             </div>

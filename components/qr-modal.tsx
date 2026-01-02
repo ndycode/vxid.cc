@@ -15,7 +15,7 @@ interface QRModalProps {
 
 export function QRModal({ code, isOpen, onClose, onCopy }: QRModalProps) {
     const shareUrl = typeof window !== 'undefined'
-        ? `${window.location.origin}/share?code=${code}`
+        ? `${window.location.origin}/download?code=${code}`
         : '';
 
     return (

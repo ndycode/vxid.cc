@@ -12,7 +12,7 @@ export interface FileMetadata {
     mimeType: string;
 
     // Options
-    expiresAt: Date;
+    expiresAt: string;
     maxDownloads: number;
     downloadCount: number;
     password: string | null;

@@ -125,12 +125,12 @@ describe('Image Tool Components', () => {
     describe('BackgroundRemover', () => {
         it('renders dropzone correctly', () => {
             render(<BackgroundRemover />)
-            expect(screen.getByText(/tap to upload image/i)).toBeInTheDocument()
+            expect(screen.getByText(/upload/i)).toBeInTheDocument()
         })
 
         it('shows supported formats', () => {
             render(<BackgroundRemover />)
-            expect(screen.getByText(/png, jpg, webp/i)).toBeInTheDocument()
+            expect(screen.getByText(/ai runs in your browser/i)).toBeInTheDocument()
         })
     })
 

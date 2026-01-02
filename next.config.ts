@@ -73,7 +73,7 @@ const nextConfig: NextConfig = {
   // Logging in production
   logging: {
     fetches: {
-      fullUrl: true,
+      fullUrl: false,
     },
   },
 };

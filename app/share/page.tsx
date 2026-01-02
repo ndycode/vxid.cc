@@ -1,15 +1,20 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function SharePage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     useEffect(() => {
-        // Redirect to home page which now handles both views
+        const code = searchParams.get("code");
+        if (code) {
+            router.replace(`/download?code=${encodeURIComponent(code)}`);
+            return;
+        }
         router.replace("/");
-    }, [router]);
+    }, [router, searchParams]);
 
     return null;
 }

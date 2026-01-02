@@ -4,6 +4,7 @@ import {
     GetObjectCommand,
     DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
+import { Readable } from "stream";
 import { logger } from "./logger";
 import { StorageError } from "./errors";
 import type { FileMetadata } from "@/types";
@@ -49,28 +50,38 @@ class R2StorageService {
      * Upload a file to R2
      */
     async uploadFile(
-        buffer: Buffer | string,
+        body: Buffer | string | Uint8Array | ReadableStream,
         key: string,
-        mimeType: string
+        mimeType: string,
+        options: { ifMatch?: string; size?: number } = {}
     ): Promise<string> {
         if (!this.client || !this.bucketName) {
             throw new StorageError("R2 storage not configured");
         }
 
-        logger.debug("Uploading to R2", { key, mimeType, size: buffer.length });
+        const size = typeof options.size === "number"
+            ? options.size
+            : Buffer.isBuffer(body)
+                ? body.length
+                : undefined;
+        logger.debug("Uploading to R2", { key, mimeType, size });
 
         try {
             await this.client.send(
                 new PutObjectCommand({
                     Bucket: this.bucketName,
                     Key: key,
-                    Body: buffer,
+                    Body: body,
                     ContentType: mimeType,
+                    ...(options.ifMatch ? { IfMatch: options.ifMatch } : {}),
                 })
             );
 
             return key;
         } catch (error) {
+            if (this.isConditionalError(error)) {
+                throw new StorageError("Conditional write failed", 409);
+            }
             logger.exception("R2 upload failed", error, { key });
             throw new StorageError(
                 error instanceof Error ? error.message : "Upload failed"
@@ -102,10 +113,87 @@ class R2StorageService {
             const byteArray = await response.Body.transformToByteArray();
             return Buffer.from(byteArray);
         } catch (error: unknown) {
-            if (error instanceof Error && error.name === "NoSuchKey") {
+            if (this.isNotFoundError(error)) {
                 throw new StorageError("File not found", 404);
             }
-            throw error;
+            throw new StorageError(
+                error instanceof Error ? error.message : "Download failed"
+            );
+        }
+    }
+
+    /**
+     * Download a file as a stream from R2
+     */
+    async downloadStream(key: string): Promise<ReadableStream> {
+        if (!this.client || !this.bucketName) {
+            throw new StorageError("R2 storage not configured");
+        }
+
+        try {
+            const response = await this.client.send(
+                new GetObjectCommand({
+                    Bucket: this.bucketName,
+                    Key: key,
+                })
+            );
+
+            if (!response.Body) {
+                throw new StorageError("File empty");
+            }
+
+            if (typeof response.Body.transformToWebStream === "function") {
+                return response.Body.transformToWebStream() as unknown as ReadableStream;
+            }
+
+            return Readable.toWeb(response.Body as unknown as Readable) as unknown as ReadableStream;
+        } catch (error: unknown) {
+            if (this.isNotFoundError(error)) {
+                throw new StorageError("File not found", 404);
+            }
+            throw new StorageError(
+                error instanceof Error ? error.message : "Download failed"
+            );
+        }
+    }
+
+    private async getJsonObject<T>(key: string): Promise<{ data: T; etag: string }> {
+        if (!this.client || !this.bucketName) {
+            throw new StorageError("R2 storage not configured");
+        }
+
+        try {
+            const response = await this.client.send(
+                new GetObjectCommand({
+                    Bucket: this.bucketName,
+                    Key: key,
+                })
+            );
+
+            if (!response.Body) {
+                throw new StorageError("File empty");
+            }
+
+            const byteArray = await response.Body.transformToByteArray();
+            const etag = response.ETag;
+            if (!etag) {
+                throw new StorageError("Missing ETag", 500);
+            }
+
+            return {
+                data: JSON.parse(Buffer.from(byteArray).toString()) as T,
+                etag,
+            };
+        } catch (error: unknown) {
+            if (this.isNotFoundError(error)) {
+                throw new StorageError("File not found", 404);
+            }
+            if (error instanceof StorageError) {
+                throw error;
+            }
+            throw new StorageError(
+                error instanceof Error ? error.message : "Download failed"
+            );
         }
     }
 
@@ -114,21 +202,43 @@ class R2StorageService {
      */
     async getMetadata(code: string): Promise<FileMetadata | null> {
         try {
-            const buffer = await this.downloadRaw(`${code}.metadata.json`);
-            return JSON.parse(buffer.toString()) as FileMetadata;
-        } catch {
-            return null;
+            const result = await this.getJsonObject<FileMetadata>(`${code}.metadata.json`);
+            return result.data;
+        } catch (error) {
+            if (error instanceof StorageError && error.statusCode === 404) {
+                return null;
+            }
+            throw error;
+        }
+    }
+
+    async getMetadataWithEtag(
+        code: string
+    ): Promise<{ metadata: FileMetadata; etag: string } | null> {
+        try {
+            const result = await this.getJsonObject<FileMetadata>(`${code}.metadata.json`);
+            return { metadata: result.data, etag: result.etag };
+        } catch (error) {
+            if (error instanceof StorageError && error.statusCode === 404) {
+                return null;
+            }
+            throw error;
         }
     }
 
     /**
      * Save file metadata (dead drop)
      */
-    async saveMetadata(code: string, metadata: FileMetadata): Promise<void> {
+    async saveMetadata(
+        code: string,
+        metadata: FileMetadata,
+        options: { ifMatch?: string } = {}
+    ): Promise<void> {
         await this.uploadFile(
             Buffer.from(JSON.stringify(metadata)),
             `${code}.metadata.json`,
-            "application/json"
+            "application/json",
+            options
         );
     }
 
@@ -156,21 +266,43 @@ class R2StorageService {
      */
     async getShareMetadata(code: string): Promise<ShareMetadata | null> {
         try {
-            const buffer = await this.downloadRaw(`share-${code}.json`);
-            return JSON.parse(buffer.toString()) as ShareMetadata;
-        } catch {
-            return null;
+            const result = await this.getJsonObject<ShareMetadata>(`share-${code}.json`);
+            return result.data;
+        } catch (error) {
+            if (error instanceof StorageError && error.statusCode === 404) {
+                return null;
+            }
+            throw error;
+        }
+    }
+
+    async getShareMetadataWithEtag(
+        code: string
+    ): Promise<{ metadata: ShareMetadata; etag: string } | null> {
+        try {
+            const result = await this.getJsonObject<ShareMetadata>(`share-${code}.json`);
+            return { metadata: result.data, etag: result.etag };
+        } catch (error) {
+            if (error instanceof StorageError && error.statusCode === 404) {
+                return null;
+            }
+            throw error;
         }
     }
 
     /**
      * Save share metadata
      */
-    async saveShareMetadata(code: string, metadata: ShareMetadata): Promise<void> {
+    async saveShareMetadata(
+        code: string,
+        metadata: ShareMetadata,
+        options: { ifMatch?: string } = {}
+    ): Promise<void> {
         await this.uploadFile(
             Buffer.from(JSON.stringify(metadata)),
             `share-${code}.json`,
-            "application/json"
+            "application/json",
+            options
         );
     }
 
@@ -179,6 +311,35 @@ class R2StorageService {
      */
     async deleteShareMetadata(code: string): Promise<void> {
         await this.deleteFile(`share-${code}.json`);
+    }
+
+    private isNotFoundError(error: unknown): boolean {
+        if (error instanceof StorageError) {
+            return error.statusCode === 404;
+        }
+        if (error && typeof error === "object") {
+            const err = error as { name?: string; $metadata?: { httpStatusCode?: number } };
+            if (err.name === "NoSuchKey" || err.name === "NotFound") {
+                return true;
+            }
+            if (err.$metadata?.httpStatusCode === 404) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private isConditionalError(error: unknown): boolean {
+        if (error && typeof error === "object") {
+            const err = error as { name?: string; $metadata?: { httpStatusCode?: number } };
+            if (err.name === "PreconditionFailed" || err.name === "ConditionalRequestConflict") {
+                return true;
+            }
+            if (err.$metadata?.httpStatusCode === 409 || err.$metadata?.httpStatusCode === 412) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { CODE_LENGTH } from "@/lib/constants";
 
 interface FileInfo {
     name: string;
@@ -37,7 +38,7 @@ export function useDownload() {
 
     const checkCode = useCallback(async (codeToCheck?: string) => {
         const code = codeToCheck || state.code;
-        if (code.length !== 6) return null;
+        if (code.length !== CODE_LENGTH) return null;
 
         setState(prev => ({ ...prev, status: "loading", error: "", fileInfo: null }));
 
@@ -76,10 +77,13 @@ export function useDownload() {
         setState(prev => ({ ...prev, status: "downloading" }));
 
         try {
-            const passwordParam = state.fileInfo.requiresPassword
-                ? `&password=${encodeURIComponent(state.password)}`
-                : "";
-            const res = await fetch(`/api/download/${state.code}?download=true${passwordParam}`);
+            const res = await fetch(`/api/download/${state.code}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    password: state.fileInfo.requiresPassword ? state.password : undefined,
+                }),
+            });
 
             if (!res.ok) {
                 const data = await res.json();

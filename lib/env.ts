@@ -12,6 +12,9 @@ interface EnvConfig {
     R2_SECRET_ACCESS_KEY: string;
     R2_BUCKET_NAME: string;
     R2_PUBLIC_URL?: string;
+    // Rate limiting (Upstash)
+    UPSTASH_REDIS_REST_URL?: string;
+    UPSTASH_REDIS_REST_TOKEN?: string;
 
     // App
     NODE_ENV: "development" | "production" | "test";
@@ -38,6 +41,8 @@ function validateEnv(): EnvValidation {
     const optional = [
         "R2_PUBLIC_URL",
         "NEXT_PUBLIC_APP_URL",
+        "UPSTASH_REDIS_REST_URL",
+        "UPSTASH_REDIS_REST_TOKEN",
     ];
 
     const missing: string[] = [];
@@ -92,6 +97,8 @@ function getEnvConfig(): EnvConfig {
         R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY || "",
         R2_BUCKET_NAME: process.env.R2_BUCKET_NAME || "",
         R2_PUBLIC_URL: process.env.R2_PUBLIC_URL,
+        UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
+        UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
         NODE_ENV: (process.env.NODE_ENV as EnvConfig["NODE_ENV"]) || "development",
         NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     };

@@ -1,86 +1,152 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import {
+    RATE_LIMIT_WINDOW_MS,
+    UPLOAD_RATE_LIMIT,
+    DOWNLOAD_RATE_LIMIT,
+    SHARE_RATE_LIMIT,
+} from "@/lib/constants";
 
-/**
- * Simple in-memory rate limiter
- * In production, use Redis or a distributed cache
- */
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const inMemoryCounters = new Map<string, { count: number; resetTime: number }>();
+let lastCleanup = 0;
 
-const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
-const MAX_REQUESTS_PER_WINDOW = 60; // 60 requests per minute
+const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL;
+const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+const USE_UPSTASH = Boolean(UPSTASH_URL && UPSTASH_TOKEN);
 
-function getRateLimitKey(request: NextRequest): string {
-    // Use IP address for rate limiting
-    const forwarded = request.headers.get("x-forwarded-for");
-    const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-    return ip;
+function getClientIp(request: NextRequest): string | null {
+    const requestIp = (request as { ip?: string }).ip;
+    if (requestIp) return requestIp;
+    const headers = request.headers;
+    const forwarded = headers.get("x-forwarded-for");
+    if (forwarded) return forwarded.split(",")[0].trim();
+    const realIp = headers.get("x-real-ip");
+    if (realIp) return realIp.trim();
+    const vercelIp = headers.get("x-vercel-forwarded-for");
+    if (vercelIp) return vercelIp.trim();
+    return null;
 }
 
-function isRateLimited(key: string): { limited: boolean; remaining: number; resetIn: number } {
-    const now = Date.now();
-    const record = rateLimitMap.get(key);
-
-    if (!record || now > record.resetTime) {
-        // New window
-        rateLimitMap.set(key, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
-        return { limited: false, remaining: MAX_REQUESTS_PER_WINDOW - 1, resetIn: RATE_LIMIT_WINDOW_MS };
-    }
-
-    if (record.count >= MAX_REQUESTS_PER_WINDOW) {
-        return { limited: true, remaining: 0, resetIn: record.resetTime - now };
-    }
-
-    record.count++;
-    return { limited: false, remaining: MAX_REQUESTS_PER_WINDOW - record.count, resetIn: record.resetTime - now };
+function getLimitForPath(pathname: string): { limit: number; key: string } | null {
+    if (pathname.startsWith("/api/upload")) return { limit: UPLOAD_RATE_LIMIT, key: "upload" };
+    if (pathname.startsWith("/api/download")) return { limit: DOWNLOAD_RATE_LIMIT, key: "download" };
+    if (pathname.startsWith("/api/share")) return { limit: SHARE_RATE_LIMIT, key: "share" };
+    return null;
 }
 
-// Clean up old entries periodically
-setInterval(() => {
+async function upstashIncr(key: string, windowMs: number): Promise<number> {
+    const encodedKey = encodeURIComponent(key);
+    const headers = {
+        Authorization: `Bearer ${UPSTASH_TOKEN}`,
+    };
+
+    const incrRes = await fetch(`${UPSTASH_URL}/incr/${encodedKey}`, { headers });
+    const incrJson = await incrRes.json();
+    if (!incrRes.ok || incrJson.error) {
+        throw new Error(incrJson.error || "Rate limit increment failed");
+    }
+
+    if (incrJson.result === 1) {
+        await fetch(`${UPSTASH_URL}/pexpire/${encodedKey}/${windowMs}`, { headers });
+    }
+
+    return incrJson.result as number;
+}
+
+function inMemoryIncr(key: string, windowMs: number): number {
     const now = Date.now();
-    for (const [key, record] of rateLimitMap.entries()) {
-        if (now > record.resetTime) {
-            rateLimitMap.delete(key);
+    if (now - lastCleanup > windowMs) {
+        for (const [entryKey, record] of inMemoryCounters.entries()) {
+            if (now > record.resetTime) {
+                inMemoryCounters.delete(entryKey);
+            }
         }
+        lastCleanup = now;
     }
-}, RATE_LIMIT_WINDOW_MS);
 
-export function middleware(request: NextRequest) {
-    // Only rate limit API routes
-    if (request.nextUrl.pathname.startsWith("/api/")) {
-        const key = getRateLimitKey(request);
-        const { limited, remaining, resetIn } = isRateLimited(key);
+    const record = inMemoryCounters.get(key);
+    if (!record || now > record.resetTime) {
+        inMemoryCounters.set(key, { count: 1, resetTime: now + windowMs });
+        return 1;
+    }
 
-        if (limited) {
+    record.count += 1;
+    return record.count;
+}
+
+export async function middleware(request: NextRequest) {
+    const { pathname } = request.nextUrl;
+    if (!pathname.startsWith("/api/")) {
+        return NextResponse.next();
+    }
+
+    const config = getLimitForPath(pathname);
+    if (!config) {
+        return NextResponse.next();
+    }
+
+    const ip = getClientIp(request);
+    if (!ip) {
+        if (process.env.NODE_ENV === "production") {
             return new NextResponse(
-                JSON.stringify({ error: "Too many requests, please try again later" }),
-                {
-                    status: 429,
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-RateLimit-Limit": MAX_REQUESTS_PER_WINDOW.toString(),
-                        "X-RateLimit-Remaining": "0",
-                        "X-RateLimit-Reset": Math.ceil(resetIn / 1000).toString(),
-                        "Retry-After": Math.ceil(resetIn / 1000).toString(),
-                    },
-                }
+                JSON.stringify({ error: "Client IP unavailable" }),
+                { status: 400, headers: { "Content-Type": "application/json" } }
             );
         }
-
-        // Add rate limit headers to successful responses
-        const response = NextResponse.next();
-        response.headers.set("X-RateLimit-Limit", MAX_REQUESTS_PER_WINDOW.toString());
-        response.headers.set("X-RateLimit-Remaining", remaining.toString());
-        response.headers.set("X-RateLimit-Reset", Math.ceil(resetIn / 1000).toString());
-        return response;
+        return NextResponse.next();
     }
 
-    return NextResponse.next();
+    if (process.env.NODE_ENV === "production" && !USE_UPSTASH) {
+        return new NextResponse(
+            JSON.stringify({ error: "Rate limiter not configured" }),
+            { status: 503, headers: { "Content-Type": "application/json" } }
+        );
+    }
+
+    const now = Date.now();
+    const windowId = Math.floor(now / RATE_LIMIT_WINDOW_MS);
+    const resetIn = RATE_LIMIT_WINDOW_MS - (now % RATE_LIMIT_WINDOW_MS);
+    const key = `rate:${config.key}:${ip}:${windowId}`;
+
+    let count: number;
+    try {
+        count = USE_UPSTASH
+            ? await upstashIncr(key, RATE_LIMIT_WINDOW_MS)
+            : inMemoryIncr(key, RATE_LIMIT_WINDOW_MS);
+    } catch {
+        return new NextResponse(
+            JSON.stringify({ error: "Rate limiter unavailable" }),
+            { status: 503, headers: { "Content-Type": "application/json" } }
+        );
+    }
+
+    const remaining = Math.max(config.limit - count, 0);
+    const baseHeaders = {
+        "Content-Type": "application/json",
+        "X-RateLimit-Limit": config.limit.toString(),
+        "X-RateLimit-Remaining": remaining.toString(),
+        "X-RateLimit-Reset": Math.ceil(resetIn / 1000).toString(),
+    };
+
+    if (count > config.limit) {
+        return new NextResponse(JSON.stringify({ error: "Too many requests, please try again later" }), {
+            status: 429,
+            headers: {
+                ...baseHeaders,
+                "Retry-After": Math.ceil(resetIn / 1000).toString(),
+            },
+        });
+    }
+
+    const response = NextResponse.next();
+    response.headers.set("X-RateLimit-Limit", baseHeaders["X-RateLimit-Limit"]);
+    response.headers.set("X-RateLimit-Remaining", baseHeaders["X-RateLimit-Remaining"]);
+    response.headers.set("X-RateLimit-Reset", baseHeaders["X-RateLimit-Reset"]);
+    return response;
 }
 
 export const config = {
     matcher: [
-        // Match all API routes
         "/api/:path*",
     ],
 };

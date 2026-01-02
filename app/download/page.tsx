@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { Input } from "@/components/ui/input";
 import {
     ArrowLeft,
     Download,
@@ -14,6 +16,7 @@ import {
     Timer,
     HardDrive,
 } from "@phosphor-icons/react";
+import { CODE_LENGTH } from "@/lib/constants";
 
 type DownloadState = "idle" | "loading" | "ready" | "downloading" | "success" | "error";
 
@@ -21,13 +24,17 @@ interface FileInfo {
     name: string;
     size: number;
     expiresAt: string;
+    requiresPassword: boolean;
+    downloadsRemaining?: number | string;
 }
 
 export default function DownloadPage() {
+    const searchParams = useSearchParams();
     const [code, setCode] = useState("");
     const [downloadState, setDownloadState] = useState<DownloadState>("idle");
     const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
     const [error, setError] = useState("");
+    const [password, setPassword] = useState("");
 
     const formatFileSize = (bytes: number) => {
         if (bytes === 0) return "0 Bytes";
@@ -49,14 +56,16 @@ export default function DownloadPage() {
         return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
     };
 
-    const checkCode = async () => {
-        if (code.length !== 6) return;
+    const checkCode = async (codeToCheck?: string) => {
+        const codeValue = codeToCheck ?? code;
+        if (codeValue.length !== CODE_LENGTH) return;
 
         setDownloadState("loading");
         setError("");
+        setPassword("");
 
         try {
-            const response = await fetch(`/api/download/${code}`);
+            const response = await fetch(`/api/download/${codeValue}`);
 
             if (!response.ok) {
                 const data = await response.json();
@@ -72,16 +81,35 @@ export default function DownloadPage() {
         }
     };
 
+    useEffect(() => {
+        const queryCode = searchParams.get("code");
+        if (queryCode && queryCode.length === CODE_LENGTH) {
+            setCode(queryCode);
+            checkCode(queryCode);
+        }
+    }, [searchParams]);
+
     const downloadFile = async () => {
         if (!fileInfo) return;
 
         setDownloadState("downloading");
 
         try {
-            const response = await fetch(`/api/download/${code}?download=true`);
+            if (fileInfo.requiresPassword && !password) {
+                throw new Error("Password required");
+            }
+
+            const response = await fetch(`/api/download/${code}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    password: fileInfo.requiresPassword ? password : undefined,
+                }),
+            });
 
             if (!response.ok) {
-                throw new Error("Download failed");
+                const data = await response.json();
+                throw new Error(data.error || "Download failed");
             }
 
             const blob = await response.blob();
@@ -106,6 +134,7 @@ export default function DownloadPage() {
         setDownloadState("idle");
         setFileInfo(null);
         setError("");
+        setPassword("");
     };
 
     return (
@@ -127,7 +156,7 @@ export default function DownloadPage() {
                     </Link>
                     <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Download File</h1>
                     <p className="text-muted-foreground mt-2">
-                        Enter the 6-digit code to download your file
+                        Enter the {CODE_LENGTH}-digit code to download your file
                     </p>
                 </div>
 
@@ -139,7 +168,7 @@ export default function DownloadPage() {
                             Enter Code
                         </CardTitle>
                         <CardDescription>
-                            Enter the 6-digit code shared with you
+                            Enter the {CODE_LENGTH}-digit code shared with you
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
@@ -195,9 +224,24 @@ export default function DownloadPage() {
                                     </div>
                                 </div>
 
+                                {fileInfo.requiresPassword && (
+                                    <div className="space-y-2">
+                                        <p className="text-sm text-muted-foreground">
+                                            Password required
+                                        </p>
+                                        <Input
+                                            type="password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            placeholder="Enter password"
+                                            className="h-10"
+                                        />
+                                    </div>
+                                )}
+
                                 <Button
                                     onClick={downloadFile}
-                                    disabled={downloadState === "downloading"}
+                                    disabled={downloadState === "downloading" || (fileInfo.requiresPassword && !password)}
                                     size="lg"
                                     className="w-full gap-2"
                                 >
@@ -220,21 +264,18 @@ export default function DownloadPage() {
                                     <InputOTP
                                         value={code}
                                         onChange={setCode}
-                                        maxLength={6}
+                                        maxLength={CODE_LENGTH}
                                         disabled={downloadState === "loading"}
                                     >
                                         <InputOTPGroup>
-                                            <InputOTPSlot index={0} className="w-11 h-14 sm:w-14 sm:h-16 text-xl sm:text-2xl" />
-                                            <InputOTPSlot index={1} className="w-11 h-14 sm:w-14 sm:h-16 text-xl sm:text-2xl" />
-                                            <InputOTPSlot index={2} className="w-11 h-14 sm:w-14 sm:h-16 text-xl sm:text-2xl" />
-                                            <InputOTPSlot index={3} className="w-11 h-14 sm:w-14 sm:h-16 text-xl sm:text-2xl" />
-                                            <InputOTPSlot index={4} className="w-11 h-14 sm:w-14 sm:h-16 text-xl sm:text-2xl" />
-                                            <InputOTPSlot index={5} className="w-11 h-14 sm:w-14 sm:h-16 text-xl sm:text-2xl" />
+                                            {Array.from({ length: CODE_LENGTH }, (_, i) => (
+                                                <InputOTPSlot key={i} index={i} className="w-11 h-14 sm:w-14 sm:h-16 text-xl sm:text-2xl" />
+                                            ))}
                                         </InputOTPGroup>
                                     </InputOTP>
 
                                     <p className="text-sm text-muted-foreground">
-                                        Enter the 6-digit code to access your file
+                                        Enter the {CODE_LENGTH}-digit code to access your file
                                     </p>
                                 </div>
 
@@ -247,12 +288,12 @@ export default function DownloadPage() {
                                 )}
 
                                 {/* Check Code Button */}
-                                <Button
-                                    onClick={checkCode}
-                                    disabled={code.length !== 6 || downloadState === "loading"}
-                                    size="lg"
-                                    className="w-full gap-2"
-                                >
+                                    <Button
+                                        onClick={() => checkCode()}
+                                        disabled={code.length !== CODE_LENGTH || downloadState === "loading"}
+                                        size="lg"
+                                        className="w-full gap-2"
+                                    >
                                     <Download weight="bold" className="w-5 h-5" />
                                     {downloadState === "loading" ? "Checking..." : "Find File"}
                                 </Button>
