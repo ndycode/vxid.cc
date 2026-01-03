@@ -15,6 +15,7 @@ import {
     CheckCircle,
     Timer,
     HardDrive,
+    Info,
 } from "@phosphor-icons/react";
 import { CODE_LENGTH } from "@/lib/constants";
 
@@ -26,6 +27,19 @@ interface FileInfo {
     expiresAt: string;
     requiresPassword: boolean;
     downloadsRemaining?: number | string;
+}
+
+// Map backend error messages to user-friendly copy
+function mapErrorToUserMessage(error: string): string {
+    const errorMap: Record<string, string> = {
+        "File not found or expired": "We couldn't find that file. It may have expired or the code is incorrect.",
+        "File has expired": "This file has expired and is no longer available.",
+        "Download limit reached": "This file has already been downloaded and is no longer available.",
+        "Password required": "This file requires a password to download.",
+        "Incorrect password": "The password you entered is incorrect.",
+        "Download failed": "The download failed. Please try again.",
+    };
+    return errorMap[error] || error;
 }
 
 export default function DownloadClient() {
@@ -77,7 +91,8 @@ export default function DownloadClient() {
             setDownloadState("ready");
         } catch (err) {
             setDownloadState("error");
-            setError(err instanceof Error ? err.message : "Failed to find file");
+            const message = err instanceof Error ? err.message : "Failed to find file";
+            setError(mapErrorToUserMessage(message));
         }
     };
 
@@ -125,7 +140,8 @@ export default function DownloadClient() {
             setDownloadState("success");
         } catch (err) {
             setDownloadState("error");
-            setError(err instanceof Error ? err.message : "Download failed");
+            const message = err instanceof Error ? err.message : "Download failed";
+            setError(mapErrorToUserMessage(message));
         }
     };
 
@@ -196,8 +212,9 @@ export default function DownloadClient() {
                                     </Link>
                                 </div>
 
-                                <p className="text-sm text-muted-foreground">
-                                    ℹ️ This file has been deleted from our servers
+                                <p className="text-sm text-muted-foreground flex items-center justify-center gap-1.5">
+                                    <Info weight="fill" className="w-4 h-4" />
+                                    This file has been deleted from our servers
                                 </p>
                             </div>
                         ) : (downloadState === "ready" || downloadState === "downloading") && fileInfo ? (
@@ -253,8 +270,9 @@ export default function DownloadClient() {
                                     Use Different Code
                                 </Button>
 
-                                <p className="text-sm text-muted-foreground text-center">
-                                    ⚠️ This file can only be downloaded once
+                                <p className="text-sm text-muted-foreground text-center flex items-center justify-center gap-1.5">
+                                    <Warning weight="fill" className="w-4 h-4" />
+                                    This file can only be downloaded once
                                 </p>
                             </div>
                         ) : (
@@ -288,12 +306,12 @@ export default function DownloadClient() {
                                 )}
 
                                 {/* Check Code Button */}
-                                    <Button
-                                        onClick={() => checkCode()}
-                                        disabled={code.length !== CODE_LENGTH || downloadState === "loading"}
-                                        size="lg"
-                                        className="w-full gap-2"
-                                    >
+                                <Button
+                                    onClick={() => checkCode()}
+                                    disabled={code.length !== CODE_LENGTH || downloadState === "loading"}
+                                    size="lg"
+                                    className="w-full gap-2"
+                                >
                                     <Download weight="bold" className="w-5 h-5" />
                                     {downloadState === "loading" ? "Checking..." : "Find File"}
                                 </Button>

@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Warning } from "@phosphor-icons/react";
+import { Warning, House, ArrowClockwise } from "@phosphor-icons/react";
 
 interface Props {
     children: React.ReactNode;
@@ -10,44 +11,60 @@ interface Props {
 
 interface State {
     hasError: boolean;
-    error: Error | null;
 }
 
 export class ErrorBoundary extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
-        this.state = { hasError: false, error: null };
+        this.state = { hasError: false };
     }
 
-    static getDerivedStateFromError(error: Error): State {
-        return { hasError: true, error };
+    static getDerivedStateFromError(): State {
+        return { hasError: true };
     }
 
     componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+        // Log to console for debugging - never expose to users
         console.error("ErrorBoundary caught:", error, errorInfo);
     }
+
+    handleReset = () => {
+        this.setState({ hasError: false });
+    };
 
     render() {
         if (this.state.hasError) {
             return (
-                <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12 text-center space-y-4">
-                    <div className="w-14 h-14 bg-destructive/10 rounded-xl flex items-center justify-center">
-                        <Warning weight="duotone" className="w-7 h-7 text-destructive" />
-                    </div>
-                    <div>
-                        <h2 className="text-lg font-semibold">Something went wrong</h2>
-                        <p className="text-sm text-muted-foreground mt-1">
-                            {this.state.error?.message || "An unexpected error occurred"}
+                <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12 text-center">
+                    <div className="max-w-sm space-y-6">
+                        <div className="w-16 h-16 bg-destructive/10 rounded-2xl flex items-center justify-center mx-auto">
+                            <Warning weight="duotone" className="w-8 h-8 text-destructive" />
+                        </div>
+
+                        <div className="space-y-2">
+                            <h2 className="text-xl font-semibold">Something didn&apos;t load correctly</h2>
+                            <p className="text-sm text-muted-foreground">
+                                This may be a temporary issue. You can try again, or go back to the home page.
+                            </p>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <Button onClick={this.handleReset} className="flex-1 gap-2">
+                                <ArrowClockwise weight="bold" className="w-4 h-4" />
+                                Try again
+                            </Button>
+                            <Link href="/" className="flex-1">
+                                <Button variant="outline" className="w-full gap-2">
+                                    <House weight="bold" className="w-4 h-4" />
+                                    Go home
+                                </Button>
+                            </Link>
+                        </div>
+
+                        <p className="text-xs text-muted-foreground/60">
+                            If this keeps happening, try refreshing the page.
                         </p>
                     </div>
-                    <Button
-                        onClick={() => {
-                            this.setState({ hasError: false, error: null });
-                            window.location.reload();
-                        }}
-                    >
-                        Try again
-                    </Button>
                 </div>
             );
         }
@@ -55,3 +72,4 @@ export class ErrorBoundary extends React.Component<Props, State> {
         return this.props.children;
     }
 }
+

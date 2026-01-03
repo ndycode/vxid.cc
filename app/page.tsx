@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button";
 import { ToolsCarousel } from "@/components/tools-carousel";
 
 const ToolLoading = () => (
-    <div className="w-full text-center text-xs text-muted-foreground">Loading tool...</div>
+    <div className="w-full py-12 flex flex-col items-center gap-3">
+        <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        <p className="text-xs text-muted-foreground">Loading tool...</p>
+    </div>
 );
 
 // IMPORTANT: Order MUST match TOOLS array in tools-config.ts exactly.

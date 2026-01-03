@@ -57,11 +57,15 @@ Visit `http://localhost:3000`
 ```
 ├── app/
 │   ├── page.tsx              # Landing + tools carousel
+│   ├── error.tsx             # Root error boundary
+│   ├── not-found.tsx         # Custom 404 page
+│   ├── loading.tsx           # Root loading state
 │   ├── s/[code]/page.tsx     # Share viewer
 │   └── api/                  # Upload/download/share APIs
 ├── components/
 │   ├── tools/                # 64 tool components
 │   ├── tools-carousel.tsx    # Navigation with favorites/recent
+│   ├── error-boundary.tsx    # Client-side error boundary
 │   ├── animated-background.tsx
 │   └── ui/                   # shadcn + custom components
 └── lib/

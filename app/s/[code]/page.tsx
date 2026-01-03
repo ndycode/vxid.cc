@@ -18,7 +18,9 @@ import {
     Fire,
     DownloadSimple,
     Eye,
-    EyeSlash
+    EyeSlash,
+    ArrowClockwise,
+    House
 } from "@phosphor-icons/react";
 import { ShareType } from "@/lib/share-types";
 
@@ -107,7 +109,7 @@ export default function ShareViewerPage() {
             if (json.type === 'link') {
                 window.location.href = json.content;
             }
-        } catch (err) {
+        } catch {
             setError("Failed to load share");
         } finally {
             setLoading(false);
@@ -116,6 +118,7 @@ export default function ShareViewerPage() {
 
     useEffect(() => {
         fetchShare();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [code]);
 
     const handlePasswordSubmit = (e: React.FormEvent) => {
@@ -160,13 +163,30 @@ export default function ShareViewerPage() {
                     transition={{ delay: 0.1 }}
                 >
                     {loading ? (
-                        <div className="py-12 text-center text-muted-foreground">
-                            Loading...
+                        <div className="py-12 flex flex-col items-center gap-3">
+                            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                            <p className="text-sm text-muted-foreground">Loading share...</p>
                         </div>
                     ) : error ? (
-                        <div className="py-12 text-center space-y-2">
+                        <div className="py-8 text-center space-y-4">
                             <Warning weight="duotone" className="w-12 h-12 text-destructive mx-auto" />
                             <p className="text-destructive font-medium">{error}</p>
+                            <div className="flex flex-col sm:flex-row gap-2">
+                                <Button
+                                    onClick={() => fetchShare()}
+                                    variant="outline"
+                                    className="flex-1 gap-2"
+                                >
+                                    <ArrowClockwise weight="bold" className="w-4 h-4" />
+                                    Try again
+                                </Button>
+                                <a href="/" className="flex-1">
+                                    <Button variant="ghost" className="w-full gap-2">
+                                        <House weight="bold" className="w-4 h-4" />
+                                        Go home
+                                    </Button>
+                                </a>
+                            </div>
                         </div>
                     ) : needsPassword ? (
                         <form onSubmit={handlePasswordSubmit} className="space-y-4">
