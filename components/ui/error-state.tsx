@@ -22,7 +22,7 @@ interface ErrorStateProps {
  */
 export function ErrorState({
     title = "Something didn't load correctly",
-    description = "This may be a temporary issue. You can try again, or go back to the home page.",
+    description = "This may be a temporary issue.",
     onRetry,
     showHomeLink = true,
     footerText,

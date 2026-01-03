@@ -178,7 +178,7 @@ export function ShareViewerClient({ code }: ShareViewerClientProps) {
                         <form onSubmit={handlePasswordSubmit} className="space-y-4">
                             <div className="py-6 text-center space-y-2">
                                 <Lock weight="duotone" className="w-12 h-12 text-primary mx-auto" />
-                                <p className="font-medium">This share is password protected</p>
+                                <p className="font-medium">Password required</p>
                             </div>
                             <div className="relative">
                                 <Input

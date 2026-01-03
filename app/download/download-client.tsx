@@ -164,9 +164,7 @@ export default function DownloadClient() {
                         <Download weight="duotone" className="w-6 h-6 text-primary" />
                         Enter Code
                     </CardTitle>
-                    <CardDescription>
-                        Enter the {CODE_LENGTH}-digit code shared with you
-                    </CardDescription>
+                    <CardDescription>{CODE_LENGTH}-digit code</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                     {downloadState === "success" ? (
@@ -175,12 +173,7 @@ export default function DownloadClient() {
                             <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
                                 <CheckCircle weight="fill" className="w-10 h-10 text-primary" />
                             </div>
-                            <div>
-                                <h3 className="text-xl font-semibold mb-2">Download Complete!</h3>
-                                <p className="text-muted-foreground">
-                                    Your file has been downloaded successfully
-                                </p>
-                            </div>
+                            <h3 className="text-xl font-semibold">Download Complete!</h3>
 
                             <div className="flex gap-4">
                                 <Button
