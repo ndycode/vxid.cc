@@ -24,15 +24,15 @@ A privacy-first toolkit with 64+ browser utilities. All tools run client-side �
 
 ## Tech Stack
 
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| Framework | Next.js 15 (App Router) | Server/client React with TypeScript |
-| Storage | Cloudflare R2 | Object storage for file sharing |
-| Styling | Tailwind CSS v4 | Utility-first CSS |
-| Components | shadcn/ui | Accessible UI primitives |
-| Animations | Framer Motion | UI transitions |
-| Color Picker | react-colorful | Custom color selection |
-| Effects | canvas-confetti | Success animations |
+| Layer        | Technology              | Purpose                             |
+| ------------ | ----------------------- | ----------------------------------- |
+| Framework    | Next.js 15 (App Router) | Server/client React with TypeScript |
+| Storage      | Cloudflare R2           | Object storage for file sharing     |
+| Styling      | Tailwind CSS v4         | Utility-first CSS                   |
+| Components   | shadcn/ui               | Accessible UI primitives            |
+| Animations   | Framer Motion           | UI transitions                      |
+| Color Picker | react-colorful          | Custom color selection              |
+| Effects      | canvas-confetti         | Success animations                  |
 
 ## Quick Start
 
@@ -119,32 +119,37 @@ ENV_VALIDATION_STRICT=false  # Skip env validation for testing
 
 ## Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Create production build |
-| `npm run start` | Start production server |
-| `npm run lint` | Run ESLint |
-| `npm run format` | Format code with Prettier |
-| `npm test` | Run test suite |
-| `npm run test:coverage` | Run tests with coverage |
-| `npm run typecheck` | Check TypeScript types |
+| Command                 | Description               |
+| ----------------------- | ------------------------- |
+| `npm run dev`           | Start development server  |
+| `npm run build`         | Create production build   |
+| `npm run start`         | Start production server   |
+| `npm run lint`          | Run ESLint                |
+| `npm run format`        | Format code with Prettier |
+| `npm test`              | Run test suite            |
+| `npm run test:coverage` | Run tests with coverage   |
+| `npm run typecheck`     | Check TypeScript types    |
 
 ## Tools (64)
 
 ### Checker (11)
+
 ip, dns, whois, ssl, ping, useragent, screen, cookies, webgl, password, leak
 
 ### Sharing (9)
+
 drop, qr, shorten, paste, imghost, secret, code, json, csv
 
 ### Generate (16)
+
 pass, color, barcode, fake, palette, card, string, integer, sequence, username, business, iban, mac, hash, uuid, gradient
 
 ### Text (14)
+
 count, case, clean, emoji, days, dedup, reverse, chars, numbers, lorem, base64, regex, timestamp, privacy
 
 ### Image (14)
+
 compress, resize, convert, favicon, erase, crop, split, svg, pick, watermark, ratio, blur, rotate, filter
 
 ## Design Principles
@@ -154,6 +159,33 @@ compress, resize, convert, favicon, erase, crop, split, svg, pick, watermark, ra
 3. **Mobile-first** — Responsive design throughout
 4. **No sign-ups** — Preferences stored in localStorage
 5. **Instant feedback** — No blocking modals or toasts
+
+## Deployment
+
+### GitHub Secrets
+
+The following secrets must be configured in GitHub for CI and scheduled jobs:
+
+| Secret        | Purpose                                            |
+| ------------- | -------------------------------------------------- |
+| `APP_URL`     | Base URL of deployed app (e.g., `https://vxid.cc`) |
+| `CRON_SECRET` | Bearer token for cleanup endpoint authentication   |
+
+### Database Migrations
+
+Run SQL migrations in order against your Supabase database:
+
+```bash
+# Via Supabase Dashboard > SQL Editor, or psql:
+psql $DATABASE_URL -f scripts/sql/001_perf_tables.sql
+psql $DATABASE_URL -f scripts/sql/003_atomic_functions.sql
+psql $DATABASE_URL -f scripts/sql/004_check_constraints.sql
+psql $DATABASE_URL -f scripts/sql/005_burned_invariant.sql
+```
+
+### Pre-commit Hooks
+
+This project uses husky + lint-staged. After `npm install`, hooks are auto-configured via the `prepare` script. Staged files are linted and formatted on commit.
 
 ## License
 
