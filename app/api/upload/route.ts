@@ -13,6 +13,7 @@ import {
     ALLOWED_MIME_TYPES,
     ALLOWED_MAX_DOWNLOADS,
     UPLOAD_SESSION_TTL_MINUTES,
+    isUploadEnabled,
 } from "@/lib/constants";
 import { hashPassword } from "@/lib/passwords";
 import { reserveUploadSession, type UploadSessionRecord } from "@/lib/db";
@@ -59,6 +60,14 @@ function sanitizeFilename(filename: string): string {
 export async function POST(request: NextRequest) {
     const requestId = crypto.randomUUID().slice(0, 8);
     const timings: Record<string, number> = {};
+
+    // Feature flag check
+    if (!isUploadEnabled()) {
+        return NextResponse.json(
+            { error: "File uploads are temporarily disabled" },
+            { status: 503, headers: NO_STORE_HEADERS }
+        );
+    }
 
     try {
         const body = await request.json().catch(() => ({}));

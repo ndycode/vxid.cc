@@ -38,8 +38,10 @@ function mapErrorToUserMessage(error: string): string {
         "Password required": "This file requires a password to download.",
         "Incorrect password": "The password you entered is incorrect.",
         "Download failed": "The download failed. Please try again.",
+        "Downloads are temporarily disabled": "Downloads are temporarily unavailable. Please try again later.",
     };
-    return errorMap[error] || error;
+    // Return mapped message or a generic fallback for unknown errors
+    return errorMap[error] || "Something went wrong. Please try again.";
 }
 
 export default function DownloadClient() {

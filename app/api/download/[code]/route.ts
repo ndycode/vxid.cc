@@ -3,7 +3,7 @@ import crypto from "crypto";
 import { r2Storage } from "@/lib/r2";
 import { logger } from "@/lib/logger";
 import { StorageError, ValidationError, formatErrorResponse } from "@/lib/errors";
-import { CODE_LENGTH, DOWNLOAD_TOKEN_TTL_MINUTES, isValidDownloadCode } from "@/lib/constants";
+import { CODE_LENGTH, DOWNLOAD_TOKEN_TTL_MINUTES, isValidDownloadCode, isDownloadEnabled } from "@/lib/constants";
 import { verifyPassword } from "@/lib/passwords";
 import {
     createDownloadToken,
@@ -70,6 +70,11 @@ export async function GET(
     const requestId = crypto.randomUUID().slice(0, 8);
     const timings: Record<string, number> = {};
 
+    // Feature flag check
+    if (!isDownloadEnabled()) {
+        return jsonResponse({ error: "Downloads are temporarily disabled" }, { status: 503 });
+    }
+
     try {
         const { code } = await params;
 
@@ -119,6 +124,11 @@ export async function POST(
 ) {
     const requestId = crypto.randomUUID().slice(0, 8);
     const timings: Record<string, number> = {};
+
+    // Feature flag check
+    if (!isDownloadEnabled()) {
+        return jsonResponse({ error: "Downloads are temporarily disabled" }, { status: 503 });
+    }
 
     try {
         const { code } = await params;

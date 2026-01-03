@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { r2Storage } from "@/lib/r2";
 import { logger } from "@/lib/logger";
 import { env } from "@/lib/env";
+import { isCronEnabled } from "@/lib/constants";
 
 /**
  * Cleanup expired records from the database and storage.
@@ -29,6 +30,12 @@ export async function GET(request: NextRequest) {
 
     if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Feature flag check
+    if (!isCronEnabled()) {
+        logger.info("Cron cleanup skipped - feature disabled");
+        return NextResponse.json({ success: true, skipped: true, reason: "Feature disabled" });
     }
 
     const stats: CleanupStats = {
@@ -118,8 +125,9 @@ export async function GET(request: NextRequest) {
         });
     } catch (error) {
         logger.exception("Cleanup error", error);
+        // Don't leak error details in response
         return NextResponse.json(
-            { error: "Cleanup failed", details: error instanceof Error ? error.message : "Unknown" },
+            { error: "Cleanup failed" },
             { status: 500 }
         );
     }

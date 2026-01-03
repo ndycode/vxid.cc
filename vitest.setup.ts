@@ -1,3 +1,9 @@
+// Enable feature flags for tests (must be set before module imports)
+process.env.FEATURE_UPLOAD_ENABLED = "true";
+process.env.FEATURE_DOWNLOAD_ENABLED = "true";
+process.env.FEATURE_SHARE_ENABLED = "true";
+process.env.FEATURE_CRON_ENABLED = "true";
+
 import '@testing-library/jest-dom'
 import { vi } from 'vitest'
 

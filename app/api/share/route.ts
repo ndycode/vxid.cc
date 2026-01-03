@@ -6,10 +6,13 @@ import {
     MAX_SHARE_TEXT_SIZE,
     MAX_SHARE_IMAGE_BYTES,
     MAX_SHARE_EXPIRY_MINUTES,
+    isShareEnabled,
 } from "@/lib/constants";
 import { hashPassword } from "@/lib/passwords";
 import { createShareAtomic } from "@/lib/db";
 import { formatServerTiming, withTiming } from "@/lib/timing";
+import { logger } from "@/lib/logger";
+import { formatErrorResponse } from "@/lib/errors";
 
 const NO_STORE_HEADERS = { "Cache-Control": "no-store, private" };
 
@@ -77,7 +80,14 @@ function base64ByteLength(base64: string): number {
 }
 
 export async function POST(request: NextRequest) {
+    const requestId = crypto.randomUUID().slice(0, 8);
     const timings: Record<string, number> = {};
+
+    // Feature flag check
+    if (!isShareEnabled()) {
+        return jsonResponse({ error: "Share creation is temporarily disabled" }, { status: 503 });
+    }
+
     try {
         const body: CreateShareRequest | null = await request.json().catch(() => null);
         if (!body || typeof body !== "object") {
@@ -200,8 +210,8 @@ export async function POST(request: NextRequest) {
             expiresAt: expiresAt.toISOString(),
         }, undefined, timings);
     } catch (error) {
-        console.error("Share creation error:", error);
-        const errorMessage = error instanceof Error ? error.message : "Failed to create share";
-        return jsonResponse({ error: errorMessage }, { status: 500 }, timings);
+        logger.exception("Share creation error", error, { requestId });
+        const { error: errorMessage, statusCode } = formatErrorResponse(error);
+        return jsonResponse({ error: errorMessage }, { status: statusCode }, timings);
     }
 }

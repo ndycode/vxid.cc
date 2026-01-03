@@ -144,11 +144,13 @@ describe("Share Retrieval API Route", () => {
     });
 
     describe("GET - Code Validation", () => {
-        it("rejects invalid code format (uppercase)", async () => {
+        it("normalizes uppercase code to lowercase", async () => {
+            // Route normalizes to lowercase, so ABC12345 becomes abc12345 which is valid
             const request = createGetRequest("ABC12345");
             const response = await GET(request, { params: Promise.resolve({ code: "ABC12345" }) });
 
-            expect(response.status).toBe(400);
+            // Should succeed with normalized code
+            expect(response.status).toBe(200);
         });
 
         it("rejects invalid code format (wrong length)", async () => {
@@ -159,11 +161,11 @@ describe("Share Retrieval API Route", () => {
         });
 
         it("normalizes code to lowercase", async () => {
-            // The route should normalize, but if it rejects we check for 400
+            // The route should normalize, checking it accepts uppercase
             const request = createGetRequest("ABC12345");
             const response = await GET(request, { params: Promise.resolve({ code: "ABC12345" }) });
-            // Should either succeed with normalized code or reject
-            expect([200, 400]).toContain(response.status);
+            // Should succeed with normalized code
+            expect(response.status).toBe(200);
         });
     });
 

@@ -4,6 +4,44 @@
  */
 
 // =============================================================================
+// Feature Flags / Kill Switches
+// Set to "false" in environment to disable features without deployment
+// These are functions (not constants) to allow runtime evaluation in tests
+// =============================================================================
+
+/**
+ * Feature flag: Enable/disable file uploads
+ * Set FEATURE_UPLOAD_ENABLED=false to disable
+ */
+export function isUploadEnabled(): boolean {
+    return process.env.FEATURE_UPLOAD_ENABLED !== "false";
+}
+
+/**
+ * Feature flag: Enable/disable file downloads
+ * Set FEATURE_DOWNLOAD_ENABLED=false to disable
+ */
+export function isDownloadEnabled(): boolean {
+    return process.env.FEATURE_DOWNLOAD_ENABLED !== "false";
+}
+
+/**
+ * Feature flag: Enable/disable share creation
+ * Set FEATURE_SHARE_ENABLED=false to disable
+ */
+export function isShareEnabled(): boolean {
+    return process.env.FEATURE_SHARE_ENABLED !== "false";
+}
+
+/**
+ * Feature flag: Enable/disable cron cleanup jobs
+ * Set FEATURE_CRON_ENABLED=false to disable
+ */
+export function isCronEnabled(): boolean {
+    return process.env.FEATURE_CRON_ENABLED !== "false";
+}
+
+// =============================================================================
 // File Upload Limits
 // =============================================================================
 

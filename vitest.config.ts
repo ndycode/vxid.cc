@@ -9,6 +9,12 @@ export default defineConfig({
         globals: true,
         setupFiles: ['./vitest.setup.ts'],
         include: ['**/*.test.{ts,tsx}'],
+        env: {
+            FEATURE_UPLOAD_ENABLED: 'true',
+            FEATURE_DOWNLOAD_ENABLED: 'true',
+            FEATURE_SHARE_ENABLED: 'true',
+            FEATURE_CRON_ENABLED: 'true',
+        },
     },
     resolve: {
         alias: {

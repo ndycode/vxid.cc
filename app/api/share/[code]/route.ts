@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 import { getShareWithContentByCode, updateShareViewCount, type ShareWithContentRecord } from "@/lib/db";
 import { ValidationError, formatErrorResponse } from "@/lib/errors";
 import { verifyPassword } from "@/lib/passwords";
 import { SHARE_CODE_LENGTH, isValidShareCode } from "@/lib/constants";
 import { formatServerTiming, withTiming } from "@/lib/timing";
+import { logger } from "@/lib/logger";
 
 const NO_STORE_HEADERS = { "Cache-Control": "no-store, private" };
 
@@ -108,6 +110,7 @@ export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ code: string }> }
 ) {
+    const requestId = crypto.randomUUID().slice(0, 8);
     const timings: Record<string, number> = {};
     try {
         const { code } = await params;
@@ -133,7 +136,7 @@ export async function GET(
             requiresPassword: !!result.passwordHash,
         }, undefined, timings);
     } catch (error) {
-        console.error("Share retrieval error:", error);
+        logger.exception("Share retrieval error", error, { requestId });
         const { error: errorMessage, statusCode } = formatErrorResponse(error);
         return jsonResponse({ error: errorMessage }, { status: statusCode }, timings);
     }
@@ -143,6 +146,7 @@ export async function POST(
     request: NextRequest,
     { params }: { params: Promise<{ code: string }> }
 ) {
+    const requestId = crypto.randomUUID().slice(0, 8);
     const timings: Record<string, number> = {};
     try {
         const { code } = await params;
@@ -171,7 +175,7 @@ export async function POST(
             requiresPassword: !!result.passwordHash,
         }, undefined, timings);
     } catch (error) {
-        console.error("Share retrieval error:", error);
+        logger.exception("Share retrieval error", error, { requestId });
         const { error: errorMessage, statusCode } = formatErrorResponse(error);
         return jsonResponse({ error: errorMessage }, { status: statusCode }, timings);
     }
