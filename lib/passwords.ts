@@ -2,6 +2,16 @@ import crypto from "crypto";
 import { promisify } from "util";
 import { logger } from "./logger";
 
+/**
+ * SCRYPT PARAMETER STABILITY WARNING:
+ * The SCRYPT_OPTIONS below are baked into existing password hashes.
+ * Changing N, r, or p will make ALL existing passwords unverifiable.
+ *
+ * If you must change parameters:
+ * 1. Keep old parameters for verification (version the format)
+ * 2. Re-hash passwords on successful login with needsRehash flag
+ * 3. Run migration to prompt password resets for inactive users
+ */
 const SCRYPT_PREFIX = "scrypt";
 const SCRYPT_SALT_BYTES = 16;
 const SCRYPT_KEY_BYTES = 32;

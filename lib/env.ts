@@ -1,6 +1,14 @@
 /**
  * Environment configuration with runtime validation
  * Ensures all required environment variables are set
+ *
+ * ADDING NEW ENV VARS CHECKLIST:
+ * 1. Add to EnvConfig interface
+ * 2. Add to required[] or optional[] arrays in validateEnv()
+ * 3. Add to return object in getEnvConfig()
+ * 4. Update .env.example with description
+ * 5. Update README.md environment section
+ * 6. Deploy env vars to ALL environments before deploying code
  */
 
 import { logger } from "./logger";

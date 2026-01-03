@@ -1,5 +1,16 @@
 /**
  * Custom error classes for structured error handling
+ *
+ * ADDING NEW ERROR TYPES:
+ * 1. Extend AppError with appropriate status code
+ * 2. Call super() with message and status code
+ * 3. Override toJSON() if you need additional fields
+ * 4. The new error will automatically be handled by formatErrorResponse()
+ *
+ * All custom errors should:
+ * - Have statusCode to map to HTTP status
+ * - Be operational (expected) unless it's a programmer error
+ * - Include useful context for debugging
  */
 
 /**

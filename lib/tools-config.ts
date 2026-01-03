@@ -1,3 +1,14 @@
+/**
+ * TOOL ID STABILITY CONTRACT:
+ * Tool IDs are stable identifiers stored in localStorage for favorites/recents.
+ * NEVER change or remove a tool ID once it's in production.
+ *
+ * - IDs are used as keys in localStorage (STORAGE_KEYS.FAVORITES, STORAGE_KEYS.RECENT)
+ * - Changing an ID orphans user preferences for that tool
+ * - Adding new tools: OK (new IDs are fine)
+ * - Removing tools: Mark as deprecated but keep ID reserved
+ * - Renaming: Only change 'name' field, never 'id'
+ */
 import { Package, QrCode, Key, Palette, Hash, TextAa, TextT, CalendarBlank, Smiley, ArrowsClockwise, ImageSquare, Browser, Eraser, ShieldCheck, FileArrowDown, ArrowsOutSimple, Crop, FileCode, Ruler, Eyedropper, TextT as WatermarkIcon, GridFour, Rows, ArrowsLeftRight, Keyboard, Binary, Fingerprint, Barcode, UserCircle, Swatches, CreditCard, TextAlignLeft, NumberSquareOne, Shuffle, At, Buildings, Bank, WifiHigh, Globe, GlobeSimple, MagnifyingGlass, Lock, WifiSlash, Desktop, Monitor, Cookie, Cube, Code, Password, Warning, Clock, Gradient } from "@phosphor-icons/react";
 import type { Icon } from "@phosphor-icons/react";
 

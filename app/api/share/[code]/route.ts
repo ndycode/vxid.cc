@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getShareWithContentByCode, updateShareViewCount, type ShareWithContentRecord } from "@/lib/db";
 import { ValidationError, formatErrorResponse } from "@/lib/errors";
 import { verifyPassword } from "@/lib/passwords";
-import { SHARE_CODE_LENGTH } from "@/lib/constants";
+import { SHARE_CODE_LENGTH, isValidShareCode } from "@/lib/constants";
 import { formatServerTiming, withTiming } from "@/lib/timing";
 
 const NO_STORE_HEADERS = { "Cache-Control": "no-store, private" };
@@ -26,9 +26,6 @@ function jsonResponse(
     });
 }
 
-function isValidCode(code: string): boolean {
-    return code.length === SHARE_CODE_LENGTH && /^[a-z0-9]+$/.test(code);
-}
 
 function normalizeShare(record: ShareWithContentRecord) {
     return {
@@ -115,7 +112,7 @@ export async function GET(
     try {
         const { code } = await params;
         const normalizedCode = code?.toLowerCase() || "";
-        if (!isValidCode(normalizedCode)) {
+        if (!isValidShareCode(normalizedCode)) {
             throw new ValidationError("Invalid share code", "code");
         }
 
@@ -150,7 +147,7 @@ export async function POST(
     try {
         const { code } = await params;
         const normalizedCode = code?.toLowerCase() || "";
-        if (!isValidCode(normalizedCode)) {
+        if (!isValidShareCode(normalizedCode)) {
             throw new ValidationError("Invalid share code", "code");
         }
 

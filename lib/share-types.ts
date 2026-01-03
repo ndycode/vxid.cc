@@ -1,6 +1,15 @@
-// Share types for all sharing tools
+/**
+ * Share types and utilities for sharing tools.
+ *
+ * IMPORTANT: ShareType is re-exported from @/types for consistency.
+ * Do NOT define ShareType here - use the canonical definition in types/index.ts.
+ */
 
-export type ShareType = 'link' | 'paste' | 'image' | 'note' | 'code' | 'json' | 'csv';
+// Re-export canonical ShareType from central types
+export type { ShareType } from "@/types";
+
+// Import for use in interfaces below
+import type { ShareType } from "@/types";
 
 export interface ShareMetadata {
     type: ShareType;

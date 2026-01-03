@@ -31,11 +31,42 @@ export const ALLOWED_MIME_TYPES = [
 // Dead Drop Settings
 // =============================================================================
 
-/** Length of download codes (numeric) */
+/** Length of download codes (numeric) 
+ * @migration-required Changing this breaks existing codes in database
+ */
 export const CODE_LENGTH = 8;
 
-/** Length of share codes (alphanumeric) */
+/** Length of share codes (alphanumeric) 
+ * @migration-required Changing this breaks existing share links
+ */
 export const SHARE_CODE_LENGTH = 8;
+
+// =============================================================================
+// Code Validation Functions
+// These encapsulate constant + regex to prevent partial updates
+// =============================================================================
+
+/**
+ * Validate a download code format.
+ * Download codes are numeric-only with CODE_LENGTH digits.
+ * @param code - The code to validate
+ * @returns true if valid format
+ */
+export function isValidDownloadCode(code: string): boolean {
+    if (!code || typeof code !== "string") return false;
+    return code.length === CODE_LENGTH && /^[0-9]+$/.test(code);
+}
+
+/**
+ * Validate a share code format.
+ * Share codes are lowercase alphanumeric with SHARE_CODE_LENGTH characters.
+ * @param code - The code to validate
+ * @returns true if valid format
+ */
+export function isValidShareCode(code: string): boolean {
+    if (!code || typeof code !== "string") return false;
+    return code.length === SHARE_CODE_LENGTH && /^[a-z0-9]+$/.test(code);
+}
 
 /** Default expiry time in minutes */
 export const DEFAULT_EXPIRY_MINUTES = 60;

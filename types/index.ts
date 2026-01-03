@@ -67,15 +67,19 @@ export interface DownloadInfo {
 // Share Types
 // =============================================================================
 
+/**
+ * Share content types - canonical definition.
+ * MUST match database CHECK constraint in schema.sql.
+ * @migration-required Changes require database migration.
+ */
 export type ShareType =
+    | "link"
     | "paste"
+    | "image"
+    | "note"
     | "code"
     | "json"
-    | "csv"
-    | "image"
-    | "secret"
-    | "link"
-    | "qr";
+    | "csv";
 
 export interface ShareMetadata {
     type: ShareType;

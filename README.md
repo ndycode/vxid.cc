@@ -69,12 +69,19 @@ Visit `http://localhost:3000`
 │   ├── animated-background.tsx
 │   └── ui/                   # shadcn + custom components
 ├── lib/
-│   ├── tools-config.ts       # Tool definitions
+│   ├── db/                   # Database layer (domain-split)
+│   │   ├── client.ts         # Supabase client + utilities
+│   │   ├── session-db.ts     # Upload session operations
+│   │   ├── file-db.ts        # File metadata operations
+│   │   ├── share-db.ts       # Share operations
+│   │   ├── token-db.ts       # Download token operations
+│   │   └── index.ts          # Barrel export
+│   ├── tools-config.ts       # Tool definitions (IDs are stable)
 │   ├── tool-preferences.ts   # Favorites/recent (localStorage)
 │   ├── env.ts                # Environment config with validation
-│   ├── db.ts                 # Database operations (Supabase)
 │   ├── r2.ts                 # R2 storage service
 │   ├── passwords.ts          # Password hashing (scrypt)
+│   ├── constants.ts          # Constants + validation functions
 │   └── confetti.ts           # Animation utilities
 └── scripts/sql/              # Database migrations
     ├── 001_perf_tables.sql   # Core table schema

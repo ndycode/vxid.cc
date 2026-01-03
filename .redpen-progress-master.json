@@ -2,11 +2,17 @@
   "completed": [
     "core/security/api-ergonomics.txt",
     "core/security/authorization-boundaries.txt",
-    "core/security/code-analysis.txt"
+    "core/security/code-analysis.txt",
+    "core/security/data-integrity.txt",
+    "core/security/impact-analysis.txt",
+    "core/security/state-invariants.txt"
   ],
   "versions": {
     "core/security/api-ergonomics.txt": "1.4.3",
     "core/security/authorization-boundaries.txt": "1.4.3",
-    "core/security/code-analysis.txt": "1.4.3"
+    "core/security/code-analysis.txt": "1.4.3",
+    "core/security/data-integrity.txt": "1.4.3",
+    "core/security/impact-analysis.txt": "1.4.3",
+    "core/security/state-invariants.txt": "1.4.3"
   }
 }

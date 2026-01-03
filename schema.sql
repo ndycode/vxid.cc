@@ -49,7 +49,8 @@ CREATE TABLE public.shares (
   burned boolean NOT NULL DEFAULT false,
   created_at timestamp with time zone NOT NULL DEFAULT now(),
   CONSTRAINT shares_pkey PRIMARY KEY (id),
-  CONSTRAINT shares_content_id_fkey FOREIGN KEY (content_id) REFERENCES public.share_contents(id)
+  CONSTRAINT shares_content_id_fkey FOREIGN KEY (content_id) REFERENCES public.share_contents(id),
+  CONSTRAINT shares_burned_irreversible_check CHECK (NOT (burn_after_reading = true AND view_count > 0 AND burned = false))
 );
 CREATE TABLE public.upload_sessions (
   code text NOT NULL,

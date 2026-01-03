@@ -3,6 +3,7 @@ import {
     MAX_UPLOAD_SIZE,
     MAX_FILE_SIZE,
     CODE_LENGTH,
+    SHARE_CODE_LENGTH,
     DEFAULT_EXPIRY_MINUTES,
     DEFAULT_MAX_DOWNLOADS,
     RECENT_TOOLS_COUNT,
@@ -10,6 +11,8 @@ import {
     BREAKPOINTS,
     API_ROUTES,
     STORAGE_KEYS,
+    isValidDownloadCode,
+    isValidShareCode,
 } from "./constants";
 
 describe("Constants", () => {
@@ -28,12 +31,47 @@ describe("Constants", () => {
             expect(CODE_LENGTH).toBe(8);
         });
 
+        it("SHARE_CODE_LENGTH should be 8", () => {
+            expect(SHARE_CODE_LENGTH).toBe(8);
+        });
+
         it("DEFAULT_EXPIRY_MINUTES should be 60", () => {
             expect(DEFAULT_EXPIRY_MINUTES).toBe(60);
         });
 
         it("DEFAULT_MAX_DOWNLOADS should be 1", () => {
             expect(DEFAULT_MAX_DOWNLOADS).toBe(1);
+        });
+    });
+
+    describe("Validation Functions", () => {
+        describe("isValidDownloadCode", () => {
+            it("accepts valid 8-digit numeric codes", () => {
+                expect(isValidDownloadCode("12345678")).toBe(true);
+            });
+
+            it("rejects non-numeric codes", () => {
+                expect(isValidDownloadCode("1234567a")).toBe(false);
+            });
+
+            it("rejects wrong length", () => {
+                expect(isValidDownloadCode("1234567")).toBe(false);
+                expect(isValidDownloadCode("123456789")).toBe(false);
+            });
+        });
+
+        describe("isValidShareCode", () => {
+            it("accepts valid 8-char alphanumeric codes", () => {
+                expect(isValidShareCode("abc12345")).toBe(true);
+            });
+
+            it("rejects uppercase", () => {
+                expect(isValidShareCode("ABC12345")).toBe(false);
+            });
+
+            it("rejects wrong length", () => {
+                expect(isValidShareCode("abc1234")).toBe(false);
+            });
         });
     });
 

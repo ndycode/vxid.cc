@@ -3,7 +3,7 @@ import crypto from "crypto";
 import { r2Storage } from "@/lib/r2";
 import { logger } from "@/lib/logger";
 import { StorageError, ValidationError, formatErrorResponse } from "@/lib/errors";
-import { CODE_LENGTH, DOWNLOAD_TOKEN_TTL_MINUTES } from "@/lib/constants";
+import { CODE_LENGTH, DOWNLOAD_TOKEN_TTL_MINUTES, isValidDownloadCode } from "@/lib/constants";
 import { verifyPassword } from "@/lib/passwords";
 import {
     createDownloadToken,
@@ -34,9 +34,6 @@ function jsonResponse(
     });
 }
 
-function isValidCode(code: string): boolean {
-    return code.length === CODE_LENGTH && /^[0-9]+$/.test(code);
-}
 
 /**
  * Best-effort cleanup of expired file data.
@@ -76,7 +73,7 @@ export async function GET(
     try {
         const { code } = await params;
 
-        if (!isValidCode(code)) {
+        if (!isValidDownloadCode(code)) {
             throw new ValidationError("Invalid code format", "code");
         }
 
@@ -126,7 +123,7 @@ export async function POST(
     try {
         const { code } = await params;
 
-        if (!isValidCode(code)) {
+        if (!isValidDownloadCode(code)) {
             throw new ValidationError("Invalid code format", "code");
         }
 
