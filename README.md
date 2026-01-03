@@ -107,6 +107,12 @@ UPSTASH_REDIS_REST_URL=your_upstash_rest_url
 UPSTASH_REDIS_REST_TOKEN=your_upstash_rest_token
 NEXT_PUBLIC_APP_URL=https://your-domain.com
 
+# Feature Flags (all enabled by default, set to "false" to disable)
+FEATURE_UPLOAD_ENABLED=true      # Kill switch for file uploads
+FEATURE_DOWNLOAD_ENABLED=true    # Kill switch for file downloads
+FEATURE_SHARE_ENABLED=true       # Kill switch for share creation
+FEATURE_CRON_ENABLED=true        # Kill switch for cleanup jobs
+
 # Development only
 ENV_VALIDATION_STRICT=false  # Skip env validation for testing
 ```
