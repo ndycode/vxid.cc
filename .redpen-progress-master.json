@@ -17,7 +17,9 @@
     "web/interface/design-system.txt",
     "web/interface/quality-standards.txt",
     "web/interface/rendering-performance.txt",
-    "web/interface/resilience-ux.txt"
+    "web/interface/resilience-ux.txt",
+    "web/interface/visual-consistency.txt",
+    "web/interface/visual-refactoring.txt"
   ],
   "versions": {
     "core/security/api-ergonomics.txt": "1.4.3",
@@ -37,6 +39,8 @@
     "web/interface/design-system.txt": "1.4.3",
     "web/interface/quality-standards.txt": "1.4.3",
     "web/interface/rendering-performance.txt": "1.4.3",
-    "web/interface/resilience-ux.txt": "1.4.3"
+    "web/interface/resilience-ux.txt": "1.4.3",
+    "web/interface/visual-consistency.txt": "1.4.3",
+    "web/interface/visual-refactoring.txt": "1.4.3"
   }
 }

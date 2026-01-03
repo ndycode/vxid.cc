@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { CopyButton } from "@/components/ui/copy-button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ErrorState } from "@/components/ui/error-state";
+import { PageShell } from "@/components/ui/page-shell";
 import {
     Lock,
     Link as LinkIcon,
@@ -137,9 +138,9 @@ export function ShareViewerClient({ code }: ShareViewerClientProps) {
           : "Share";
 
     return (
-        <main className="min-h-screen flex flex-col items-center justify-center px-4 py-8">
+        <PageShell maxWidth="sm" innerClassName="space-y-6">
             <motion.div
-                className="w-full max-w-sm space-y-6"
+                className="space-y-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
@@ -329,6 +330,6 @@ export function ShareViewerClient({ code }: ShareViewerClientProps) {
                     — privacy-first tools
                 </p>
             </motion.div>
-        </main>
+        </PageShell>
     );
 }

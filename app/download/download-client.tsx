@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Input } from "@/components/ui/input";
 import { AlertBanner } from "@/components/ui/alert-banner";
+import { PageShell } from "@/components/ui/page-shell";
 
 import {
     ArrowLeft,
@@ -144,190 +145,180 @@ export default function DownloadClient() {
     };
 
     return (
-        <main className="min-h-screen flex flex-col items-center justify-center px-4 py-8">
-            <div className="relative z-10 w-full max-w-sm">
-                {/* Header */}
-                <div className="mb-8">
-                    <Link href="/">
-                        <Button variant="ghost" className="gap-2 mb-4">
-                            <ArrowLeft weight="bold" className="w-4 h-4" />
-                            Back to Home
-                        </Button>
-                    </Link>
-                    <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Download File</h1>
-                    <p className="text-muted-foreground mt-2">
-                        Enter the {CODE_LENGTH}-digit code to download your file
-                    </p>
-                </div>
-
-                {/* Download Card */}
-                <Card className="border-2">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <Download weight="duotone" className="w-6 h-6 text-primary" />
-                            Enter Code
-                        </CardTitle>
-                        <CardDescription>
-                            Enter the {CODE_LENGTH}-digit code shared with you
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        {downloadState === "success" ? (
-                            /* Success State */
-                            <div className="text-center space-y-6 py-8">
-                                <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
-                                    <CheckCircle weight="fill" className="w-10 h-10 text-primary" />
-                                </div>
-                                <div>
-                                    <h3 className="text-xl font-semibold mb-2">
-                                        Download Complete!
-                                    </h3>
-                                    <p className="text-muted-foreground">
-                                        Your file has been downloaded successfully
-                                    </p>
-                                </div>
-
-                                <div className="flex gap-4">
-                                    <Button
-                                        variant="outline"
-                                        onClick={resetDownload}
-                                        className="flex-1"
-                                    >
-                                        Download Another
-                                    </Button>
-                                    <Link href="/" className="flex-1">
-                                        <Button variant="ghost" className="w-full">
-                                            Go Home
-                                        </Button>
-                                    </Link>
-                                </div>
-
-                                <p className="text-sm text-muted-foreground flex items-center justify-center gap-1.5">
-                                    <Info weight="fill" className="w-4 h-4" />
-                                    This file has been deleted from our servers
-                                </p>
-                            </div>
-                        ) : (downloadState === "ready" || downloadState === "downloading") &&
-                          fileInfo ? (
-                            /* Ready to Download State */
-                            <div className="space-y-6">
-                                <div className="bg-muted rounded-2xl p-6 space-y-4">
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                            <File
-                                                weight="duotone"
-                                                className="w-7 h-7 text-primary"
-                                            />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="font-semibold truncate">
-                                                {fileInfo.name}
-                                            </p>
-                                            <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
-                                                <span className="flex items-center gap-1">
-                                                    <HardDrive weight="bold" className="w-4 h-4" />
-                                                    {formatFileSize(fileInfo.size)}
-                                                </span>
-                                                <span className="flex items-center gap-1">
-                                                    <Timer weight="bold" className="w-4 h-4" />
-                                                    Expires in{" "}
-                                                    {formatTimeRemaining(fileInfo.expiresAt)}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {fileInfo.requiresPassword && (
-                                    <div className="space-y-2">
-                                        <p className="text-sm text-muted-foreground">
-                                            Password required
-                                        </p>
-                                        <Input
-                                            type="password"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            placeholder="Enter password"
-                                            className="h-10"
-                                        />
-                                    </div>
-                                )}
-
-                                <Button
-                                    onClick={downloadFile}
-                                    disabled={
-                                        downloadState === "downloading" ||
-                                        (fileInfo.requiresPassword && !password)
-                                    }
-                                    size="lg"
-                                    className="w-full gap-2"
-                                >
-                                    <Download weight="bold" className="w-5 h-5" />
-                                    {downloadState === "downloading"
-                                        ? "Downloading..."
-                                        : "Download File"}
-                                </Button>
-
-                                <Button variant="ghost" onClick={resetDownload} className="w-full">
-                                    Use Different Code
-                                </Button>
-
-                                <p className="text-sm text-muted-foreground text-center flex items-center justify-center gap-1.5">
-                                    <Warning weight="fill" className="w-4 h-4" />
-                                    This file can only be downloaded once
-                                </p>
-                            </div>
-                        ) : (
-                            <>
-                                {/* Code Input */}
-                                <div className="flex flex-col items-center space-y-6 py-4">
-                                    <InputOTP
-                                        value={code}
-                                        onChange={setCode}
-                                        maxLength={CODE_LENGTH}
-                                        disabled={downloadState === "loading"}
-                                    >
-                                        <InputOTPGroup>
-                                            {Array.from({ length: CODE_LENGTH }, (_, i) => (
-                                                <InputOTPSlot
-                                                    key={i}
-                                                    index={i}
-                                                    className="w-11 h-14 sm:w-14 sm:h-16 text-xl sm:text-2xl"
-                                                />
-                                            ))}
-                                        </InputOTPGroup>
-                                    </InputOTP>
-
-                                    <p className="text-sm text-muted-foreground">
-                                        Enter the {CODE_LENGTH}-digit code to access your file
-                                    </p>
-                                </div>
-
-                                {/* Error Message */}
-                                {error && <AlertBanner>{error}</AlertBanner>}
-
-                                {/* Check Code Button */}
-                                <Button
-                                    onClick={() => checkCode()}
-                                    disabled={
-                                        code.length !== CODE_LENGTH || downloadState === "loading"
-                                    }
-                                    size="lg"
-                                    className="w-full gap-2"
-                                >
-                                    <Download weight="bold" className="w-5 h-5" />
-                                    {downloadState === "loading" ? "Checking..." : "Find File"}
-                                </Button>
-                            </>
-                        )}
-                    </CardContent>
-                </Card>
-
-                {/* Footer */}
-                <p className="text-center text-xs text-muted-foreground/50 mt-6">
-                    vxid.cc — privacy-first tools
+        <PageShell maxWidth="sm">
+            {/* Header */}
+            <div className="mb-8">
+                <Link href="/">
+                    <Button variant="ghost" className="gap-2 mb-4">
+                        <ArrowLeft weight="bold" className="w-4 h-4" />
+                        Back to Home
+                    </Button>
+                </Link>
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Download File</h1>
+                <p className="text-muted-foreground mt-2">
+                    Enter the {CODE_LENGTH}-digit code to download your file
                 </p>
             </div>
-        </main>
+
+            {/* Download Card */}
+            <Card className="border-2">
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                        <Download weight="duotone" className="w-6 h-6 text-primary" />
+                        Enter Code
+                    </CardTitle>
+                    <CardDescription>
+                        Enter the {CODE_LENGTH}-digit code shared with you
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    {downloadState === "success" ? (
+                        /* Success State */
+                        <div className="text-center space-y-6 py-8">
+                            <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center">
+                                <CheckCircle weight="fill" className="w-10 h-10 text-primary" />
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-semibold mb-2">Download Complete!</h3>
+                                <p className="text-muted-foreground">
+                                    Your file has been downloaded successfully
+                                </p>
+                            </div>
+
+                            <div className="flex gap-4">
+                                <Button
+                                    variant="outline"
+                                    onClick={resetDownload}
+                                    className="flex-1"
+                                >
+                                    Download Another
+                                </Button>
+                                <Link href="/" className="flex-1">
+                                    <Button variant="ghost" className="w-full">
+                                        Go Home
+                                    </Button>
+                                </Link>
+                            </div>
+
+                            <p className="text-sm text-muted-foreground flex items-center justify-center gap-1.5">
+                                <Info weight="fill" className="w-4 h-4" />
+                                This file has been deleted from our servers
+                            </p>
+                        </div>
+                    ) : (downloadState === "ready" || downloadState === "downloading") &&
+                      fileInfo ? (
+                        /* Ready to Download State */
+                        <div className="space-y-6">
+                            <div className="bg-muted rounded-2xl p-6 space-y-4">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                        <File weight="duotone" className="w-7 h-7 text-primary" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-semibold truncate">{fileInfo.name}</p>
+                                        <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
+                                            <span className="flex items-center gap-1">
+                                                <HardDrive weight="bold" className="w-4 h-4" />
+                                                {formatFileSize(fileInfo.size)}
+                                            </span>
+                                            <span className="flex items-center gap-1">
+                                                <Timer weight="bold" className="w-4 h-4" />
+                                                Expires in {formatTimeRemaining(fileInfo.expiresAt)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {fileInfo.requiresPassword && (
+                                <div className="space-y-2">
+                                    <p className="text-sm text-muted-foreground">
+                                        Password required
+                                    </p>
+                                    <Input
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        placeholder="Enter password"
+                                        className="h-10"
+                                    />
+                                </div>
+                            )}
+
+                            <Button
+                                onClick={downloadFile}
+                                disabled={
+                                    downloadState === "downloading" ||
+                                    (fileInfo.requiresPassword && !password)
+                                }
+                                size="lg"
+                                className="w-full gap-2"
+                            >
+                                <Download weight="bold" className="w-5 h-5" />
+                                {downloadState === "downloading"
+                                    ? "Downloading..."
+                                    : "Download File"}
+                            </Button>
+
+                            <Button variant="ghost" onClick={resetDownload} className="w-full">
+                                Use Different Code
+                            </Button>
+
+                            <p className="text-sm text-muted-foreground text-center flex items-center justify-center gap-1.5">
+                                <Warning weight="fill" className="w-4 h-4" />
+                                This file can only be downloaded once
+                            </p>
+                        </div>
+                    ) : (
+                        <>
+                            {/* Code Input */}
+                            <div className="flex flex-col items-center space-y-6 py-4">
+                                <InputOTP
+                                    value={code}
+                                    onChange={setCode}
+                                    maxLength={CODE_LENGTH}
+                                    disabled={downloadState === "loading"}
+                                >
+                                    <InputOTPGroup>
+                                        {Array.from({ length: CODE_LENGTH }, (_, i) => (
+                                            <InputOTPSlot
+                                                key={i}
+                                                index={i}
+                                                className="w-11 h-14 sm:w-14 sm:h-16 text-xl sm:text-2xl"
+                                            />
+                                        ))}
+                                    </InputOTPGroup>
+                                </InputOTP>
+
+                                <p className="text-sm text-muted-foreground">
+                                    Enter the {CODE_LENGTH}-digit code to access your file
+                                </p>
+                            </div>
+
+                            {/* Error Message */}
+                            {error && <AlertBanner>{error}</AlertBanner>}
+
+                            {/* Check Code Button */}
+                            <Button
+                                onClick={() => checkCode()}
+                                disabled={
+                                    code.length !== CODE_LENGTH || downloadState === "loading"
+                                }
+                                size="lg"
+                                className="w-full gap-2"
+                            >
+                                <Download weight="bold" className="w-5 h-5" />
+                                {downloadState === "loading" ? "Checking..." : "Find File"}
+                            </Button>
+                        </>
+                    )}
+                </CardContent>
+            </Card>
+
+            {/* Footer */}
+            <p className="text-center text-xs text-muted-foreground/50 mt-6">
+                vxid.cc — privacy-first tools
+            </p>
+        </PageShell>
     );
 }

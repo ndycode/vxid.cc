@@ -68,6 +68,11 @@ Visit `http://localhost:3000`
 │   ├── error-boundary.tsx    # Client-side error boundary
 │   ├── animated-background.tsx
 │   └── ui/                   # shadcn + custom components
+│       ├── page-shell.tsx    # Shared page layout wrapper
+│       ├── button.tsx        # Button variants
+│       ├── card.tsx          # Card components
+│       ├── error-state.tsx   # Error display component
+│       └── ...               # Additional UI primitives
 ├── lib/
 │   ├── db/                   # Database layer (domain-split)
 │   │   ├── client.ts         # Supabase client + utilities

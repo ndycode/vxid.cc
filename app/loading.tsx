@@ -1,9 +1,10 @@
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { PageShell } from "@/components/ui/page-shell";
 
 export default function Loading() {
     return (
-        <main className="min-h-screen flex flex-col items-center justify-center px-4 py-8">
+        <PageShell maxWidth="sm">
             <LoadingSpinner size="lg" label="Loading..." />
-        </main>
+        </PageShell>
     );
 }

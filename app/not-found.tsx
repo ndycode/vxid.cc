@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { MagnifyingGlass, House } from "@phosphor-icons/react/dist/ssr";
+import { PageShell } from "@/components/ui/page-shell";
 
 export default function NotFound() {
     return (
-        <main className="min-h-screen flex flex-col items-center justify-center px-4 py-8 text-center">
-            <div className="max-w-sm space-y-6">
+        <PageShell maxWidth="sm" className="text-center">
+            <div className="space-y-6">
                 <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mx-auto">
                     <MagnifyingGlass weight="duotone" className="w-8 h-8 text-muted-foreground" />
                 </div>
@@ -26,6 +27,6 @@ export default function NotFound() {
 
                 <p className="text-xs text-muted-foreground/60">vxid.cc — privacy-first tools</p>
             </div>
-        </main>
+        </PageShell>
     );
 }
