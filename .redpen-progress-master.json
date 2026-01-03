@@ -19,7 +19,8 @@
     "web/interface/rendering-performance.txt",
     "web/interface/resilience-ux.txt",
     "web/interface/visual-consistency.txt",
-    "web/interface/visual-refactoring.txt"
+    "web/interface/visual-refactoring.txt",
+    "web/product/voice-tone.txt"
   ],
   "versions": {
     "core/security/api-ergonomics.txt": "1.4.3",
@@ -41,6 +42,7 @@
     "web/interface/rendering-performance.txt": "1.4.3",
     "web/interface/resilience-ux.txt": "1.4.3",
     "web/interface/visual-consistency.txt": "1.4.3",
-    "web/interface/visual-refactoring.txt": "1.4.3"
+    "web/interface/visual-refactoring.txt": "1.4.3",
+    "web/product/voice-tone.txt": "1.4.3"
   }
 }

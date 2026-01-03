@@ -62,10 +62,12 @@ export function PassGen() {
 
     const toggleOption = (key: keyof Omit<Options, "length">) => {
         // Ensure at least one option stays enabled
-        const enabledCount = [options.uppercase, options.numbers, options.symbols].filter(Boolean).length;
+        const enabledCount = [options.uppercase, options.numbers, options.symbols].filter(
+            Boolean
+        ).length;
         if (options[key] && enabledCount <= 1) return;
 
-        setOptions(prev => ({ ...prev, [key]: !prev[key] }));
+        setOptions((prev) => ({ ...prev, [key]: !prev[key] }));
     };
 
     return (
@@ -90,9 +92,7 @@ export function PassGen() {
                         {password}
                     </motion.p>
                 ) : (
-                    <p className="text-muted-foreground text-sm">
-                        click generate to create password
-                    </p>
+                    <p className="text-muted-foreground text-sm">No password generated</p>
                 )}
                 {password && (
                     <div className="absolute top-2 right-2 text-muted-foreground">
@@ -120,7 +120,9 @@ export function PassGen() {
                     min={8}
                     max={64}
                     value={options.length}
-                    onChange={(e) => setOptions(prev => ({ ...prev, length: parseInt(e.target.value) }))}
+                    onChange={(e) =>
+                        setOptions((prev) => ({ ...prev, length: parseInt(e.target.value) }))
+                    }
                     className="w-full h-2 bg-muted rounded-full appearance-none cursor-pointer accent-primary touch-none"
                 />
             </div>
@@ -131,10 +133,11 @@ export function PassGen() {
                     <button
                         key={opt}
                         onClick={() => toggleOption(opt)}
-                        className={`px-3 py-1.5 text-xs rounded-lg transition-all ${options[opt]
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-muted-foreground hover:bg-muted/80"
-                            }`}
+                        className={`px-3 py-1.5 text-xs rounded-lg transition-all ${
+                            options[opt]
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-muted text-muted-foreground hover:bg-muted/80"
+                        }`}
                     >
                         {opt}
                     </button>
@@ -143,10 +146,7 @@ export function PassGen() {
 
             {/* Actions */}
             <div className="flex gap-2">
-                <Button
-                    onClick={generatePassword}
-                    className="flex-1 gap-1.5"
-                >
+                <Button onClick={generatePassword} className="flex-1 gap-1.5">
                     <ArrowsClockwise className="w-4 h-4" />
                     Generate
                 </Button>

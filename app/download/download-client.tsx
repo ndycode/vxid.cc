@@ -155,9 +155,6 @@ export default function DownloadClient() {
                     </Button>
                 </Link>
                 <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Download File</h1>
-                <p className="text-muted-foreground mt-2">
-                    Enter the {CODE_LENGTH}-digit code to download your file
-                </p>
             </div>
 
             {/* Download Card */}
@@ -289,10 +286,6 @@ export default function DownloadClient() {
                                         ))}
                                     </InputOTPGroup>
                                 </InputOTP>
-
-                                <p className="text-sm text-muted-foreground">
-                                    Enter the {CODE_LENGTH}-digit code to access your file
-                                </p>
                             </div>
 
                             {/* Error Message */}

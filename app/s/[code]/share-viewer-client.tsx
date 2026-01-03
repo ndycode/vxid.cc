@@ -210,7 +210,7 @@ export function ShareViewerClient({ code }: ShareViewerClientProps) {
                             {data.burnAfterReading && !data.burned && (
                                 <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-lg flex items-center gap-2">
                                     <Fire weight="fill" className="w-4 h-4" />
-                                    This content will be destroyed after you leave this page
+                                    This content will be deleted when you close this page
                                 </div>
                             )}
 

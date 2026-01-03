@@ -323,7 +323,7 @@ export function HomeClient() {
                             className="text-muted-foreground text-sm break-words"
                             transition={transition}
                         >
-                            all tools u need :&gt;
+                            Privacy-first utilities
                         </motion.p>
                     </motion.div>
 
@@ -338,7 +338,7 @@ export function HomeClient() {
                             className="w-full text-base py-6 rounded-xl hover-lift hover-glow"
                             onClick={handleEnter}
                         >
-                            enter
+                            Browse tools
                         </Button>
                     </motion.div>
 

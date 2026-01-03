@@ -61,7 +61,10 @@ export function IpChecker() {
                 as: json.asn,
                 mobile: false,
                 proxy: false,
-                hosting: json.org?.toLowerCase().includes("cloud") || json.org?.toLowerCase().includes("hosting") || false,
+                hosting:
+                    json.org?.toLowerCase().includes("cloud") ||
+                    json.org?.toLowerCase().includes("hosting") ||
+                    false,
             });
         } catch (err: any) {
             setError(err.message || "Failed to fetch IP data");
@@ -103,14 +106,16 @@ export function IpChecker() {
                     <p className="text-sm text-destructive">{error}</p>
                     <Button onClick={fetchIp} variant="outline" size="sm" className="gap-1.5">
                         <ArrowClockwise className="w-4 h-4" />
-                        retry
+                        Retry
                     </Button>
                 </div>
             ) : data ? (
                 <div className="space-y-4">
                     {/* Main Result */}
                     <div className="bg-muted/50 p-3 rounded-lg text-center space-y-1">
-                        <p className="text-base sm:text-xl font-mono font-bold break-all leading-relaxed">{data.ip}</p>
+                        <p className="text-base sm:text-xl font-mono font-bold break-all leading-relaxed">
+                            {data.ip}
+                        </p>
                         <p className="text-xs text-muted-foreground break-words">
                             {data.city}, {data.regionName}, {data.countryCode}
                         </p>
@@ -148,7 +153,9 @@ export function IpChecker() {
                                 <div className="grid grid-cols-2 gap-2">
                                     <div>
                                         <p className="text-xs text-muted-foreground">country</p>
-                                        <p className="font-medium">{data.countryCode} {data.country}</p>
+                                        <p className="font-medium">
+                                            {data.countryCode} {data.country}
+                                        </p>
                                     </div>
                                     <div>
                                         <p className="text-xs text-muted-foreground">region</p>
@@ -164,20 +171,27 @@ export function IpChecker() {
                                     </div>
                                     <div>
                                         <p className="text-xs text-muted-foreground">coords</p>
-                                        <p className="font-medium">{data.lat.toFixed(4)}, {data.lon.toFixed(4)}</p>
+                                        <p className="font-medium">
+                                            {data.lat.toFixed(4)}, {data.lon.toFixed(4)}
+                                        </p>
                                     </div>
                                     <div className="min-w-0">
                                         <p className="text-xs text-muted-foreground">as</p>
-                                        <p className="font-medium text-xs truncate">{data.as.split(" ")[0]}</p>
+                                        <p className="font-medium text-xs truncate">
+                                            {data.as.split(" ")[0]}
+                                        </p>
                                     </div>
                                     <div className="min-w-0">
                                         <p className="text-xs text-muted-foreground">org</p>
-                                        <p className="font-medium text-xs truncate">{data.org || "—"}</p>
+                                        <p className="font-medium text-xs truncate">
+                                            {data.org || "—"}
+                                        </p>
                                     </div>
                                     <div>
                                         <p className="text-xs text-muted-foreground">type</p>
                                         <p className="font-medium">
-                                            {data.mobile ? "mobile" : "desktop"} · {data.hosting ? "hosting" : "residential"}
+                                            {data.mobile ? "mobile" : "desktop"} ·{" "}
+                                            {data.hosting ? "hosting" : "residential"}
                                         </p>
                                     </div>
                                 </div>
@@ -192,7 +206,7 @@ export function IpChecker() {
                     <div className="flex gap-2">
                         <Button onClick={copy} variant="outline" className="flex-1 gap-1.5">
                             {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                            {copied ? "copied!" : "copy ip"}
+                            {copied ? "Copied" : "Copy IP"}
                         </Button>
                         <Button onClick={fetchIp} variant="outline" className="gap-1.5">
                             <ArrowClockwise className="w-4 h-4" />

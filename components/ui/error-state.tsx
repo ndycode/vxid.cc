@@ -25,7 +25,7 @@ export function ErrorState({
     description = "This may be a temporary issue. You can try again, or go back to the home page.",
     onRetry,
     showHomeLink = true,
-    footerText = "If this keeps happening, try refreshing the page.",
+    footerText,
     fullScreen = true,
 }: ErrorStateProps) {
     const content = (

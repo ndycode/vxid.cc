@@ -72,7 +72,7 @@ export function QRGen() {
             <div className="relative">
                 <Input
                     type="text"
-                    placeholder="enter text or url..."
+                    placeholder="Enter text or URL"
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     className="h-11 text-sm pr-10"
@@ -92,11 +92,7 @@ export function QRGen() {
                 animate={{ opacity: text ? 1 : 0.3 }}
                 className="flex justify-center py-2"
             >
-                <div
-                    ref={qrRef}
-                    className="p-3 rounded-xl"
-                    style={{ backgroundColor: bgColor }}
-                >
+                <div ref={qrRef} className="p-3 rounded-xl" style={{ backgroundColor: bgColor }}>
                     <QRCodeSVG
                         value={text || "vxid.cc"}
                         size={size}
@@ -112,11 +108,15 @@ export function QRGen() {
                 {presets.map((p) => (
                     <button
                         key={p.label}
-                        onClick={() => { setFgColor(p.fg); setBgColor(p.bg); }}
-                        className={`w-8 h-8 rounded-lg border-2 transition-all overflow-hidden ${fgColor === p.fg && bgColor === p.bg
-                            ? "border-primary scale-110"
-                            : "border-border hover:border-muted-foreground"
-                            }`}
+                        onClick={() => {
+                            setFgColor(p.fg);
+                            setBgColor(p.bg);
+                        }}
+                        className={`w-8 h-8 rounded-lg border-2 transition-all overflow-hidden ${
+                            fgColor === p.fg && bgColor === p.bg
+                                ? "border-primary scale-110"
+                                : "border-border hover:border-muted-foreground"
+                        }`}
                         style={{ backgroundColor: p.bg }}
                         title={p.label}
                     >
@@ -155,12 +155,12 @@ export function QRGen() {
                     <Copy className="w-4 h-4" />
                     {copied ? "Copied!" : "Copy"}
                 </Button>
-                <Button
-                    onClick={handleDownload}
-                    disabled={!text}
-                    className="flex-1 gap-1.5"
-                >
-                    {downloaded ? <Check className="w-4 h-4" /> : <DownloadSimple className="w-4 h-4" />}
+                <Button onClick={handleDownload} disabled={!text} className="flex-1 gap-1.5">
+                    {downloaded ? (
+                        <Check className="w-4 h-4" />
+                    ) : (
+                        <DownloadSimple className="w-4 h-4" />
+                    )}
                     {downloaded ? "Downloaded!" : "Download"}
                 </Button>
             </div>

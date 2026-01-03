@@ -280,10 +280,13 @@ export function DeadDrop() {
         <>
             {/* Tabs */}
             <div className="flex bg-muted/50 p-1 rounded-xl mb-4 gap-1">
-                {(["send", "receive"] as const).map(t => (
+                {(["send", "receive"] as const).map((t) => (
                     <button
                         key={t}
-                        onClick={() => { setTab(t); setShowOptions(false); }}
+                        onClick={() => {
+                            setTab(t);
+                            setShowOptions(false);
+                        }}
                         className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-sm font-medium rounded-lg relative z-10 outline-none"
                     >
                         {tab === t && (
@@ -293,7 +296,9 @@ export function DeadDrop() {
                                 transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
                             />
                         )}
-                        <span className={`relative z-10 transition-colors ${tab === t ? "text-foreground" : "text-muted-foreground"}`}>
+                        <span
+                            className={`relative z-10 transition-colors ${tab === t ? "text-foreground" : "text-muted-foreground"}`}
+                        >
                             {t === "send" ? "Send" : "Receive"}
                         </span>
                     </button>
@@ -316,16 +321,24 @@ export function DeadDrop() {
                                 <div className="flex items-center gap-4">
                                     <div className="flex-1 flex items-center gap-3">
                                         <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                                            <CheckCircle weight="fill" className="w-5 h-5 text-primary" />
+                                            <CheckCircle
+                                                weight="fill"
+                                                className="w-5 h-5 text-primary"
+                                            />
                                         </div>
                                         <div className="text-left">
                                             <p className="font-semibold">Done</p>
-                                            <p className="text-muted-foreground text-xs">{copyMessage || "Share this code"}</p>
+                                            <p className="text-muted-foreground text-xs">
+                                                {copyMessage || "Share this code"}
+                                            </p>
                                         </div>
                                     </div>
-                                    <button onClick={() => setShowQRModal(true)} className="text-foreground hover:scale-105 transition-transform">
+                                    <button
+                                        onClick={() => setShowQRModal(true)}
+                                        className="text-foreground hover:scale-105 transition-transform"
+                                    >
                                         <QRCodeSVG
-                                            value={`${typeof window !== 'undefined' ? window.location.origin : ''}/download?code=${shareCode}`}
+                                            value={`${typeof window !== "undefined" ? window.location.origin : ""}/download?code=${shareCode}`}
                                             size={52}
                                             level="L"
                                             bgColor="transparent"
@@ -334,88 +347,175 @@ export function DeadDrop() {
                                     </button>
                                 </div>
                                 <div className="bg-muted/50 p-3 rounded-xl text-center">
-                                    <p className="text-2xl font-mono font-bold tracking-[0.15em]">{shareCode}</p>
+                                    <p className="text-2xl font-mono font-bold tracking-[0.15em]">
+                                        {shareCode}
+                                    </p>
                                 </div>
                                 <div className="flex gap-2">
-                                    <Button variant="outline" onClick={() => copyToClipboard(shareCode, "Code")} className="flex-1 gap-1.5 h-9" size="sm">
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => copyToClipboard(shareCode, "Code")}
+                                        className="flex-1 gap-1.5 h-9"
+                                        size="sm"
+                                    >
                                         <Copy className="w-3.5 h-3.5" /> Code
                                     </Button>
-                                    <Button variant="outline" onClick={() => copyToClipboard(`${window.location.origin}/download?code=${shareCode}`, "Link")} className="flex-1 gap-1.5 h-9" size="sm">
+                                    <Button
+                                        variant="outline"
+                                        onClick={() =>
+                                            copyToClipboard(
+                                                `${window.location.origin}/download?code=${shareCode}`,
+                                                "Link"
+                                            )
+                                        }
+                                        className="flex-1 gap-1.5 h-9"
+                                        size="sm"
+                                    >
                                         <LinkIcon className="w-3.5 h-3.5" /> Link
                                     </Button>
-                                    <Button onClick={reset} className="flex-1 h-9" size="sm">New</Button>
+                                    <Button onClick={reset} className="flex-1 h-9" size="sm">
+                                        New
+                                    </Button>
                                 </div>
                             </div>
                         ) : (
                             <div className="space-y-4">
                                 {/* Dropzone */}
                                 <div
-                                    onDragOver={e => { e.preventDefault(); setIsDragOver(true); }}
+                                    onDragOver={(e) => {
+                                        e.preventDefault();
+                                        setIsDragOver(true);
+                                    }}
                                     onDragLeave={() => setIsDragOver(false)}
                                     onDrop={handleDrop}
                                     className={`relative min-h-zone-2xl border-2 border-dashed rounded-xl flex flex-col items-center justify-center p-4 cursor-pointer transition-colors ${file ? "border-primary bg-primary/5" : isDragOver ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}
                                 >
-                                    <input type="file" onChange={handleFile} className="absolute inset-0 opacity-0 cursor-pointer" />
-                                    {file ? (() => {
-                                        const { icon: Icon, color } = getFileIcon(file.name);
-                                        return (
-                                            <div className="text-center space-y-1">
-                                                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mx-auto">
-                                                    <Icon weight="duotone" className={`w-5 h-5 ${color}`} />
+                                    <input
+                                        type="file"
+                                        onChange={handleFile}
+                                        className="absolute inset-0 opacity-0 cursor-pointer"
+                                    />
+                                    {file ? (
+                                        (() => {
+                                            const { icon: Icon, color } = getFileIcon(file.name);
+                                            return (
+                                                <div className="text-center space-y-1">
+                                                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mx-auto">
+                                                        <Icon
+                                                            weight="duotone"
+                                                            className={`w-5 h-5 ${color}`}
+                                                        />
+                                                    </div>
+                                                    <p className="font-medium text-sm truncate max-w-[180px]">
+                                                        {file.name}
+                                                    </p>
+                                                    <p className="text-xs text-muted-foreground">
+                                                        {formatSize(file.size)}
+                                                    </p>
                                                 </div>
-                                                <p className="font-medium text-sm truncate max-w-[180px]">{file.name}</p>
-                                                <p className="text-xs text-muted-foreground">{formatSize(file.size)}</p>
-                                            </div>
-                                        );
-                                    })() : (
+                                            );
+                                        })()
+                                    ) : (
                                         <div className="text-center space-y-1">
                                             <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center mx-auto">
                                                 <UploadSimple className="w-5 h-5 text-muted-foreground" />
                                             </div>
-                                            <p className="text-sm font-medium">Drop file</p>
-                                            <p className="text-xs text-muted-foreground">1 GB max</p>
+                                            <p className="text-sm font-medium">
+                                                Drop or select file
+                                            </p>
+                                            <p className="text-xs text-muted-foreground">
+                                                1 GB max
+                                            </p>
                                         </div>
                                     )}
                                 </div>
 
                                 {/* Options */}
                                 <div>
-                                    <button onClick={() => setShowOptions(!showOptions)} className="w-full flex items-center justify-between text-sm text-muted-foreground py-2 hover:text-foreground">
+                                    <button
+                                        onClick={() => setShowOptions(!showOptions)}
+                                        className="w-full flex items-center justify-between text-sm text-muted-foreground py-2 hover:text-foreground"
+                                    >
                                         Options
-                                        <motion.div animate={{ rotate: showOptions ? 180 : 0 }} transition={transition}>
+                                        <motion.div
+                                            animate={{ rotate: showOptions ? 180 : 0 }}
+                                            transition={transition}
+                                        >
                                             <CaretDown className="w-4 h-4" />
                                         </motion.div>
                                     </button>
                                     <AnimatePresence>
                                         {showOptions && (
-                                            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={transition} className="overflow-hidden">
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: "auto", opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                transition={transition}
+                                                className="overflow-hidden"
+                                            >
                                                 <div className="pt-2 pb-1 space-y-3">
                                                     <div className="space-y-1.5">
-                                                        <p className="text-xs text-muted-foreground">Expires</p>
+                                                        <p className="text-xs text-muted-foreground">
+                                                            expires
+                                                        </p>
                                                         <div className="grid grid-cols-4 gap-1">
                                                             {EXPIRY.map((e, i) => (
-                                                                <button key={e} onClick={() => setExpiry(i)} className={`text-xs py-1.5 rounded-md transition-all ${expiry === i ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}>
+                                                                <button
+                                                                    key={e}
+                                                                    onClick={() => setExpiry(i)}
+                                                                    className={`text-xs py-1.5 rounded-md transition-all ${expiry === i ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
+                                                                >
                                                                     {e}
                                                                 </button>
                                                             ))}
                                                         </div>
                                                     </div>
                                                     <div className="space-y-1.5">
-                                                        <p className="text-xs text-muted-foreground">Downloads</p>
+                                                        <p className="text-xs text-muted-foreground">
+                                                            downloads
+                                                        </p>
                                                         <div className="grid grid-cols-4 gap-1">
                                                             {LIMITS.map((l, i) => (
-                                                                <button key={l} onClick={() => setLimit(i)} className={`text-xs py-1.5 rounded-md transition-all ${limit === i ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}>
+                                                                <button
+                                                                    key={l}
+                                                                    onClick={() => setLimit(i)}
+                                                                    className={`text-xs py-1.5 rounded-md transition-all ${limit === i ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
+                                                                >
                                                                     {l}
                                                                 </button>
                                                             ))}
                                                         </div>
                                                     </div>
                                                     <div className="space-y-1.5">
-                                                        <p className="text-xs text-muted-foreground">Password (optional)</p>
+                                                        <p className="text-xs text-muted-foreground">
+                                                            password (optional)
+                                                        </p>
                                                         <div className="relative">
-                                                            <Input type={showPassword ? "text" : "password"} placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} className="h-8 text-xs pr-8" />
-                                                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                                                                {showPassword ? <EyeSlash className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                                            <Input
+                                                                type={
+                                                                    showPassword
+                                                                        ? "text"
+                                                                        : "password"
+                                                                }
+                                                                placeholder="Enter password"
+                                                                value={password}
+                                                                onChange={(e) =>
+                                                                    setPassword(e.target.value)
+                                                                }
+                                                                className="h-8 text-xs pr-8"
+                                                            />
+                                                            <button
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    setShowPassword(!showPassword)
+                                                                }
+                                                                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                                            >
+                                                                {showPassword ? (
+                                                                    <EyeSlash className="w-4 h-4" />
+                                                                ) : (
+                                                                    <Eye className="w-4 h-4" />
+                                                                )}
                                                             </button>
                                                         </div>
                                                     </div>
@@ -429,16 +529,26 @@ export function DeadDrop() {
                                 {uploadStatus === "uploading" ? (
                                     <div className="space-y-2 pt-2">
                                         <Progress value={progress} className="h-1.5" />
-                                        <p className="text-xs text-center text-muted-foreground">Uploading...</p>
+                                        <p className="text-xs text-center text-muted-foreground">
+                                            Uploading...
+                                        </p>
                                     </div>
                                 ) : (
                                     <div className="space-y-2">
                                         {uploadError && (
                                             <p className="text-sm text-destructive flex items-center justify-center gap-1">
-                                                <Warning weight="bold" className="w-4 h-4" /> {uploadError}
+                                                <Warning weight="bold" className="w-4 h-4" />{" "}
+                                                {uploadError}
                                             </p>
                                         )}
-                                        <Button onClick={upload} disabled={!file} className="w-full" size="lg">Upload</Button>
+                                        <Button
+                                            onClick={upload}
+                                            disabled={!file}
+                                            className="w-full"
+                                            size="lg"
+                                        >
+                                            Upload
+                                        </Button>
                                     </div>
                                 )}
                             </div>
@@ -456,51 +566,126 @@ export function DeadDrop() {
                         {downloadStatus === "ready" || downloadStatus === "downloading" ? (
                             <div className="py-6 text-center space-y-4">
                                 <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mx-auto">
-                                    <FileArchive weight="duotone" className="w-7 h-7 text-primary" />
+                                    <FileArchive
+                                        weight="duotone"
+                                        className="w-7 h-7 text-primary"
+                                    />
                                 </div>
                                 <div>
-                                    <p className="font-semibold truncate max-w-[250px] mx-auto">{fileInfo?.name}</p>
+                                    <p className="font-semibold truncate max-w-[250px] mx-auto">
+                                        {fileInfo?.name}
+                                    </p>
                                     <p className="text-sm text-muted-foreground">
-                                        {fileInfo ? formatSize(fileInfo.size) : ''} • expires in {fileInfo ? formatExpiry(fileInfo.expiresAt) : ''}
+                                        {fileInfo ? formatSize(fileInfo.size) : ""} • expires in{" "}
+                                        {fileInfo ? formatExpiry(fileInfo.expiresAt) : ""}
                                     </p>
                                 </div>
                                 {fileInfo?.requiresPassword && (
                                     <div className="space-y-1.5 text-left">
-                                        <p className="text-xs text-muted-foreground">Password required</p>
+                                        <p className="text-xs text-muted-foreground">
+                                            Password required
+                                        </p>
                                         <div className="relative">
-                                            <Input type={showDownloadPassword ? "text" : "password"} placeholder="Enter password" value={downloadPassword} onChange={(e) => setDownloadPassword(e.target.value)} className="h-9 text-sm pr-8" />
-                                            <button type="button" onClick={() => setShowDownloadPassword(!showDownloadPassword)} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                                                {showDownloadPassword ? <EyeSlash className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                            <Input
+                                                type={showDownloadPassword ? "text" : "password"}
+                                                placeholder="Enter password"
+                                                value={downloadPassword}
+                                                onChange={(e) =>
+                                                    setDownloadPassword(e.target.value)
+                                                }
+                                                className="h-9 text-sm pr-8"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    setShowDownloadPassword(!showDownloadPassword)
+                                                }
+                                                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                            >
+                                                {showDownloadPassword ? (
+                                                    <EyeSlash className="w-4 h-4" />
+                                                ) : (
+                                                    <Eye className="w-4 h-4" />
+                                                )}
                                             </button>
                                         </div>
                                     </div>
                                 )}
-                                {error && <p className="text-sm text-destructive flex items-center justify-center gap-1"><Warning weight="bold" className="w-4 h-4" /> {error}</p>}
+                                {error && (
+                                    <p className="text-sm text-destructive flex items-center justify-center gap-1">
+                                        <Warning weight="bold" className="w-4 h-4" /> {error}
+                                    </p>
+                                )}
                                 <div className="space-y-2">
-                                    <Button onClick={downloadFile} disabled={downloadStatus === "downloading" || (fileInfo?.requiresPassword && !downloadPassword)} className="w-full gap-1.5" size="lg">
+                                    <Button
+                                        onClick={downloadFile}
+                                        disabled={
+                                            downloadStatus === "downloading" ||
+                                            (fileInfo?.requiresPassword && !downloadPassword)
+                                        }
+                                        className="w-full gap-1.5"
+                                        size="lg"
+                                    >
                                         <CloudArrowDown className="w-5 h-5" />
-                                        {downloadStatus === "downloading" ? "Downloading..." : "Download"}
+                                        {downloadStatus === "downloading"
+                                            ? "Downloading..."
+                                            : "Download"}
                                     </Button>
-                                    <Button variant="ghost" onClick={resetDownload} className="w-full text-muted-foreground">Cancel</Button>
+                                    <Button
+                                        variant="ghost"
+                                        onClick={resetDownload}
+                                        className="w-full text-muted-foreground"
+                                    >
+                                        Cancel
+                                    </Button>
                                 </div>
                             </div>
                         ) : (
                             <div className="py-6 text-center space-y-5">
                                 <div>
                                     <p className="font-semibold text-lg">Get file</p>
-                                    <p className="text-sm text-muted-foreground">Enter {CODE_LENGTH}-digit code</p>
+                                    <p className="text-sm text-muted-foreground">
+                                        Enter {CODE_LENGTH}-digit code
+                                    </p>
                                 </div>
                                 <div className="flex justify-center">
-                                    <InputOTP maxLength={CODE_LENGTH} value={code} onChange={(v) => { setCode(v); setError(""); if (v.length === CODE_LENGTH) { setButtonGlow(true); setTimeout(() => setButtonGlow(false), 1000); setTimeout(checkCode, 50); } }}>
+                                    <InputOTP
+                                        maxLength={CODE_LENGTH}
+                                        value={code}
+                                        onChange={(v) => {
+                                            setCode(v);
+                                            setError("");
+                                            if (v.length === CODE_LENGTH) {
+                                                setButtonGlow(true);
+                                                setTimeout(() => setButtonGlow(false), 1000);
+                                                setTimeout(checkCode, 50);
+                                            }
+                                        }}
+                                    >
                                         <InputOTPGroup className="gap-1.5">
                                             {Array.from({ length: CODE_LENGTH }, (_, i) => (
-                                                <InputOTPSlot key={i} index={i} className="w-9 h-11 rounded-lg border-2 text-base" />
+                                                <InputOTPSlot
+                                                    key={i}
+                                                    index={i}
+                                                    className="w-9 h-11 rounded-lg border-2 text-base"
+                                                />
                                             ))}
                                         </InputOTPGroup>
                                     </InputOTP>
                                 </div>
-                                {error && <p className="text-sm text-destructive flex items-center justify-center gap-1"><Warning weight="bold" className="w-4 h-4" /> {error}</p>}
-                                <Button onClick={checkCode} disabled={code.length !== CODE_LENGTH || downloadStatus === "loading"} className={`w-full transition-all duration-300 ${buttonGlow ? "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-[0_0_20px_hsl(var(--primary)/0.5)]" : ""}`} size="lg">
+                                {error && (
+                                    <p className="text-sm text-destructive flex items-center justify-center gap-1">
+                                        <Warning weight="bold" className="w-4 h-4" /> {error}
+                                    </p>
+                                )}
+                                <Button
+                                    onClick={checkCode}
+                                    disabled={
+                                        code.length !== CODE_LENGTH || downloadStatus === "loading"
+                                    }
+                                    className={`w-full transition-all duration-300 ${buttonGlow ? "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-[0_0_20px_hsl(var(--primary)/0.5)]" : ""}`}
+                                    size="lg"
+                                >
                                     {downloadStatus === "loading" ? "Checking..." : "Get File"}
                                 </Button>
                             </div>
@@ -509,7 +694,12 @@ export function DeadDrop() {
                 )}
             </AnimatePresence>
 
-            <QRModal code={shareCode} isOpen={showQRModal} onClose={() => setShowQRModal(false)} onCopy={copyToClipboard} />
+            <QRModal
+                code={shareCode}
+                isOpen={showQRModal}
+                onClose={() => setShowQRModal(false)}
+                onCopy={copyToClipboard}
+            />
         </>
     );
 }
